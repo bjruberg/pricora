@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true,
+    "declarationDir": "dist/types",
+    "declaration": true,
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "baseUrl": "src",
+    "paths": {
+      "*": ["./*"]
+    },
+    "types": ["node"],
+    "jsx": "react",
+    "jsxFactory": "h",
+    "skipLibCheck": true, // preact documentation for integration react libs in preact using ts
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+} 
