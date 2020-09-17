@@ -17,14 +17,8 @@
     "no-return-assign": [2, "except-parens"],
     "no-use-before-define": 0,
     "import/prefer-default-export": 0,
-    "import/no-cycle": 0
-  },
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "moduleDirectory": ["node_modules", "src/"]
-      }
-    }
+    "import/no-cycle": 0,
+    "@typescript-eslint/unbound-method": 0
   },
 
   "plugins": [

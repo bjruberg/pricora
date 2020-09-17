@@ -10,6 +10,13 @@
       "pragma": "h",
       "pragmaFrag": "Fragment"
     }],
+    ["module-resolver", {
+        "root": ["."],
+        "alias": {
+          "react": "preact-compat",
+          "react-dom": "preact-compat"
+      }
+    }],
     "lodash"
   ]
 }

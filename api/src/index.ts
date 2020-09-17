@@ -1,14 +1,25 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
-import { User } from "./entity/User";
+import * as bcrypt from "bcryptjs";
+import { v4 as uuidv4 } from "uuid";
+import { getConnection } from "./db";
+import { startServer } from "./server";
 
-const c = createConnection();
+import { Configuration } from "./entity/Configuration";
 
-c.then(async (connection) => {
-  console.log("Loading users from the database...");
-  const users = await connection.manager.find(User);
-  console.log(users[0]);
-  console.log("Loaded users: ", users);
+const initializeApp = async (): Promise<void> => {
+  const connection = await getConnection();
 
-  console.log("Here you can setup and run express/koa/any other framework.");
-}).catch((error) => console.log(error));
+  const configRepository = connection.getRepository(Configuration);
+  let configuration = await configRepository.findOne(1);
+
+  if (!configuration) {
+    configuration = new Configuration();
+  }
+
+  configuration.jwtSecretKey = configuration.jwtSecretKey || uuidv4();
+  configuration.passwordSalt = configuration.passwordSalt || bcrypt.genSaltSync(10);
+  startServer(configuration);
+  void configRepository.save(configuration);
+};
+
+void initializeApp();

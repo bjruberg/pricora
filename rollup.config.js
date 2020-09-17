@@ -2,9 +2,9 @@ import alias from '@rollup/plugin-alias';
 import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import html from '@rollup/plugin-html';
+import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import postcss from 'rollup-plugin-postcss'
 import resolve from '@rollup/plugin-node-resolve';
-import serve from 'rollup-plugin-serve';
 import autoprefixer from 'autoprefixer'
 import cssimport from 'postcss-import'
 import tailwindcss from 'tailwindcss'
@@ -38,11 +38,8 @@ export default (CLIArgs) => {
 				include: [ 'client/src/**/*' ]
 			}),
 
-			// Serve bundled files
-			!isProduction ? serve({ contentBase: [ './client/dist' ] }) : null,
-
       // Create an index.html file in dist
-      html(),
+      html({ title: "Pricora"}),
       
       // Preliminary attemt to reach compatiblity with react libs
       alias({
@@ -54,7 +51,11 @@ export default (CLIArgs) => {
 			
 			postcss({
 				plugins: [autoprefixer, cssimport, tailwindcss]
-			})	
+			}),
+			
+			injectProcessEnv({ 
+				NODE_ENV: process.env.NODE_ENV,
+		 })
 		],
 
 		output: [

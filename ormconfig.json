@@ -12,9 +12,5 @@
    "subscribers": [
       "api/src/subscriber/**/*.ts"
    ],
-   "cli": {
-      "entitiesDir": "src/entity",
-      "migrationsDir": "src/migration",
-      "subscribersDir": "src/subscriber"
-   }
+   "migrationsTableName": "migrations"
 }
