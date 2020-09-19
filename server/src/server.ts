@@ -3,22 +3,36 @@ import koaBody from "koa-body";
 import koaCompress from "koa-compress";
 import Router from "koa-router";
 import koaServe from "koa-static-server";
+import koaGraphql from "koa-graphql";
+import { AuthChecker, buildSchema } from "type-graphql";
 
 import { Connection } from "typeorm";
 
-import { getUser, isLoggedIn, loginUser, registerUser } from "./auth";
+import {
+  getUser,
+  provideAuthorizationInContext,
+  loginUser,
+  registerUser,
+  restrictedForUsers,
+} from "./auth";
 import { getConnection } from "./db";
 import { Configuration } from "entity/Configuration";
+import { SharedUser } from "../../shared/user";
+import { MeetingResolver } from "./resolvers/meeting";
 
 declare module "koa" {
   interface Context {
     configuration: Configuration;
     db: Connection;
-    user: Record<string, any> | null;
+    user?: SharedUser | null;
   }
 }
 
-export const startServer = (configuration: Configuration): void => {
+const customAuthChecker: AuthChecker<Context> = ({ context }) => {
+  return !!context.user;
+};
+
+export const startServer = async (configuration: Configuration): Promise<void> => {
   const app = new Koa();
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -31,11 +45,31 @@ export const startServer = (configuration: Configuration): void => {
     await next();
   });
 
+  app.use(provideAuthorizationInContext);
+
   const router = new Router<any, Koa.Context>();
 
-  router.get("/api/getUser", isLoggedIn, getUser);
+  router.get("/api/getUser", restrictedForUsers, getUser);
   router.post("/api/login", koaBody(), loginUser);
-  router.post("/api/register", isLoggedIn, koaBody(), registerUser);
+  router.post("/api/register", restrictedForUsers, koaBody(), registerUser);
+
+  const schema = await buildSchema({
+    authChecker: customAuthChecker,
+    resolvers: [MeetingResolver],
+    emitSchemaFile: {
+      path: __dirname + "/../../shared/schema.gql",
+      commentDescriptions: true,
+      sortedSchema: false, // by default the printed schema is sorted alphabetically
+    },
+  });
+
+  router.post(
+    "/graphql",
+    koaGraphql({
+      schema,
+      graphiql: true,
+    }),
+  );
 
   app.use((ctx, next) => {
     return next().catch((err): void => {

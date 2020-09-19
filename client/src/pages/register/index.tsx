@@ -11,16 +11,20 @@ import Spinner from "../../ui/spinner";
 import PageContainer from "../../components/PageContainer";
 
 import { typedFetch } from "../../utils/typedFetch";
-import { RegisterRequest, RegisterResponse } from "../../../../api/src/api";
+import { RegisterRequest, RegisterResponse } from "../../../../shared/api";
 
 interface FormData {
   email: string;
+  firstName: string;
+  lastName: string;
   password: string;
 }
 
 interface ApiError {
   msg: string;
 }
+
+const labelClasses = "block text-gray-700 text-sm font-bold";
 
 const RegisterPage: FunctionalComponent = () => {
   const { errors, handleSubmit, register } = useForm<FormData>();
@@ -51,7 +55,7 @@ const RegisterPage: FunctionalComponent = () => {
           void signUp(d);
         })}
       >
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+        <label class={labelClasses} for="email">
           E-Mail
         </label>
         <Input
@@ -71,7 +75,7 @@ const RegisterPage: FunctionalComponent = () => {
         <div class="h-4 text-red-700">
           {!!errors["email"] ? get(errors["email"], "message") : ""}
         </div>
-        <label class="block text-gray-700 text-sm font-bold mt-2" for="password">
+        <label class={labelClasses} for="password">
           Passwort
         </label>
         <Input
@@ -86,6 +90,36 @@ const RegisterPage: FunctionalComponent = () => {
         />
         <div class="h-4 text-red-700">
           {!!errors["password"] ? get(errors["password"], "message") : ""}
+        </div>
+        <label class={labelClasses} for="firstName">
+          Vorname
+        </label>
+        <Input
+          error={!!errors["firstName"]}
+          placeholder="Michael"
+          inputRef={register({
+            required: "Notwendig",
+          })}
+          name="firstName"
+          type="text"
+        />
+        <div class="h-4 text-red-700">
+          {!!errors["firstName"] ? get(errors["firstName"], "message") : ""}
+        </div>
+        <label class={labelClasses} for="lastName">
+          Nachname
+        </label>
+        <Input
+          error={!!errors["lastName"]}
+          placeholder="Jackson"
+          inputRef={register({
+            required: "Notwendig",
+          })}
+          name="lastName"
+          type="text"
+        />
+        <div class="h-4 text-red-700">
+          {!!errors["firstName"] ? get(errors["firstName"], "message") : ""}
         </div>
         <Button disabled={status === "loading"} type="submit" variant="primary">
           Registrieren

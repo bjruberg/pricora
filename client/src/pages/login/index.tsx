@@ -1,5 +1,7 @@
 import { get } from "lodash";
 import { FunctionalComponent, h } from "preact";
+import { useMemo } from "preact/hooks";
+import { route } from "preact-router";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import * as EmailValidator from "email-validator";
@@ -10,18 +12,20 @@ import Spinner from "../../ui/spinner";
 import PageContainer from "../../components/PageContainer";
 
 import { typedFetch } from "../../utils/typedFetch";
-import { LoginRequest, LoginResponse } from "../../../../api/src/api";
+import { LoginRequest, LoginResponse } from "../../../../shared/api";
 
 interface FormData {
   email: string;
   password: string;
 }
 
-interface ApiError {
-  msg: string;
+type ApiError = LoginResponse;
+
+interface LoginPageProps {
+  refetchUser: () => Promise<unknown>;
 }
 
-const LoginPage: FunctionalComponent = () => {
+const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
   const { errors, handleSubmit, register } = useForm<FormData>();
 
   const [login, { error: apiError, status }] = useMutation<Response | void, ApiError, FormData>(
@@ -42,18 +46,24 @@ const LoginPage: FunctionalComponent = () => {
     },
   );
 
+  const onSubmit = useMemo(() => {
+    return handleSubmit((d) => {
+      void login(d).then(() => {
+        void refetchUser();
+        route("/");
+      });
+    });
+  }, [handleSubmit, login, refetchUser]);
+
   return (
     <PageContainer>
       <h1 className="pb-6">Als Benutzer anmelden</h1>
-      <form
-        onSubmit={handleSubmit((d) => {
-          void login(d);
-        })}
-      >
+      <form onSubmit={onSubmit}>
         <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
           E-Mail
         </label>
         <Input
+          autocomplete="email"
           error={!!errors["email"]}
           placeholder="me@server.com"
           name="email"
@@ -74,6 +84,7 @@ const LoginPage: FunctionalComponent = () => {
           Passwort
         </label>
         <Input
+          autocomplete="current-password"
           error={!!errors["password"]}
           placeholder="*****"
           inputRef={register({

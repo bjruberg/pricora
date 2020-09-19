@@ -4,13 +4,13 @@
    "synchronize": true,
    "logging": false,
    "entities": [
-      "api/src/entity/**/*.ts"
+      "server/src/entity/**/*.ts"
    ],
    "migrations": [
-      "api/src/migration/**/*.ts"
+      "server/src/migration/**/*.ts"
    ],
    "subscribers": [
-      "api/src/subscriber/**/*.ts"
+      "server/src/subscriber/**/*.ts"
    ],
    "migrationsTableName": "migrations"
 }

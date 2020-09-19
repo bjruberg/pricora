@@ -18,7 +18,7 @@ const initializeApp = async (): Promise<void> => {
 
   configuration.jwtSecretKey = configuration.jwtSecretKey || uuidv4();
   configuration.passwordSalt = configuration.passwordSalt || bcrypt.genSaltSync(10);
-  startServer(configuration);
+  void startServer(configuration);
   void configRepository.save(configuration);
 };
 

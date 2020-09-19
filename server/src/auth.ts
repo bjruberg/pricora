@@ -3,14 +3,9 @@ import { Context, Next } from "koa";
 import { includes } from "lodash";
 import jwt from "jsonwebtoken";
 import { User } from "./entity/User";
+import { SharedUser } from "../../shared/user";
 
-import {
-  CustomContext,
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-  RegisterResponse,
-} from "./api";
+import { CustomContext, LoginResponse, RegisterResponse } from "../../shared/api";
 
 export const getUser = (ctx: Context): void => {
   ctx.status = 200;
@@ -18,7 +13,7 @@ export const getUser = (ctx: Context): void => {
 };
 
 export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promise<void> => {
-  const { password, email } = <RegisterRequest>ctx.request.body;
+  const { firstName, lastName, password, email } = ctx.request.body;
 
   if (!email || email.length < 3) {
     ctx.status = 400;
@@ -51,14 +46,17 @@ export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promis
   const hashedPw = await hash(password, configuration.passwordSalt);
 
   const newUser = new User();
+
   newUser.email = email;
+  newUser.firstName = firstName;
+  newUser.lastName = lastName;
   newUser.password = hashedPw;
 
   await userRepository.save(newUser);
 };
 
 export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void> => {
-  const { password, email } = <LoginRequest>ctx.request.body;
+  const { password, email } = ctx.request.body;
   const { configuration, db } = ctx;
   const userRepository = db.getRepository(User);
   const requestedUser = await userRepository.findOne({ email });
@@ -100,19 +98,26 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
   });
 };
 
-export const isLoggedIn = async (ctx: Context, next: Next): Promise<void> => {
+export const provideAuthorizationInContext = async (ctx: Context, next: Next): Promise<void> => {
   const { configuration } = ctx;
   const token = ctx.cookies.get("Authorization");
   ctx.user = null;
   if (token) {
     try {
-      const decoded = jwt.verify(token, configuration.jwtSecretKey) as Record<string, any>;
-      ctx.user = decoded;
-      await next();
+      const decodedUser = jwt.verify(token, configuration.jwtSecretKey) as SharedUser;
+      ctx.user = decodedUser;
     } catch (err) {
-      ctx.throw(401);
+      // pass
     }
-  } else {
+  }
+  await next();
+};
+
+export const restrictedForUsers = async (ctx: Context, next: Next): Promise<void> => {
+  console.log({ user: ctx.user });
+  if (!ctx.user) {
     ctx.throw(401);
   }
+
+  await next();
 };

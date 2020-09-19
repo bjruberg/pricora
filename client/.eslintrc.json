@@ -18,10 +18,13 @@
     "no-use-before-define": 0,
     "import/prefer-default-export": 0,
     "import/no-cycle": 0,
-    "@typescript-eslint/unbound-method": 0
+    "@typescript-eslint/unbound-method": 0,
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
-
+  "ignorePatterns": ["gql.d.tsx"],
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "react-hooks"
   ]
 }

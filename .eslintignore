@@ -1,2 +1,3 @@
 rollup.config.js
 tailwind.config.js
+client/src/gql.d.ts 

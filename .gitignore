@@ -4,5 +4,8 @@
 # misc
 **/.DS_Store
 
+# generated
 api/build
 client/dist
+shared/schema.gql
+database.sqlite

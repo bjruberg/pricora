@@ -1,0 +1,12 @@
+schema: shared/schema.gql
+documents: 
+  - "./client/src/**/*.ts"
+  - "./client/src/**/*.tsx"
+generates:
+  ./client/src/gql.d.tsx:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-urql
+    config: 
+      skipTypename: true

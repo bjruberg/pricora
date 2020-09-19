@@ -3,7 +3,7 @@
     "node": true
   },
   "parserOptions": {
-    "project": "./api/tsconfig.json"
+    "project": "./server/tsconfig.json"
   },
   "rules": {
     "radix": 0,
