@@ -1,8 +1,9 @@
 import { Fragment, h, render } from "preact";
 import Router from "preact-router";
 import { Link } from "preact-router/match";
-import { useQuery } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import { createClient, Provider } from "@urql/preact";
+import { get } from "lodash";
 import "./base.css";
 
 import MeetingAddPage from "./pages/meetingadd";
@@ -14,7 +15,9 @@ import RegisterPage from "./pages/register";
 import { SharedUser } from "../../shared/user";
 import { UserContext } from "./contexts/user";
 
-const client = createClient({ url: "http://localhost:3000/graphql" });
+import { routes } from "./routes";
+
+const client = createClient({ url: `${get(process.env, "hostname", "")}/graphql` });
 
 const App = () => {
   const { data: user, isError, isLoading, refetch } = useQuery<SharedUser>(
@@ -34,7 +37,19 @@ const App = () => {
     },
     { retry: false },
   );
-  console.log({ user, isError });
+
+  const [logout] = useMutation(() => {
+    return fetch("/api/logout", {
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    }).then(() => {
+      location.reload();
+    });
+  });
+
   return (
     <Fragment>
       <nav class="flex items-center justify-between flex-wrap bg-teal-800 p-6">
@@ -53,7 +68,7 @@ const App = () => {
         <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
           <div class="text-sm lg:flex-grow">
             <Link
-              href="/eventlist"
+              href={routes.meetinglist}
               class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
             >
               Veranstaltungen
@@ -64,37 +79,37 @@ const App = () => {
             >
               Examples
             </a>
-            <a
-              href="#responsive-header"
-              class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
-            >
-              Blog
-            </a>
           </div>
           <div>
             {(() => {
               if (!isLoading) {
                 return isError ? (
-                  <a
-                    href="/login"
+                  <Link
+                    href={routes.login}
                     class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
                   >
                     Login
-                  </a>
+                  </Link>
                 ) : (
                   <Fragment>
-                    <a
-                      href="/meetingadd"
+                    <Link
+                      href={routes.meetingadd}
                       class="mr-2 inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
                     >
                       Neue Veranstaltung
-                    </a>
-                    <a
-                      href="/register"
-                      class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+                    </Link>
+                    <Link
+                      href={routes.register}
+                      class="mr-2 inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
                     >
                       Registrieren
-                    </a>
+                    </Link>
+                    <button
+                      class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+                      onClick={() => logout()}
+                    >
+                      Ausloggen
+                    </button>
                   </Fragment>
                 );
               }
@@ -106,12 +121,14 @@ const App = () => {
       <UserContext.Provider value={user}>
         <Provider value={client}>
           <Router>
-            <PrivateRoute path="/register">
+            <PrivateRoute path={routes.register}>
               <RegisterPage />
             </PrivateRoute>
+
+            <MeetingAddPage path={routes.meetingadd} />
+            <LoginPage path={routes.login} refetchUser={refetch} />
+            <MeetingListPage path={routes.meetinglist} />
             <MeetingListPage path="/" />
-            <MeetingAddPage path="/meetingadd" />
-            <LoginPage path="/login" refetchUser={refetch} />
           </Router>
         </Provider>
       </UserContext.Provider>

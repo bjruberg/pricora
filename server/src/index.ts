@@ -3,6 +3,7 @@ import * as bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 import { getConnection } from "./db";
 import { startServer } from "./server";
+import { init } from "./datasource/initialize";
 
 import { Configuration } from "./entity/Configuration";
 
@@ -20,6 +21,7 @@ const initializeApp = async (): Promise<void> => {
   configuration.passwordSalt = configuration.passwordSalt || bcrypt.genSaltSync(10);
   void startServer(configuration);
   void configRepository.save(configuration);
+  void init();
 };
 
 void initializeApp();

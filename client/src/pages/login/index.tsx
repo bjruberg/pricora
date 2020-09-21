@@ -13,6 +13,7 @@ import PageContainer from "../../components/PageContainer";
 
 import { typedFetch } from "../../utils/typedFetch";
 import { LoginRequest, LoginResponse } from "../../../../shared/api";
+import ErrorMessage from "../../ui/errormessage";
 
 interface FormData {
   email: string;
@@ -77,9 +78,7 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
           required
           type="text"
         />
-        <div class="h-4 text-red-700">
-          {!!errors["email"] ? get(errors["email"], "message") : ""}
-        </div>
+        <ErrorMessage>{!!errors["email"] ? get(errors["email"], "message") : ""}</ErrorMessage>
         <label class="block text-gray-700 text-sm font-bold mt-2" for="password">
           Passwort
         </label>
@@ -94,14 +93,14 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
           name="password"
           type="password"
         />
-        <div class="h-4 text-red-700">
+        <ErrorMessage>
           {!!errors["password"] ? get(errors["password"], "message") : ""}
-        </div>
+        </ErrorMessage>
         <Button disabled={status === "loading"} type="submit" variant="primary">
           Anmelden
         </Button>
         {status === "loading" ? <Spinner className="inline ml-2" /> : null}
-        {apiError ? <span class="h-4 ml-2 text-red-700">{apiError.msg}</span> : null}
+        {apiError ? <ErrorMessage>{apiError.msg}</ErrorMessage> : null}
       </form>
     </PageContainer>
   );

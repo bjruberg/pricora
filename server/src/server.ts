@@ -1,3 +1,4 @@
+import { config } from "node-config-ts";
 import Koa, { Context } from "koa";
 import koaBody from "koa-body";
 import koaCompress from "koa-compress";
@@ -12,6 +13,7 @@ import {
   getUser,
   provideAuthorizationInContext,
   loginUser,
+  logoutUser,
   registerUser,
   restrictedForUsers,
 } from "./auth";
@@ -26,10 +28,16 @@ declare module "koa" {
     db: Connection;
     user?: SharedUser | null;
   }
+
+  interface AuthorizedContext {
+    configuration: Configuration;
+    db: Connection;
+    user: SharedUser;
+  }
 }
 
 const customAuthChecker: AuthChecker<Context> = ({ context }) => {
-  return !!context.user;
+  return !!context.user && !!context.user.id;
 };
 
 export const startServer = async (configuration: Configuration): Promise<void> => {
@@ -51,6 +59,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
 
   router.get("/api/getUser", restrictedForUsers, getUser);
   router.post("/api/login", koaBody(), loginUser);
+  router.post("/api/logout", restrictedForUsers, logoutUser);
   router.post("/api/register", restrictedForUsers, koaBody(), registerUser);
 
   const schema = await buildSchema({
@@ -90,6 +99,6 @@ export const startServer = async (configuration: Configuration): Promise<void> =
     }),
   );
 
-  app.listen(3000);
+  app.listen(config.server.port);
   console.log("Server is listening on port 3000");
 };

@@ -8,4 +8,8 @@
 api/build
 client/dist
 shared/schema.gql
+config/Config.d.ts
+
+# data
+local/*
 database.sqlite

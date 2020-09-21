@@ -7,6 +7,12 @@ generates:
     plugins:
       - typescript
       - typescript-operations
-      - typescript-urql
     config: 
       skipTypename: true
+  ./client/src/:
+    preset: near-operation-file
+    presetConfig:
+      extension: .gql.ts
+      baseTypesPath: gql.d.tsx
+    plugins:
+      - typescript-operations

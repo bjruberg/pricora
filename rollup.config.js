@@ -1,5 +1,7 @@
 import alias from '@rollup/plugin-alias';
 import babel from '@rollup/plugin-babel';
+
+import { config } from "node-config-ts";
 import commonjs from '@rollup/plugin-commonjs';
 import html from '@rollup/plugin-html';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
@@ -55,6 +57,7 @@ export default (CLIArgs) => {
 			
 			injectProcessEnv({ 
 				NODE_ENV: process.env.NODE_ENV,
+				hostname: config.server.hostname,
 		 })
 		],
 

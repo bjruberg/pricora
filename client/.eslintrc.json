@@ -22,7 +22,7 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
   },
-  "ignorePatterns": ["gql.d.tsx"],
+  "ignorePatterns": ["gql.d.tsx", "*.gql.ts"],
   "plugins": [
     "@typescript-eslint",
     "react-hooks"

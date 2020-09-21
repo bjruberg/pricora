@@ -6,6 +6,7 @@ import { useMutation } from "react-query";
 import * as EmailValidator from "email-validator";
 
 import Button from "../../ui/button";
+import ErrorMessage from "../../ui/errormessage";
 import Input from "../../ui/input";
 import Spinner from "../../ui/spinner";
 import PageContainer from "../../components/PageContainer";
@@ -72,9 +73,7 @@ const RegisterPage: FunctionalComponent = () => {
           required
           type="text"
         />
-        <div class="h-4 text-red-700">
-          {!!errors["email"] ? get(errors["email"], "message") : ""}
-        </div>
+        <ErrorMessage>{!!errors["email"] ? get(errors["email"], "message") : ""}</ErrorMessage>
         <label class={labelClasses} for="password">
           Passwort
         </label>
@@ -88,9 +87,9 @@ const RegisterPage: FunctionalComponent = () => {
           name="password"
           type="password"
         />
-        <div class="h-4 text-red-700">
+        <ErrorMessage>
           {!!errors["password"] ? get(errors["password"], "message") : ""}
-        </div>
+        </ErrorMessage>
         <label class={labelClasses} for="firstName">
           Vorname
         </label>
@@ -103,9 +102,9 @@ const RegisterPage: FunctionalComponent = () => {
           name="firstName"
           type="text"
         />
-        <div class="h-4 text-red-700">
+        <ErrorMessage>
           {!!errors["firstName"] ? get(errors["firstName"], "message") : ""}
-        </div>
+        </ErrorMessage>
         <label class={labelClasses} for="lastName">
           Nachname
         </label>
@@ -118,9 +117,9 @@ const RegisterPage: FunctionalComponent = () => {
           name="lastName"
           type="text"
         />
-        <div class="h-4 text-red-700">
+        <ErrorMessage>
           {!!errors["firstName"] ? get(errors["firstName"], "message") : ""}
-        </div>
+        </ErrorMessage>
         <Button disabled={status === "loading"} type="submit" variant="primary">
           Registrieren
         </Button>

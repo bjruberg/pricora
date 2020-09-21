@@ -1,6 +1,7 @@
 import { get } from "lodash";
 import { FunctionalComponent, h } from "preact";
 import { useMemo } from "preact/hooks";
+import { route } from "preact-router";
 import { useForm } from "react-hook-form";
 import gql from "graphql-tag";
 
@@ -9,7 +10,9 @@ import Input from "../../ui/input";
 import Spinner from "../../ui/spinner";
 import PageContainer from "../../components/PageContainer";
 import { useMutation } from "urql";
-import { AddMeetingMutation, AddMeetingMutationVariables } from "gql.d";
+import { AddMeetingMutation, AddMeetingMutationVariables } from "./index.gql";
+import ErrorMessage from "../../ui/errormessage";
+import { routes } from "../../routes";
 
 interface FormData {
   title: string;
@@ -26,13 +29,13 @@ const AddMeeting = gql`
 const MeetingAddPage: FunctionalComponent = () => {
   const { errors, handleSubmit, register } = useForm<FormData>();
 
-  const [_addedMeeting, addMeeting] = useMutation<AddMeetingMutation, AddMeetingMutationVariables>(
-    AddMeeting,
-  );
+  const [, addMeeting] = useMutation<AddMeetingMutation, AddMeetingMutationVariables>(AddMeeting);
 
   const onSubmit = useMemo(() => {
     return handleSubmit((d) => {
-      void addMeeting({ meeting: d });
+      void addMeeting({ meeting: d }).then(() => {
+        route(routes.meetinglist);
+      });
     });
   }, [handleSubmit, addMeeting]);
 
@@ -53,9 +56,7 @@ const MeetingAddPage: FunctionalComponent = () => {
           required
           type="text"
         />
-        <div class="h-4 text-red-700">
-          {!!errors["title"] ? get(errors["title"], "message") : ""}
-        </div>
+        <ErrorMessage>{!!errors["title"] ? get(errors["title"], "message") : ""}</ErrorMessage>
         <Button disabled={status === "loading"} type="submit" variant="primary">
           Erstellen
         </Button>

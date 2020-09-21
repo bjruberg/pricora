@@ -1,6 +1,6 @@
 import { compare, hash } from "bcryptjs";
 import { Context, Next } from "koa";
-import { includes } from "lodash";
+import { includes, pick } from "lodash";
 import jwt from "jsonwebtoken";
 import { User } from "./entity/User";
 import { SharedUser } from "../../shared/user";
@@ -82,9 +82,7 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
   ctx.status = 200;
 
   const token = jwt.sign(
-    {
-      email: requestedUser.email,
-    },
+    pick(requestedUser, ["email", "firstName", "id", "isAdmin", "lastName"]),
     configuration.jwtSecretKey,
     {
       expiresIn: "7d",
@@ -96,6 +94,12 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
+};
+
+export const logoutUser = async (ctx: Context, next: Next): Promise<void> => {
+  ctx.cookies.set("Authorization", "");
+  ctx.status = 200;
+  await next();
 };
 
 export const provideAuthorizationInContext = async (ctx: Context, next: Next): Promise<void> => {
@@ -114,8 +118,7 @@ export const provideAuthorizationInContext = async (ctx: Context, next: Next): P
 };
 
 export const restrictedForUsers = async (ctx: Context, next: Next): Promise<void> => {
-  console.log({ user: ctx.user });
-  if (!ctx.user) {
+  if (!ctx.user || !ctx.user.id) {
     ctx.throw(401);
   }
 

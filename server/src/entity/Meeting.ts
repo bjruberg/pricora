@@ -13,11 +13,11 @@ import { User } from "./User";
 @Entity()
 @ObjectType()
 export class Meeting {
-  @Field(() => ID)
+  @Field(() => ID, { description: "Auto-generated uuid for the meeting" })
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Field(() => String)
+  @Field(() => String, { description: "The title of the meeting" })
   @Column()
   title: string;
 
