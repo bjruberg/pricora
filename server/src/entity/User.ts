@@ -23,6 +23,12 @@ export class User {
   @Column()
   password: string;
 
+  @Column()
+  encryptedDecriptionKey: string;
+
+  @Column()
+  encryptionSalt: string;
+
   @Field(() => String)
   @Column({ nullable: true })
   firstName: string;

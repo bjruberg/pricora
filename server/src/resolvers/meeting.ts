@@ -4,6 +4,7 @@ import { getRepository } from "typeorm";
 
 import { Meeting } from "../entity/Meeting";
 import { User } from "../entity/User";
+import { sourcePlugin } from "../dataservice/plugin";
 
 @InputType()
 export class CreateMeetingInput {
@@ -32,16 +33,20 @@ export class MeetingResolver {
     @Arg("input") input: CreateMeetingInput,
     @Ctx() ctx: AuthorizedContext,
   ): Promise<Meeting> {
-    console.log({ input });
     const meeting = this.meetingRepo.create({ ...input });
     const user = await this.userRepo.findOne(ctx.user.id);
 
     if (!user) {
-      throw Error("Blalba");
+      ctx.throw("Authorized user not found in database", 406);
     }
     meeting.user = Promise.resolve(user);
 
-    await this.meetingRepo.save(meeting);
-    return meeting;
+    try {
+      const newMeeting = await this.meetingRepo.save(meeting);
+      void sourcePlugin.addMeeting(meeting.id);
+      return newMeeting;
+    } catch (e) {
+      ctx.throw("Failed to save the meeting", 500);
+    }
   }
 }

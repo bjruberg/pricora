@@ -1,15 +1,57 @@
-import { compare, hash } from "bcryptjs";
+import crypto from "crypto";
+import { compare, hash, genSalt } from "bcryptjs";
 import { Context, Next } from "koa";
 import { includes, pick } from "lodash";
 import jwt from "jsonwebtoken";
+import { promisify } from "util";
 import { User } from "./entity/User";
 import { SharedUser } from "../../shared/user";
-
 import { CustomContext, LoginResponse, RegisterResponse } from "../../shared/api";
+
+const pbkdf2Async = promisify(crypto.pbkdf2);
+const randomBytes = promisify(crypto.randomBytes);
+
+const bufferToHex = (buffer: Buffer) => buffer.toString("hex");
 
 export const getUser = (ctx: Context): void => {
   ctx.status = 200;
   ctx.body = ctx.user;
+};
+
+export const createUser = async (password: string, passwordSalt: string): Promise<User> => {
+  /*
+   * Generate a password encrypted key that is used later to encrypt all relevant data
+   */
+
+  const [
+    generatedUserEncryptionKey,
+    generatedUserSalt,
+    hashedPw,
+    initializationVector,
+  ] = await Promise.all([
+    randomBytes(32).then(bufferToHex),
+    genSalt(15),
+    hash(password, passwordSalt),
+    randomBytes(8).then(bufferToHex),
+  ]);
+
+  const derivedKey = await pbkdf2Async(
+    password,
+    generatedUserSalt,
+    100000,
+    64,
+    "sha512",
+  ).then((b) => b.slice(32, 64));
+
+  const cipher = crypto.createCipheriv("aes-256-cbc", derivedKey, initializationVector);
+  const encryptedUserEncryptionKey = cipher.update(generatedUserEncryptionKey, "utf8", "base64");
+
+  const newUser = new User();
+  newUser.encryptedDecriptionKey = [initializationVector, ":", encryptedUserEncryptionKey].join();
+  newUser.encryptionSalt = generatedUserSalt;
+  newUser.password = hashedPw;
+
+  return newUser;
 };
 
 export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promise<void> => {
@@ -36,21 +78,14 @@ export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promis
   const existingUser = await userRepository.findOne({ email });
 
   if (existingUser) {
-    ctx.status = 409;
-    ctx.body = {
-      msg: "This username is already in use!",
-    };
-    return;
+    ctx.throw("This username is already in use!", 409);
   }
 
-  const hashedPw = await hash(password, configuration.passwordSalt);
-
-  const newUser = new User();
+  const newUser = await createUser(password, configuration.passwordSalt);
 
   newUser.email = email;
   newUser.firstName = firstName;
   newUser.lastName = lastName;
-  newUser.password = hashedPw;
 
   await userRepository.save(newUser);
 };
@@ -64,7 +99,7 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
   if (!requestedUser) {
     ctx.status = 409;
     ctx.body = {
-      msg: "Username or password is incorrect!",
+      msg: "Please enter a password with min. 6 chars",
     };
     return;
   }
@@ -74,7 +109,7 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
   if (!matches) {
     ctx.status = 409;
     ctx.body = {
-      msg: "Username or password is incorrect!",
+      msg: "Please enter a password with min. 6 chars",
     };
     return;
   }

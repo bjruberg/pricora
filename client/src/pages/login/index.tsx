@@ -20,7 +20,7 @@ interface FormData {
   password: string;
 }
 
-type ApiError = LoginResponse;
+type ApiError = number;
 
 interface LoginPageProps {
   refetchUser: () => Promise<unknown>;
@@ -40,21 +40,30 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
         method: "POST",
       }).then((response) => {
         if (response.status !== 200) {
-          return response.json().then((resp) => Promise.reject(resp));
+          if (response.status === 409) {
+            return Promise.reject(409);
+          }
+          return Promise.reject(response.status);
         }
         return response;
       });
     },
+
+    {
+      onSuccess: () => {
+        void refetchUser();
+        route("/");
+      },
+    },
   );
+
+  console.log({ apiError });
 
   const onSubmit = useMemo(() => {
     return handleSubmit((d) => {
-      void login(d).then(() => {
-        void refetchUser();
-        route("/");
-      });
+      void login(d);
     });
-  }, [handleSubmit, login, refetchUser]);
+  }, [handleSubmit, login]);
 
   return (
     <PageContainer>
@@ -100,7 +109,17 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
           Anmelden
         </Button>
         {status === "loading" ? <Spinner className="inline ml-2" /> : null}
-        {apiError ? <ErrorMessage>{apiError.msg}</ErrorMessage> : null}
+        {apiError ? (
+          <ErrorMessage className="ml-4 inline-block">
+            {(() => {
+              if (apiError === 409) {
+                return "Benutzername oder Passwort falsch";
+              } else {
+                return "Login fehlgeschlagen.";
+              }
+            })()}
+          </ErrorMessage>
+        ) : null}
       </form>
     </PageContainer>
   );

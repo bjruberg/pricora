@@ -77,6 +77,7 @@
     "email-validator": "^2.0.4",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.0",
+    "koa-better-error-handler": "^6.0.1",
     "koa-body": "^4.2.0",
     "koa-compress": "^5.0.1",
     "koa-graphql": "^0.8.0",

@@ -17,6 +17,7 @@ const meetingsQuery = gql`
 const ArrangementsPage: FunctionalComponent = () => {
   const [{ data }] = useQuery<GetMeetingsQuery, GetMeetingsQueryVariables>({
     query: meetingsQuery,
+    requestPolicy: "cache-and-network",
   });
 
   return (

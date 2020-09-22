@@ -11,5 +11,5 @@ shared/schema.gql
 config/Config.d.ts
 
 # data
-local/*
+data/*
 database.sqlite

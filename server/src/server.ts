@@ -2,6 +2,7 @@ import { config } from "node-config-ts";
 import Koa, { Context } from "koa";
 import koaBody from "koa-body";
 import koaCompress from "koa-compress";
+import koaError from "koa-better-error-handler";
 import Router from "koa-router";
 import koaServe from "koa-static-server";
 import koaGraphql from "koa-graphql";
@@ -16,7 +17,7 @@ import {
   logoutUser,
   registerUser,
   restrictedForUsers,
-} from "./auth";
+} from "./user";
 import { getConnection } from "./db";
 import { Configuration } from "entity/Configuration";
 import { SharedUser } from "../../shared/user";
@@ -29,7 +30,7 @@ declare module "koa" {
     user?: SharedUser | null;
   }
 
-  interface AuthorizedContext {
+  interface AuthorizedContext extends Koa.ParameterizedContext {
     configuration: Configuration;
     db: Connection;
     user: SharedUser;
@@ -43,7 +44,11 @@ const customAuthChecker: AuthChecker<Context> = ({ context }) => {
 export const startServer = async (configuration: Configuration): Promise<void> => {
   const app = new Koa();
 
+  // no types availabe
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  app.context.onerror = koaError();
+  app.context.api = true;
+
   app.use(koaCompress());
 
   // Provide repeatedly used functionality in ctx
