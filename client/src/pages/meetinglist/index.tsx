@@ -1,8 +1,10 @@
 import { FunctionalComponent, h } from "preact";
+import { Link } from "preact-router/match";
 import { useQuery } from "@urql/preact";
 import gql from "graphql-tag";
 import PageContainer from "../../components/PageContainer";
 import { GetMeetingsQuery, GetMeetingsQueryVariables } from "./index.gql";
+import { routes } from "../../routes";
 
 const meetingsQuery = gql`
   query getMeetings {
@@ -26,8 +28,10 @@ const ArrangementsPage: FunctionalComponent = () => {
       <ul>
         {data?.meetings.map((meeting) => {
           return (
-            <li key={meeting.id}>
-              {meeting.title}: {meeting.archived}
+            <li>
+              <Link href={routes.addattendant(meeting.id)} key={meeting.id}>
+                {meeting.title}
+              </Link>
             </li>
           );
         })}

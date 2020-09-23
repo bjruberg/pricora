@@ -43,13 +43,13 @@ const customAuthChecker: AuthChecker<Context> = ({ context }) => {
 
 export const startServer = async (configuration: Configuration): Promise<void> => {
   const app = new Koa();
-
+  console.log({ NODE_ENV: process.env.NODE_ENV });
   // no types availabe
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   app.context.onerror = koaError();
   app.context.api = true;
 
-  app.use(koaCompress());
+  app.use(koaCompress({ br: process.env.NODE_ENV === "development" ? false : undefined }));
 
   // Provide repeatedly used functionality in ctx
   app.use(async (ctx: Context, next) => {
@@ -77,7 +77,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
     },
   });
 
-  router.post(
+  router.all(
     "/graphql",
     koaGraphql({
       schema,

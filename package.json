@@ -9,7 +9,7 @@
     "dev:client": "concurrently \"npm:dev:rollup\" \"npm:dev:types\"",
     "dev:rollup": "NODE_ENV=dev rollup -c --watch",
     "dev:types": "graphql-codegen generate --watch",
-    "dev:server": "ts-node-dev --script-mode --transpile-only --respawn server/src/index.ts",
+    "dev:server": "NODE_ENV=\"development\" ts-node-dev --script-mode --transpile-only --respawn server/src/index.ts",
     "postinstall": "node-config-ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

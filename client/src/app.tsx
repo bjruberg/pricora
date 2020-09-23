@@ -1,4 +1,5 @@
 import { Fragment, h, render } from "preact";
+import "preact/devtools";
 import Router from "preact-router";
 import { Link } from "preact-router/match";
 import { useQuery, useMutation } from "react-query";
@@ -128,6 +129,7 @@ const App = () => {
             <MeetingAddPage path={routes.meetingadd} />
             <LoginPage path={routes.login} refetchUser={refetch} />
             <MeetingListPage path={routes.meetinglist} />
+            <MeetingListPage path={routes.addattendant()} />
             <MeetingListPage path="/" />
           </Router>
         </Provider>

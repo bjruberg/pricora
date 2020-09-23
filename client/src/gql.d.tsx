@@ -11,6 +11,12 @@ export type Scalars = {
 
 export type Query = {
   meetings: Array<Meeting>;
+  meeting: Meeting;
+};
+
+
+export type QueryMeetingArgs = {
+  id: Scalars['String'];
 };
 
 export type Meeting = {
@@ -40,6 +46,13 @@ export type MutationCreateMeetingArgs = {
 export type CreateMeetingInput = {
   title: Scalars['String'];
 };
+
+export type GetMeetingQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetMeetingQuery = { meeting: Pick<Meeting, 'id' | 'archived' | 'title'> };
 
 export type AddMeetingMutationVariables = Exact<{
   meeting: CreateMeetingInput;

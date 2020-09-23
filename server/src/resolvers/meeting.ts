@@ -27,6 +27,15 @@ export class MeetingResolver {
     return this.meetingRepo.find();
   }
 
+  @Query(() => Meeting)
+  async meeting(@Arg("id") id: string, @Ctx() ctx: AuthorizedContext): Promise<Meeting> {
+    const meeting = await this.meetingRepo.findOne({ id });
+    if (!meeting) {
+      ctx.throw(`Failed to find the meeting ${id} in the local database`, 400);
+    }
+    return meeting;
+  }
+
   @Authorized()
   @Mutation(() => Meeting)
   async createMeeting(
