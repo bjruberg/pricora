@@ -1,6 +1,5 @@
 import alias from '@rollup/plugin-alias';
 import babel from '@rollup/plugin-babel';
-
 import { config } from "node-config-ts";
 import commonjs from '@rollup/plugin-commonjs';
 import html from '@rollup/plugin-html';
@@ -41,7 +40,7 @@ export default (CLIArgs) => {
 			}),
 
       // Create an index.html file in dist
-      html({ title: "Pricora"}),
+      html({ title: "Pricora", publicPath: config.server.hostname + "/"}),
       
       // Preliminary attemt to reach compatiblity with react libs
       alias({

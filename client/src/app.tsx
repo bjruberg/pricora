@@ -1,12 +1,13 @@
 import { Fragment, h, render } from "preact";
 import "preact/devtools";
-import Router from "preact-router";
+import Router, { Route } from "preact-router";
 import { Link } from "preact-router/match";
 import { useQuery, useMutation } from "react-query";
 import { createClient, Provider } from "@urql/preact";
 import { get } from "lodash";
 import "./base.css";
 
+import AddAttendant from "./pages/addattendant";
 import MeetingAddPage from "./pages/meetingadd";
 import MeetingListPage from "./pages/meetinglist";
 import PrivateRoute from "./components/PrivateRoute";
@@ -126,11 +127,11 @@ const App = () => {
               <RegisterPage />
             </PrivateRoute>
 
-            <MeetingAddPage path={routes.meetingadd} />
-            <LoginPage path={routes.login} refetchUser={refetch} />
-            <MeetingListPage path={routes.meetinglist} />
-            <MeetingListPage path={routes.addattendant()} />
-            <MeetingListPage path="/" />
+            <Route path={routes.meetingadd} component={MeetingAddPage} />
+            <Route path={routes.login} refetchUser={refetch} component={LoginPage} />
+            <Route path={routes.meetinglist} component={MeetingListPage} />
+            <Route path={routes.addattendant()} component={AddAttendant} />
+            <Route path="/" component={MeetingListPage} />
           </Router>
         </Provider>
       </UserContext.Provider>

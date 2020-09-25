@@ -1,4 +1,4 @@
-interface TypedResponse<T = any> extends Response {
+export interface TypedResponse<T = any> extends Response {
   /**
    * this will override `json` method from `Body` that is extended by `Response`
    * interface Body {

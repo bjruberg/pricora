@@ -35,7 +35,7 @@ export const createUser = async (password: string, passwordSalt: string): Promis
     randomBytes(8).then(bufferToHex),
   ]);
 
-  const derivedKey = await pbkdf2Async(
+  const keyDerivedFromPassword = await pbkdf2Async(
     password,
     generatedUserSalt,
     100000,
@@ -43,11 +43,13 @@ export const createUser = async (password: string, passwordSalt: string): Promis
     "sha512",
   ).then((b) => b.slice(32, 64));
 
-  const cipher = crypto.createCipheriv("aes-256-cbc", derivedKey, initializationVector);
-  const encryptedUserEncryptionKey = cipher.update(generatedUserEncryptionKey, "utf8", "base64");
+  const cipher = crypto.createCipheriv("aes-256-cbc", keyDerivedFromPassword, initializationVector);
+  console.log({ generatedUserEncryptionKey, initializationVector });
+  const encryptedUserEncryptionKey =
+    cipher.update(generatedUserEncryptionKey, "utf8", "base64") + cipher.final("base64");
 
   const newUser = new User();
-  newUser.encryptedDecriptionKey = [initializationVector, ":", encryptedUserEncryptionKey].join();
+  newUser.encryptedDecriptionKey = [initializationVector, ":", encryptedUserEncryptionKey].join("");
   newUser.encryptionSalt = generatedUserSalt;
   newUser.password = hashedPw;
 
@@ -88,6 +90,10 @@ export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promis
   newUser.lastName = lastName;
 
   await userRepository.save(newUser);
+  ctx.status = 200;
+  ctx.body = {
+    msg: "Ok",
+  };
 };
 
 export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void> => {
@@ -114,7 +120,28 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
     return;
   }
 
-  ctx.status = 200;
+  try {
+    const keyDerivedFromPassword = await pbkdf2Async(
+      password,
+      requestedUser.encryptionSalt,
+      100000,
+      64,
+      "sha512",
+    ).then((b) => b.slice(32, 64));
+
+    const encryptedDecriptionKey = requestedUser.encryptedDecriptionKey;
+
+    // saved key is in the format "IV:ENCRYPTED_EY"
+    const [IV, ENC_KEY] = encryptedDecriptionKey.split(":");
+
+    // Setup AES description using the passwordDerivedKey
+    const decipher = crypto.createDecipheriv("aes-256-cbc", keyDerivedFromPassword, IV);
+    const decryptedUserEncryptionKey =
+      decipher.update(ENC_KEY, "base64", "utf8") + decipher.final("utf8");
+  } catch (e) {
+    // pass
+    console.error(e);
+  }
 
   const token = jwt.sign(
     pick(requestedUser, ["email", "firstName", "id", "isAdmin", "lastName"]),
@@ -123,6 +150,8 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
       expiresIn: "7d",
     },
   );
+
+  ctx.status = 200;
 
   ctx.cookies.set("Authorization", token, {
     domain: includes(ctx.host, "localhost") ? "" : ctx.host,

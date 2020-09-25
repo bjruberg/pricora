@@ -21,11 +21,11 @@ export class Meeting {
   @Column()
   title: string;
 
-  @Field(() => User)
+  @Field(() => User, { description: "The user that owns the meeting" })
   @ManyToOne(() => User, (user) => user.meetings)
   user: Promise<User>;
 
-  @Field(() => Boolean)
+  @Field(() => Boolean, { description: "Is this an archived or an active meeting" })
   @Column({ default: false })
   archived: boolean;
 

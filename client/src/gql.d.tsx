@@ -36,6 +36,7 @@ export type User = {
 
 export type Mutation = {
   createMeeting: Meeting;
+  addAttendant: Scalars['Boolean'];
 };
 
 
@@ -43,8 +44,23 @@ export type MutationCreateMeetingArgs = {
   input: CreateMeetingInput;
 };
 
+
+export type MutationAddAttendantArgs = {
+  meeting: Scalars['String'];
+  input: EntryInput;
+};
+
 export type CreateMeetingInput = {
   title: Scalars['String'];
+};
+
+export type EntryInput = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  address: Scalars['String'];
+  zip: Scalars['String'];
+  city: Scalars['String'];
+  country: Scalars['String'];
 };
 
 export type GetMeetingQueryVariables = Exact<{
@@ -53,6 +69,14 @@ export type GetMeetingQueryVariables = Exact<{
 
 
 export type GetMeetingQuery = { meeting: Pick<Meeting, 'id' | 'archived' | 'title'> };
+
+export type AddAttendantMutationVariables = Exact<{
+  id: Scalars['String'];
+  input: EntryInput;
+}>;
+
+
+export type AddAttendantMutation = Pick<Mutation, 'addAttendant'>;
 
 export type AddMeetingMutationVariables = Exact<{
   meeting: CreateMeetingInput;

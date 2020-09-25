@@ -1,6 +1,6 @@
 import { config } from "node-config-ts";
 import { promises } from "fs";
-import { forEach, has } from "lodash";
+import { forEach, has, omit } from "lodash";
 import { Connection, createConnection } from "typeorm";
 
 import { ISourcePlugin } from "../dataservice/plugin";
@@ -19,10 +19,14 @@ class FolderPlugin implements ISourcePlugin {
         database: `${dbFileFolder}/${uuid}.sqlite`,
         name: uuid,
         type: "sqlite",
-        entities: [__dirname + "/../entity_external/*.ts"],
+        entities: [__dirname + "/../entity_meeting/*.ts"],
         synchronize: true,
       });
     });
+  }
+
+  getConnection(uuid: string): Promise<Connection> | undefined {
+    return this.connections[uuid];
   }
 
   getMeetingFileList(): Promise<string[]> {
@@ -46,7 +50,12 @@ class FolderPlugin implements ISourcePlugin {
       const connection = await this.connections[uuid];
       await connection.close();
     }
+    this.connections = omit(this.connections, uuid);
     return promises.unlink(`${dbFileFolder}/${uuid}.sqlite`);
+  }
+
+  updated(): Promise<void> {
+    return Promise.resolve();
   }
 }
 

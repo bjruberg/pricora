@@ -11,7 +11,7 @@ import Spinner from "../../ui/spinner";
 import PageContainer from "../../components/PageContainer";
 import { useMutation } from "urql";
 import { AddMeetingMutation, AddMeetingMutationVariables } from "./index.gql";
-import ErrorMessage from "../../ui/errormessage";
+import { ErrorMessage } from "../../ui/message";
 import { routes } from "../../routes";
 
 interface FormData {

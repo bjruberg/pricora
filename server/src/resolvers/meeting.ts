@@ -1,10 +1,11 @@
+import { sourcePlugin } from "./../dataservice/plugin";
 import { AuthorizedContext } from "koa";
 import { Ctx, Field, InputType, Resolver, Query, Arg, Mutation, Authorized } from "type-graphql";
 import { getRepository } from "typeorm";
 
+import { Entry, EntryInput } from "../entity_meeting/Entry";
 import { Meeting } from "../entity/Meeting";
 import { User } from "../entity/User";
-import { sourcePlugin } from "../dataservice/plugin";
 
 @InputType()
 export class CreateMeetingInput {
@@ -57,5 +58,25 @@ export class MeetingResolver {
     } catch (e) {
       ctx.throw("Failed to save the meeting", 500);
     }
+  }
+
+  @Authorized()
+  @Mutation(() => Boolean)
+  async addAttendant(
+    @Arg("input") input: EntryInput,
+    @Arg("meeting") uuid: string,
+    @Ctx() ctx: AuthorizedContext,
+  ): Promise<boolean> {
+    const connection = sourcePlugin.getConnection(uuid);
+
+    if (!connection) {
+      ctx.throw("Requested meeting is not available for addition");
+    }
+
+    const entryRepo = (await connection).getRepository(Entry);
+    const entry = entryRepo.create(input);
+    await entryRepo.save(entry);
+
+    return sourcePlugin.updated(uuid).then(() => true);
   }
 }

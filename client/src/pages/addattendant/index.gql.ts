@@ -12,3 +12,14 @@ export type GetMeetingQuery = (
     & Pick<Types.Meeting, 'id' | 'archived' | 'title'>
   ) }
 );
+
+export type AddAttendantMutationVariables = Types.Exact<{
+  id: Types.Scalars['String'];
+  input: Types.EntryInput;
+}>;
+
+
+export type AddAttendantMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Types.Mutation, 'addAttendant'>
+);

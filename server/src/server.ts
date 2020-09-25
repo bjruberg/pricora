@@ -49,7 +49,8 @@ export const startServer = async (configuration: Configuration): Promise<void> =
   app.context.onerror = koaError();
   app.context.api = true;
 
-  app.use(koaCompress({ br: process.env.NODE_ENV === "development" ? false : undefined }));
+  // brotli is too slow for here
+  app.use(koaCompress({ br: false }));
 
   // Provide repeatedly used functionality in ctx
   app.use(async (ctx: Context, next) => {
@@ -88,8 +89,8 @@ export const startServer = async (configuration: Configuration): Promise<void> =
   app.use((ctx, next) => {
     return next().catch((err): void => {
       ctx.status = err?.status || 500;
-      ctx.body = err?.message;
-      console.error(err);
+      ctx.body = { error: err?.message };
+      // console.error(err);
     });
   });
 

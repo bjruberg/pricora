@@ -13,14 +13,12 @@ import PageContainer from "../../components/PageContainer";
 
 import { typedFetch } from "../../utils/typedFetch";
 import { LoginRequest, LoginResponse } from "../../../../shared/api";
-import ErrorMessage from "../../ui/errormessage";
+import { ErrorMessage } from "../../ui/message";
 
 interface FormData {
   email: string;
   password: string;
 }
-
-type ApiError = number;
 
 interface LoginPageProps {
   refetchUser: () => Promise<unknown>;
@@ -29,7 +27,7 @@ interface LoginPageProps {
 const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
   const { errors, handleSubmit, register } = useForm<FormData>();
 
-  const [login, { error: apiError, status }] = useMutation<Response | void, ApiError, FormData>(
+  const [login, { error: apiError, status }] = useMutation<void, number, FormData>(
     (params) => {
       return typedFetch<LoginRequest, LoginResponse>("/api/login", {
         body: params,
@@ -45,7 +43,7 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
           }
           return Promise.reject(response.status);
         }
-        return response;
+        return;
       });
     },
 
@@ -57,11 +55,9 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
     },
   );
 
-  console.log({ apiError });
-
   const onSubmit = useMemo(() => {
     return handleSubmit((d) => {
-      void login(d);
+      return login(d);
     });
   }, [handleSubmit, login]);
 
@@ -85,7 +81,7 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
             required: "Notwendig",
           })}
           required
-          type="text"
+          type="email"
         />
         <ErrorMessage>{!!errors["email"] ? get(errors["email"], "message") : ""}</ErrorMessage>
         <label class="block text-gray-700 text-sm font-bold mt-2" for="password">

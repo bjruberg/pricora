@@ -5,9 +5,11 @@ import FolderPlugin from "../sourceplugins/folder";
 export interface ISourcePlugin {
   getMeetingFileList(): Promise<string[]>;
   createConnections(uuids: string[]): void;
+  getConnection(uuid: string): Promise<Connection> | undefined;
 
   addMeeting(uuid: string): Promise<Connection>;
   deleteMeeting(uuid: string): Promise<void>;
+  updated(uuid: string): Promise<void>;
 }
 
 export interface SourcePlugin {

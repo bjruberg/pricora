@@ -7,11 +7,12 @@ interface InputProps extends JSX.HTMLAttributes {
   inputRef?: Ref<any>;
 }
 
-const Input: FunctionalComponent<InputProps> = ({ error, inputRef, ...props }) => {
+const Input: FunctionalComponent<InputProps> = ({ className, error, inputRef, ...props }) => {
   return (
     <input
       class={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${cn(
         { "border-red-500 bg-red-200": error },
+        className,
       )}`}
       ref={inputRef}
       {...props}
