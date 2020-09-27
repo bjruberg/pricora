@@ -6,20 +6,28 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { ObjectType, Field, ID } from "type-graphql";
+import { ObjectType, Field, ID, InputType } from "type-graphql";
 
 import { User } from "./User";
 
-@Entity()
 @ObjectType()
-export class Meeting {
-  @Field(() => ID, { description: "Auto-generated uuid for the meeting" })
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
+@InputType()
+export class MeetingInput {
   @Field(() => String, { description: "The title of the meeting" })
   @Column()
   title: string;
+
+  @Field(() => String, { description: "Date of the meeting" })
+  @Column({ type: "date" })
+  date: string;
+}
+
+@Entity()
+@ObjectType()
+export class Meeting extends MeetingInput {
+  @Field(() => ID, { description: "Auto-generated uuid for the meeting" })
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Field(() => User, { description: "The user that owns the meeting" })
   @ManyToOne(() => User, (user) => user.meetings)

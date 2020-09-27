@@ -1,7 +1,7 @@
 import * as Types from '../../gql.d';
 
 export type AddMeetingMutationVariables = Types.Exact<{
-  meeting: Types.CreateMeetingInput;
+  meeting: Types.MeetingInput;
 }>;
 
 

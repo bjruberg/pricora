@@ -20,18 +20,31 @@ export type QueryMeetingArgs = {
 };
 
 export type Meeting = {
-  id: Scalars['ID'];
   title: Scalars['String'];
+  date: Scalars['String'];
+  id: Scalars['ID'];
   user: User;
   archived: Scalars['Boolean'];
   created: Scalars['String'];
   updated: Scalars['String'];
+  attendants: Array<EntryOutput>;
 };
 
 export type User = {
   id: Scalars['ID'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
+};
+
+export type EntryOutput = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  address: Scalars['String'];
+  zip: Scalars['String'];
+  city: Scalars['String'];
+  country: Scalars['String'];
+  id: Scalars['ID'];
+  created: Scalars['String'];
 };
 
 export type Mutation = {
@@ -41,7 +54,7 @@ export type Mutation = {
 
 
 export type MutationCreateMeetingArgs = {
-  input: CreateMeetingInput;
+  input: MeetingInput;
 };
 
 
@@ -50,8 +63,9 @@ export type MutationAddAttendantArgs = {
   input: EntryInput;
 };
 
-export type CreateMeetingInput = {
+export type MeetingInput = {
   title: Scalars['String'];
+  date: Scalars['String'];
 };
 
 export type EntryInput = {
@@ -78,8 +92,18 @@ export type AddAttendantMutationVariables = Exact<{
 
 export type AddAttendantMutation = Pick<Mutation, 'addAttendant'>;
 
+export type GetMeetingDetailsQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetMeetingDetailsQuery = { meeting: (
+    Pick<Meeting, 'id' | 'archived' | 'title'>
+    & { attendants: Array<Pick<EntryOutput, 'id' | 'firstName' | 'lastName'>> }
+  ) };
+
 export type AddMeetingMutationVariables = Exact<{
-  meeting: CreateMeetingInput;
+  meeting: MeetingInput;
 }>;
 
 

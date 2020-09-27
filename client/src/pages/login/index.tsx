@@ -8,6 +8,7 @@ import * as EmailValidator from "email-validator";
 
 import Button from "../../ui/button";
 import Input from "../../ui/input";
+import { Label } from "../../ui/label";
 import Spinner from "../../ui/spinner";
 import PageContainer from "../../components/PageContainer";
 
@@ -16,7 +17,7 @@ import { LoginRequest, LoginResponse } from "../../../../shared/api";
 import { ErrorMessage } from "../../ui/message";
 
 interface FormData {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -30,7 +31,10 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
   const [login, { error: apiError, status }] = useMutation<void, number, FormData>(
     (params) => {
       return typedFetch<LoginRequest, LoginResponse>("/api/login", {
-        body: params,
+        body: {
+          email: params.username,
+          password: params.password,
+        },
         credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
@@ -65,14 +69,12 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
     <PageContainer>
       <h1 className="pb-6">Als Benutzer anmelden</h1>
       <form onSubmit={onSubmit}>
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-          E-Mail
-        </label>
+        <Label for="username">E-Mail</Label>
         <Input
           autocomplete="email"
-          error={!!errors["email"]}
+          error={!!errors["username"]}
           placeholder="me@server.com"
-          name="email"
+          name="username"
           inputRef={register({
             validate: {
               email: (val) =>
@@ -83,10 +85,12 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
           required
           type="email"
         />
-        <ErrorMessage>{!!errors["email"] ? get(errors["email"], "message") : ""}</ErrorMessage>
-        <label class="block text-gray-700 text-sm font-bold mt-2" for="password">
+        <ErrorMessage>
+          {!!errors["username"] ? get(errors["username"], "message") : ""}
+        </ErrorMessage>
+        <Label className="mt-4" for="password">
           Passwort
-        </label>
+        </Label>
         <Input
           autocomplete="current-password"
           error={!!errors["password"]}

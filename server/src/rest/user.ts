@@ -1,39 +1,29 @@
-import crypto from "crypto";
 import { compare, hash, genSalt } from "bcryptjs";
-import { Context, Next } from "koa";
-import { includes, pick } from "lodash";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import { includes, pick } from "lodash";
 import { promisify } from "util";
-import { User } from "./entity/User";
-import { SharedUser } from "../../shared/user";
-import { CustomContext, LoginResponse, RegisterResponse } from "../../shared/api";
+import { saveKey } from "../keys";
+import { User } from "../entity/User";
+import {
+  encryptDataUsingKey,
+  decryptDataUsingKey,
+  generateInitialSecret,
+} from "../utils/encryption";
+import { CustomContext, LoginResponse, RegisterResponse } from "../../../shared/api";
 
 const pbkdf2Async = promisify(crypto.pbkdf2);
-const randomBytes = promisify(crypto.randomBytes);
-
-const bufferToHex = (buffer: Buffer) => buffer.toString("hex");
-
-export const getUser = (ctx: Context): void => {
-  ctx.status = 200;
-  ctx.body = ctx.user;
-};
 
 export const createUser = async (password: string, passwordSalt: string): Promise<User> => {
-  /*
-   * Generate a password encrypted key that is used later to encrypt all relevant data
-   */
+  /* Generate a key pair. Public key will be used for encryption, private key will be saved in the database in encrypted form. */
+  // const { publicKey: encryptionKey, privateKey: decryptionKey } = await generateKeyPair(4096);
 
-  const [
-    generatedUserEncryptionKey,
-    generatedUserSalt,
-    hashedPw,
-    initializationVector,
-  ] = await Promise.all([
-    randomBytes(32).then(bufferToHex),
+  const [generatedUserSalt, hashedPw] = await Promise.all([
     genSalt(15),
     hash(password, passwordSalt),
-    randomBytes(8).then(bufferToHex),
   ]);
+
+  const { generatedSecret, generatedInitializationVector } = await generateInitialSecret();
 
   const keyDerivedFromPassword = await pbkdf2Async(
     password,
@@ -43,14 +33,15 @@ export const createUser = async (password: string, passwordSalt: string): Promis
     "sha512",
   ).then((b) => b.slice(32, 64));
 
-  const cipher = crypto.createCipheriv("aes-256-cbc", keyDerivedFromPassword, initializationVector);
-  console.log({ generatedUserEncryptionKey, initializationVector });
-  const encryptedUserEncryptionKey =
-    cipher.update(generatedUserEncryptionKey, "utf8", "base64") + cipher.final("base64");
+  const encryptedSecret = encryptDataUsingKey(
+    keyDerivedFromPassword,
+    generatedInitializationVector,
+    generatedSecret,
+  );
 
   const newUser = new User();
-  newUser.encryptedDecriptionKey = [initializationVector, ":", encryptedUserEncryptionKey].join("");
-  newUser.encryptionSalt = generatedUserSalt;
+  newUser.encryptedSecretWithIV = [generatedInitializationVector, ":", encryptedSecret].join("");
+  newUser.passwordDeviationSalt = generatedUserSalt;
   newUser.password = hashedPw;
 
   return newUser;
@@ -105,7 +96,7 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
   if (!requestedUser) {
     ctx.status = 409;
     ctx.body = {
-      msg: "Please enter a password with min. 6 chars",
+      msg: "User or password is incorrect",
     };
     return;
   }
@@ -115,7 +106,7 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
   if (!matches) {
     ctx.status = 409;
     ctx.body = {
-      msg: "Please enter a password with min. 6 chars",
+      msg: "User or password is incorrect",
     };
     return;
   }
@@ -123,24 +114,30 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
   try {
     const keyDerivedFromPassword = await pbkdf2Async(
       password,
-      requestedUser.encryptionSalt,
+      requestedUser.passwordDeviationSalt,
       100000,
       64,
       "sha512",
     ).then((b) => b.slice(32, 64));
 
-    const encryptedDecriptionKey = requestedUser.encryptedDecriptionKey;
-
-    // saved key is in the format "IV:ENCRYPTED_EY"
-    const [IV, ENC_KEY] = encryptedDecriptionKey.split(":");
+    const [iv, encryptendSecret] = requestedUser.encryptedSecretWithIV.split(":");
 
     // Setup AES description using the passwordDerivedKey
-    const decipher = crypto.createDecipheriv("aes-256-cbc", keyDerivedFromPassword, IV);
-    const decryptedUserEncryptionKey =
-      decipher.update(ENC_KEY, "base64", "utf8") + decipher.final("utf8");
+    const decryptedUserSecret = decryptDataUsingKey(keyDerivedFromPassword, iv, encryptendSecret);
+
+    console.log({
+      decryptedUserSecret,
+    });
+
+    saveKey(requestedUser.id, decryptedUserSecret);
   } catch (e) {
     // pass
+    ctx.status = 417;
+    ctx.body = {
+      msg: "Encryption setup failed",
+    };
     console.error(e);
+    return;
   }
 
   const token = jwt.sign(
@@ -158,33 +155,4 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
-};
-
-export const logoutUser = async (ctx: Context, next: Next): Promise<void> => {
-  ctx.cookies.set("Authorization", "");
-  ctx.status = 200;
-  await next();
-};
-
-export const provideAuthorizationInContext = async (ctx: Context, next: Next): Promise<void> => {
-  const { configuration } = ctx;
-  const token = ctx.cookies.get("Authorization");
-  ctx.user = null;
-  if (token) {
-    try {
-      const decodedUser = jwt.verify(token, configuration.jwtSecretKey) as SharedUser;
-      ctx.user = decodedUser;
-    } catch (err) {
-      // pass
-    }
-  }
-  await next();
-};
-
-export const restrictedForUsers = async (ctx: Context, next: Next): Promise<void> => {
-  if (!ctx.user || !ctx.user.id) {
-    ctx.throw(401);
-  }
-
-  await next();
 };

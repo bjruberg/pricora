@@ -29,7 +29,7 @@ const ArrangementsPage: FunctionalComponent = () => {
         {data?.meetings.map((meeting) => {
           return (
             <li>
-              <Link href={routes.addattendant(meeting.id)} key={meeting.id}>
+              <Link href={routes.meeting(meeting.id)} key={meeting.id}>
                 {meeting.title}
               </Link>
             </li>

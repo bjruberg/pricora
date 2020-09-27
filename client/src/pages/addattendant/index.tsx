@@ -13,7 +13,7 @@ import {
 } from "./index.gql";
 
 import Button from "../../ui/button";
-import { ErrorMessage } from "../../ui/message";
+import { ErrorMessage, SuccessMessage } from "../../ui/message";
 import Input from "../../ui/input";
 import Spinner from "../../ui/spinner";
 
@@ -54,9 +54,10 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
     variables: { id: uuid },
   });
 
-  const [, addMeeting] = useMutation<AddAttendantMutation, AddAttendantMutationVariables>(
-    addEntryMutation,
-  );
+  const [{ data: isSaved, error, fetching }, addMeeting] = useMutation<
+    AddAttendantMutation,
+    AddAttendantMutationVariables
+  >(addEntryMutation);
 
   const onSubmit = useMemo(() => {
     return handleSubmit((entry) => {
@@ -183,10 +184,20 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
             </div>
           </div>
 
-          <Button disabled={status === "loading"} type="submit" variant="primary">
+          <Button disabled={fetching} type="submit" variant="primary">
             Eintragen
           </Button>
-          {status === "loading" ? <Spinner className="inline ml-2" /> : null}
+          {error ? (
+            <ErrorMessage className="ml-2" inline>
+              Speichern fehlgeschlagen
+            </ErrorMessage>
+          ) : null}
+          {isSaved ? (
+            <SuccessMessage className="ml-2" inline>
+              Nutzer erfolgreich angelegt
+            </SuccessMessage>
+          ) : null}
+          {fetching ? <Spinner className="inline ml-2" /> : null}
         </form>
       </PageContainer>
     );

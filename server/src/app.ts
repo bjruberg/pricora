@@ -4,8 +4,8 @@ import { config } from "node-config-ts";
 import { v4 as uuidv4 } from "uuid";
 import { getConnection } from "./db";
 import { startServer } from "./server";
-import { createUser } from "./user";
-import { init } from "./dataservice/initialize";
+import { createUser } from "./rest/user";
+import { init } from "./listservice/initialize";
 
 import { Configuration } from "./entity/Configuration";
 import { User } from "./entity/User";
@@ -27,6 +27,7 @@ const initializeApp = async (): Promise<void> => {
   if (!adminUser) {
     const createdUser = await createUser(config.initialAdminPassword, configuration.passwordSalt);
     createdUser.email = config.adminEmail;
+    createdUser.firstName = "Admin";
     createdUser.isAdmin = true;
     void connection.manager.save(createdUser);
   }

@@ -7,18 +7,18 @@ import {
 } from "typeorm";
 
 @Entity()
-export class Configuration {
+export class Secret {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  userEncrytedDEK: string;
+  user_id: string;
 
   @Column()
-  adminEncrytedDEK: string;
+  encryptionIV: string;
 
-  @Column()
-  passwordSalt: string;
+  @Column({ type: "text" })
+  encryptedDecriptionKey: string;
 
   @CreateDateColumn()
   created: Date;

@@ -1,6 +1,6 @@
 import { get } from "lodash";
 import { FunctionalComponent, h } from "preact";
-import { useCallback, useState } from "preact/hooks";
+import { useCallback } from "preact/hooks";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 

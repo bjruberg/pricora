@@ -2,6 +2,7 @@ import {
   CreateDateColumn,
   Column,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -24,10 +25,10 @@ export class User {
   password: string;
 
   @Column()
-  encryptedDecriptionKey: string;
+  encryptedSecretWithIV: string;
 
   @Column()
-  encryptionSalt: string;
+  passwordDeviationSalt: string;
 
   @Field(() => String)
   @Column({ nullable: true })
@@ -41,6 +42,7 @@ export class User {
   lastLogin: number;
 
   @Column({ default: false })
+  @Index()
   isAdmin: boolean;
 
   @OneToMany(() => Meeting, (meeting) => meeting.user)

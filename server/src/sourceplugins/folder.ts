@@ -3,7 +3,7 @@ import { promises } from "fs";
 import { forEach, has, omit } from "lodash";
 import { Connection, createConnection } from "typeorm";
 
-import { ISourcePlugin } from "../dataservice/plugin";
+import { ISourcePlugin } from "../listservice/plugin";
 
 const dbFileFolder = config.plugins.folder.path;
 
@@ -38,7 +38,7 @@ class FolderPlugin implements ISourcePlugin {
       database: `${dbFileFolder}/${uuid}.sqlite`,
       name: uuid,
       type: "sqlite",
-      entities: [__dirname + "/../entity_external/*.ts"],
+      entities: [__dirname + "/../entity_meeting/*.ts"],
       synchronize: true,
     });
     this.connections[uuid] = newConnection;

@@ -10,11 +10,7 @@ const Message: FunctionalComponent<MessageProps> = ({ children, className, inlin
   const Comp = inline ? "span" : "div";
   return (
     <Comp
-      class={cn(
-        "h-4 text-red-700",
-        { "text-md": textSize === "md", "text-sm": textSize == "sm" },
-        className,
-      )}
+      class={cn("h4", { "text-md": textSize === "md", "text-sm": textSize == "sm" }, className)}
     >
       {children}
     </Comp>
@@ -22,9 +18,9 @@ const Message: FunctionalComponent<MessageProps> = ({ children, className, inlin
 };
 
 export const ErrorMessage: FunctionalComponent<MessageProps> = ({ className, ...props }) => {
-  return <Message class={cn("h-4 text-red-700", className)} {...props} />;
+  return <Message className={cn("text-red-700", className)} {...props} />;
 };
 
 export const SuccessMessage: FunctionalComponent<MessageProps> = ({ className, ...props }) => {
-  return <Message class={cn("h-4 text-red-700", className)} {...props} />;
+  return <Message className={cn("text-green-700", className)} {...props} />;
 };

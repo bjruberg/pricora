@@ -1,6 +1,6 @@
 import { Fragment, h, render } from "preact";
 import "preact/devtools";
-import Router, { Route } from "preact-router";
+import Router, { Route, route } from "preact-router";
 import { Link } from "preact-router/match";
 import { useQuery, useMutation } from "react-query";
 import { createClient, Provider } from "@urql/preact";
@@ -8,6 +8,7 @@ import { get } from "lodash";
 import "./base.css";
 
 import AddAttendant from "./pages/addattendant";
+import MeetingPage from "./pages/meeting";
 import MeetingAddPage from "./pages/meetingadd";
 import MeetingListPage from "./pages/meetinglist";
 import PrivateRoute from "./components/PrivateRoute";
@@ -22,7 +23,7 @@ import { routes } from "./routes";
 const client = createClient({ url: `${get(process.env, "hostname", "")}/graphql` });
 
 const App = () => {
-  const { data: user, isError, isLoading, refetch } = useQuery<SharedUser>(
+  const { data: user, isLoading, refetch } = useQuery<SharedUser>(
     "user",
     () => {
       return fetch("/api/getUser", {
@@ -48,7 +49,7 @@ const App = () => {
       },
       method: "POST",
     }).then(() => {
-      location.reload();
+      route(routes.login);
     });
   });
 
@@ -85,7 +86,7 @@ const App = () => {
           <div>
             {(() => {
               if (!isLoading) {
-                return isError ? (
+                return !user ? (
                   <Link
                     href={routes.login}
                     class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
@@ -100,12 +101,15 @@ const App = () => {
                     >
                       Neue Veranstaltung
                     </Link>
-                    <Link
-                      href={routes.register}
-                      class="mr-2 inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
-                    >
-                      Registrieren
-                    </Link>
+                    {user.isAdmin ? (
+                      <Link
+                        href={routes.register}
+                        class="mr-2 inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+                      >
+                        Registrieren
+                      </Link>
+                    ) : null}
+
                     <button
                       class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
                       onClick={() => logout()}
@@ -123,10 +127,8 @@ const App = () => {
       <UserContext.Provider value={user}>
         <Provider value={client}>
           <Router>
-            <PrivateRoute path={routes.register}>
-              <RegisterPage />
-            </PrivateRoute>
-
+            <PrivateRoute Component={RegisterPage} path={routes.register} />
+            <PrivateRoute Component={MeetingPage} path={routes.meeting()} />
             <Route path={routes.meetingadd} component={MeetingAddPage} />
             <Route path={routes.login} refetchUser={refetch} component={LoginPage} />
             <Route path={routes.meetinglist} component={MeetingListPage} />

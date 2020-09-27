@@ -1,6 +1,7 @@
 import { CreateDateColumn, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 
+@ObjectType()
 @InputType()
 export class EntryInput {
   @Field(() => String)
@@ -28,14 +29,24 @@ export class EntryInput {
   country: string;
 }
 
-@Entity()
 @ObjectType()
-export class Entry extends EntryInput {
+export class EntryOutput extends EntryInput {
   @Field(() => ID, { description: "Auto-generated uuid for the entry" })
-  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Field(() => String)
   @CreateDateColumn()
-  created: Date;
+  created: string;
+}
+
+@Entity()
+export class Entry extends EntryOutput {
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @Column()
+  encryptedRowSecret: string;
+
+  @Column()
+  encryptionIV: string;
 }

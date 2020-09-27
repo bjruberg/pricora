@@ -11,13 +11,13 @@ import { AuthChecker, buildSchema } from "type-graphql";
 import { Connection } from "typeorm";
 
 import {
-  getUser,
+  checkUserAuthorization,
   provideAuthorizationInContext,
-  loginUser,
   logoutUser,
-  registerUser,
   restrictedForUsers,
-} from "./user";
+} from "./auth";
+
+import { loginUser, registerUser } from "./rest/user";
 import { getConnection } from "./db";
 import { Configuration } from "entity/Configuration";
 import { SharedUser } from "../../shared/user";
@@ -63,7 +63,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
 
   const router = new Router<any, Koa.Context>();
 
-  router.get("/api/getUser", restrictedForUsers, getUser);
+  router.get("/api/getUser", restrictedForUsers, checkUserAuthorization);
   router.post("/api/login", koaBody(), loginUser);
   router.post("/api/logout", restrictedForUsers, logoutUser);
   router.post("/api/register", restrictedForUsers, koaBody(), registerUser);
@@ -90,7 +90,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
     return next().catch((err): void => {
       ctx.status = err?.status || 500;
       ctx.body = { error: err?.message };
-      // console.error(err);
+      console.error(err);
     });
   });
 
