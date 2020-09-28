@@ -1,15 +1,18 @@
-import { FunctionalComponent, h } from "preact";
+import { Fragment, FunctionalComponent, h } from "preact";
 import { Link } from "preact-router/match";
 import { useQuery } from "@urql/preact";
 import gql from "graphql-tag";
+import { format } from "date-fns";
 import PageContainer from "../../components/PageContainer";
 import { GetMeetingsQuery, GetMeetingsQueryVariables } from "./index.gql";
+import { Card } from "../../components/Card";
 import { routes } from "../../routes";
 
 const meetingsQuery = gql`
   query getMeetings {
     meetings {
       id
+      date
       archived
       title
     }
@@ -25,17 +28,24 @@ const ArrangementsPage: FunctionalComponent = () => {
   return (
     <PageContainer>
       <h1>Veranstaltungen</h1>
-      <ul>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
         {data?.meetings.map((meeting) => {
           return (
-            <li>
-              <Link href={routes.meeting(meeting.id)} key={meeting.id}>
-                {meeting.title}
-              </Link>
-            </li>
+            <Card
+              header={
+                <Fragment>
+                  <Link href={routes.meeting(meeting.id)} key={meeting.id}>
+                    {meeting.title}
+                  </Link>
+                  <span class="float-right text-gray-600">
+                    {format(new Date(meeting.date), "MM/dd/yyyy")}
+                  </span>
+                </Fragment>
+              }
+            />
           );
         })}
-      </ul>
+      </div>
     </PageContainer>
   );
 };

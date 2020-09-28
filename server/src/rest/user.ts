@@ -125,10 +125,6 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
     // Setup AES description using the passwordDerivedKey
     const decryptedUserSecret = decryptDataUsingKey(keyDerivedFromPassword, iv, encryptendSecret);
 
-    console.log({
-      decryptedUserSecret,
-    });
-
     saveKey(requestedUser.id, decryptedUserSecret);
   } catch (e) {
     // pass

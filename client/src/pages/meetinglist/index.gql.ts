@@ -7,6 +7,6 @@ export type GetMeetingsQuery = (
   { __typename?: 'Query' }
   & { meetings: Array<(
     { __typename?: 'Meeting' }
-    & Pick<Types.Meeting, 'id' | 'archived' | 'title'>
+    & Pick<Types.Meeting, 'id' | 'date' | 'archived' | 'title'>
   )> }
 );

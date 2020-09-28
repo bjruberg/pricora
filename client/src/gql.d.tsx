@@ -112,4 +112,4 @@ export type AddMeetingMutation = { createMeeting: Pick<Meeting, 'id'> };
 export type GetMeetingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMeetingsQuery = { meetings: Array<Pick<Meeting, 'id' | 'archived' | 'title'>> };
+export type GetMeetingsQuery = { meetings: Array<Pick<Meeting, 'id' | 'date' | 'archived' | 'title'>> };

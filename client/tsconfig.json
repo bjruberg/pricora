@@ -22,7 +22,7 @@
     "jsxFactory": "h",
     "skipLibCheck": true, // preact documentation for integration react libs in preact using ts
   },
-  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/i18n/de.js", "src/i18n/en.js"],
   "exclude": [
     "dist"
   ]

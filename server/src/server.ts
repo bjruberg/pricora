@@ -97,6 +97,13 @@ export const startServer = async (configuration: Configuration): Promise<void> =
   app.use(router.routes());
   app.use(router.allowedMethods());
 
+  app.use(
+    koaServe({
+      rootPath: "/i18n",
+      rootDir: `${__dirname}/../../client/src/i18n`,
+    }),
+  );
+
   // Serve files required for client
   app.use(
     koaServe({
