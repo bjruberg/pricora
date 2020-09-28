@@ -99,6 +99,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
 
   app.use(
     koaServe({
+      maxage: 60000,
       rootPath: "/i18n",
       rootDir: `${__dirname}/../../client/src/i18n`,
     }),

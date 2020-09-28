@@ -1,6 +1,6 @@
 import { get } from "lodash";
 import { FunctionalComponent, h } from "preact";
-import { useCallback } from "preact/hooks";
+import { useCallback, useContext } from "preact/hooks";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 
@@ -14,6 +14,7 @@ import PageContainer from "../../components/PageContainer";
 
 import { typedFetch } from "../../utils/typedFetch";
 import { RegisterRequest, RegisterResponse } from "../../../../shared/api";
+import { TranslateContext } from "@denysvuika/preact-translate";
 
 interface FormData {
   email: string;
@@ -25,6 +26,7 @@ interface FormData {
 const labelClasses = "block text-gray-700 text-sm font-bold mt-2";
 
 const RegisterPage: FunctionalComponent = () => {
+  const { t } = useContext(TranslateContext);
   const { errors, handleSubmit, register, reset } = useForm<FormData>();
 
   const [signUp, { error: apiError, reset: resetMutation, status }] = useMutation<
@@ -59,7 +61,7 @@ const RegisterPage: FunctionalComponent = () => {
 
   return (
     <PageContainer>
-      <h1 className="pb-6">Neuen Benutzer registrieren</h1>
+      <h1 className="pb-6">{t("pages.register.title")}</h1>
       <form
         onSubmit={handleSubmit((d) => {
           return signUp(d);
@@ -67,7 +69,7 @@ const RegisterPage: FunctionalComponent = () => {
       >
         <div className="container max-w-md">
           <label class={labelClasses} for="email">
-            E-Mail
+            {t("entities.user.email")}
           </label>
           <Input
             error={!!errors["email"]}
@@ -75,12 +77,9 @@ const RegisterPage: FunctionalComponent = () => {
             name="email"
             inputRef={register({
               validate: {
-                email: (val) =>
-                  EmailValidator.validate(val)
-                    ? true
-                    : "Es muss sich um eine E-Mail Adresse handeln",
+                email: (val) => (EmailValidator.validate(val) ? true : t("forms.email")),
               },
-              required: "Notwendig",
+              required: t("forms.required"),
             })}
             required
             type="email"
@@ -89,14 +88,14 @@ const RegisterPage: FunctionalComponent = () => {
             {!!errors["email"] ? get(errors["email"], "message") : ""}
           </ErrorMessage>
           <label class={labelClasses} for="password">
-            Passwort
+            {t("entities.user.password")}
           </label>
           <Input
             error={!!errors["password"]}
             placeholder="*****"
             inputRef={register({
-              minLength: { value: 8, message: "At least 8 characters are required" },
-              required: "Notwendig",
+              minLength: { value: 8, message: t("forms.atLeast", { count: 8 }) },
+              required: t("forms.required"),
             })}
             name="password"
             type="password"
@@ -105,13 +104,13 @@ const RegisterPage: FunctionalComponent = () => {
             {!!errors["password"] ? get(errors["password"], "message") : ""}
           </ErrorMessage>
           <label class={labelClasses} for="firstName">
-            Vorname
+            {t("entities.user.firstName")}
           </label>
           <Input
             error={!!errors["firstName"]}
-            placeholder="Michael"
+            placeholder={t("entities.user.firstNamePlaceholder")}
             inputRef={register({
-              required: "Notwendig",
+              required: t("forms.required"),
             })}
             name="firstName"
             type="text"
@@ -120,19 +119,19 @@ const RegisterPage: FunctionalComponent = () => {
             {!!errors["firstName"] ? get(errors["firstName"], "message") : ""}
           </ErrorMessage>
           <label class={labelClasses} for="lastName">
-            Nachname
+            {t("entities.user.lastName")}
           </label>
           <Input
             error={!!errors["lastName"]}
-            placeholder="Jackson"
+            placeholder={t("entities.user.lastNamePlaceholder")}
             inputRef={register({
-              required: "Notwendig",
+              required: t("forms.required"),
             })}
             name="lastName"
             type="text"
           />
           <ErrorMessage textSize="sm">
-            {!!errors["firstName"] ? get(errors["firstName"], "message") : ""}
+            {!!errors["lastName"] ? get(errors["lastName"], "message") : ""}
           </ErrorMessage>
           <Button
             className="mr-2"
@@ -140,17 +139,17 @@ const RegisterPage: FunctionalComponent = () => {
             type="submit"
             variant="primary"
           >
-            Registrieren
+            {t("actions.register")}
           </Button>
           {status === "loading" ? <Spinner className="inline" /> : null}
           {apiError ? <ErrorMessage inline>{apiError}</ErrorMessage> : null}
           {submitSuccessful ? (
-            <SuccessMessage inline>Nutzer erfolgreich angelegt</SuccessMessage>
+            <SuccessMessage inline>{t("pages.register.success")}</SuccessMessage>
           ) : null}
           {submitSuccessful ? (
             <div>
               <Button onClick={onRedo} variant="primary">
-                Weiteren Nutzer anlegen
+                {t("pages.register.addMore")}
               </Button>
             </div>
           ) : null}

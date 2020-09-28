@@ -1,7 +1,8 @@
 import { Fragment, h, render } from "preact";
 import "preact/devtools";
 import cn from "classnames";
-import { useState } from "preact/hooks";
+import { useContext, useState } from "preact/hooks";
+import { TranslateContext, TranslateProvider } from "@denysvuika/preact-translate";
 import Router, { Route, route } from "preact-router";
 import { Link } from "preact-router/match";
 import { useQuery, useMutation } from "react-query";
@@ -26,6 +27,7 @@ const client = createClient({ url: `${get(process.env, "hostname", "")}/graphql`
 
 const App = () => {
   const [mobileNavigationShown, setMobileNavigationShown] = useState<boolean>(false);
+  const { t } = useContext(TranslateContext);
 
   const { data: user, isLoading, refetch } = useQuery<SharedUser>(
     "user",
@@ -59,10 +61,10 @@ const App = () => {
 
   return (
     <Fragment>
-      <nav class="flex items-center justify-between flex-wrap bg-teal-800 p-6">
+      <nav class="flex items-center justify-between flex-wrap bg-blue-800 p-6">
         <div class="block lg:hidden">
           <button
-            class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white"
+            class="flex items-center px-3 py-2 border rounded text-gray-200 border-gray-400 hover:text-white hover:border-white"
             onClick={() => setMobileNavigationShown(!mobileNavigationShown)}
           >
             <svg
@@ -83,22 +85,22 @@ const App = () => {
           <div class="text-sm lg:flex-grow">
             <Link
               href={routes.meetinglist}
-              class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+              class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4"
             >
-              <div id="navigation.meetinglist">Veranstaltungsmist</div>
+              {t("navigation.meetinglist")}
             </Link>
             <Link
               href={routes.meetingadd}
-              class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+              class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4"
             >
-              Veranstaltung anlegen
+              {t("navigation.addMeeting")}
             </Link>
             {user?.isAdmin ? (
               <Link
                 href={routes.register}
-                class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+                class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4"
               >
-                Nutzer anlegen
+                {t("navigation.addUser")}
               </Link>
             ) : null}
           </div>
@@ -110,15 +112,15 @@ const App = () => {
                     href={routes.login}
                     class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
                   >
-                    Login
+                    {t("navigation.login")}
                   </Link>
                 ) : (
                   <Fragment>
                     <button
-                      class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+                      class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-blue-900 hover:bg-white mt-4 lg:mt-0"
                       onClick={() => logout()}
                     >
-                      Ausloggen
+                      {t("navigation.logout")}
                     </button>
                   </Fragment>
                 );
@@ -145,4 +147,13 @@ const App = () => {
   );
 };
 
-render(<App />, document.body);
+render(
+  <TranslateProvider
+    fallbackLang={process.env.language}
+    lang={process.env.language}
+    root={`${get(process.env, "hostname", "")}/i18n`}
+  >
+    <App />
+  </TranslateProvider>,
+  document.body,
+);

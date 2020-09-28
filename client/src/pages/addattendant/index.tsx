@@ -1,5 +1,5 @@
 import { FunctionalComponent, h } from "preact";
-import { useMemo } from "preact/hooks";
+import { useContext, useMemo } from "preact/hooks";
 import { useQuery, useMutation } from "@urql/preact";
 import gql from "graphql-tag";
 import { useForm } from "react-hook-form";
@@ -16,6 +16,7 @@ import Button from "../../ui/button";
 import { ErrorMessage, SuccessMessage } from "../../ui/message";
 import Input from "../../ui/input";
 import Spinner from "../../ui/spinner";
+import { TranslateContext } from "@denysvuika/preact-translate";
 
 const meetingQuery = gql`
   query getMeeting($id: String!) {
@@ -47,6 +48,7 @@ interface AddAttendantProps {
 }
 
 const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
+  const { t } = useContext(TranslateContext);
   const { errors, handleSubmit, register } = useForm<FormData>();
   const [{ data }] = useQuery<GetMeetingQuery, GetMeetingQueryVariables>({
     query: meetingQuery,
@@ -68,24 +70,26 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
     });
   }, [addMeeting, handleSubmit, uuid]);
 
+  const standardRegister = {
+    required: t("form.required"),
+  };
+
   if (data) {
     return (
       <PageContainer>
-        <h1>Eintragen für {data.meeting.title}</h1>
+        <h1>{t("pages.addattendant.title", { meeting: data.meeting.title })}</h1>
         <form onSubmit={onSubmit}>
           <div className="container flex mt-4 max-w-md">
             <div className="flex-1">
               <label class="block text-gray-700 text-sm font-bold mb-2" for="firstName">
-                Vorname
+                {t("entities.attendant.firstName")}
               </label>
               <Input
                 autoComplete="given-name"
                 error={!!errors["firstName"]}
-                placeholder="Max"
+                placeholder={t("entities.attendant.firstNamePlaceholder")}
                 name="firstName"
-                inputRef={register({
-                  required: "Notwendig",
-                })}
+                inputRef={register(standardRegister)}
                 required
                 type="text"
               />
@@ -93,16 +97,14 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
             <div className="w-2" />
             <div className="flex-1">
               <label class="block text-gray-700 text-sm font-bold mb-2" for="lastName">
-                Nachname
+                {t("entities.attendant.lastName")}
               </label>
               <Input
                 autoComplete="family-name"
                 error={!!errors["lastName"]}
-                placeholder="Muster"
+                placeholder={t("entities.attendant.lastNamePlaceholder")}
                 name="lastName"
-                inputRef={register({
-                  required: "Notwendig",
-                })}
+                inputRef={register(standardRegister)}
                 required
                 type="text"
               />
@@ -112,16 +114,14 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
           <div className="container flex mt-4 max-w-md">
             <div className="w-3/4">
               <label class="block text-gray-700 text-sm font-bold mb-2" for="firstName">
-                Straße
+                {t("entities.attendant.address")}
               </label>
               <Input
                 autoComplete="street-address"
                 error={!!errors["address"]}
-                placeholder="Hauptstraße 33"
+                placeholder={t("entities.attendant.addressPlaceholder")}
                 name="address"
-                inputRef={register({
-                  required: "Notwendig",
-                })}
+                inputRef={register(standardRegister)}
                 required
                 type="text"
               />
@@ -129,16 +129,14 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
             <div className="flex-initial w-2" />
             <div className="w-1/4">
               <label class="block text-gray-700 text-sm font-bold mb-2" for="lastName">
-                PLZ
+                {t("entities.attendant.postal")}
               </label>
               <Input
                 autoComplete="postal-code"
                 error={!!errors["zip"]}
-                placeholder="13222"
+                placeholder={t("entities.attendant.postalPlaceholder")}
                 name="zip"
-                inputRef={register({
-                  required: "Notwendig",
-                })}
+                inputRef={register(standardRegister)}
                 maxLength={6}
                 required
                 size={6}
@@ -150,16 +148,14 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
           <div className="container flex mt-4 max-w-md">
             <div className="flex-1">
               <label class="block text-gray-700 text-sm font-bold mb-2" for="city">
-                City
+                {t("entities.attendant.city")}
               </label>
               <Input
                 autoComplete="address-level2"
                 error={!!errors["city"]}
-                placeholder="Berlin"
+                placeholder={t("entities.attendant.cityPlaceholder")}
                 name="city"
-                inputRef={register({
-                  required: "Notwendig",
-                })}
+                inputRef={register(standardRegister)}
                 required
                 type="text"
               />
@@ -167,16 +163,14 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
             <div className="flex-initial w-2" />
             <div className="flex-1">
               <label class="block text-gray-700 text-sm font-bold mb-2" for="country">
-                Land
+                {t("entities.attendant.country")}
               </label>
               <Input
                 autoComplete="country"
                 error={!!errors["country"]}
-                placeholder="Deutschland"
+                placeholder={t("entities.attendant.countryPlaceholder")}
                 name="country"
-                inputRef={register({
-                  required: "Notwendig",
-                })}
+                inputRef={register(standardRegister)}
                 required
                 type="text"
                 value="Deutschland"
@@ -185,16 +179,16 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
           </div>
 
           <Button disabled={fetching} type="submit" variant="primary">
-            Eintragen
+            {t("actions.add")}
           </Button>
           {error ? (
             <ErrorMessage className="ml-2" inline>
-              Speichern fehlgeschlagen
+              {t("pages.addattendant.error")}
             </ErrorMessage>
           ) : null}
           {isSaved ? (
             <SuccessMessage className="ml-2" inline>
-              Nutzer erfolgreich angelegt
+              {t("pages.addattendant.success")}
             </SuccessMessage>
           ) : null}
           {fetching ? <Spinner className="inline ml-2" /> : null}

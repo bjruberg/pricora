@@ -1,0 +1,77 @@
+{
+  "navigation": {
+    "meetinglist": "Veranstaltungsliste",
+    "addMeeting": "Veranstaltung anlegen",
+    "addUser": "Nutzer anlegen",
+    "login": "Login",
+    "logout": "Ausloggen"
+  },
+  "entities": {
+    "attendant": {
+      "firstName": "Vorname",
+      "firstNamePlaceholder": "Max",
+      "lastName": "Nachname",
+      "lastNamePlaceholder": "Muster",
+      "address": "Straße",
+      "addressPlaceholder": "Hauptstraße 33",
+      "postal": "PLZ",
+      "postalPlaceholder": "13222",
+      "city": "Stadt",
+      "cityPlaceholder": "Berlin",
+      "country": "Land",
+      "countryPlaceholder": "Deutschland"
+    },
+    "user": {
+      "email": "E-Mail",
+      "firstName": "Vorname",
+      "firstNamePlaceholder": "Max",
+      "lastName": "Nachname",
+      "lastNamePlaceholder": "Muster",
+      "password": "Passwort"
+    },
+    "meeting": {
+      "date": "Datum der Veranstaltung",
+      "title": "Titel",
+      "titlePlaceholder": "Gästeraum Vormittag"
+    }
+  },
+  "actions": {
+    "add": "Hinzufügen",
+    "create": "Erstellen",
+    "login": "Anmelden",
+    "register": "Registrieren"
+  },
+  "pages": {
+    "addattendant": {
+      "error": "Hinzufügen fehlgeschlagen",
+      "success": "Teilnehmer hinzugefügt",
+      "title": "Eintragen für {meeting}"
+    },
+    "login": {
+      "title": "Als Benutzer anmelden",
+      "wrongCredentials": "Benutzername oder Passwort falsch",
+      "networkError": "Login fehlgeschlagen"
+    },
+    "meeting": {
+      "title": "Details zur Veranstaltung {meeting}",
+      "addAttendant": "Teilnehmer hinzufügen",
+      "list": "Teilnehmerliste"
+    },
+    "meetingadd": {
+      "title": "Veranstaltung anlegen"
+    },
+    "meetinglist": {
+      "title": "Veranstaltungen"
+    },
+    "register": {
+      "title": "Neuen Benutzer anlagen",
+      "success": "Nutzer erfolgreich angelegt",
+      "addMore": "Weiteren Nutzer anlegen"
+    }
+  },
+  "forms": {
+    "required": "Notwendig",
+    "email": "Es muss sich um eine E-Mail Adresse handeln",
+    "atLeast": "Min. {count} Zeichen sind notwendig"
+  }
+}

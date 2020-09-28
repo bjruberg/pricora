@@ -1,12 +1,23 @@
-// tailwind.config.js
+
+const { colors } = require('tailwindcss/defaultTheme')
+
 module.exports = {
   theme: {
+    colors: {
+      // Remove colors indigo and purple
+      black: colors.black,
+      white: colors.white,
+      gray: colors.gray,
+      red: colors.red,
+      yellow: colors.yellow,
+      green: colors.green,
+      blue: colors.blue,
+    },
     screens: {
       xs: true,
       sm: '640px',
       md: '768px',
       lg: '1024px',
-      xl: '1280px',
     },
     fontFamily: {
       display: ['Gilroy', 'sans-serif'],
@@ -26,6 +37,10 @@ module.exports = {
         '96': '24rem',
         '128': '32rem',
       }
+    },
+    corePlugins: {
+      objectFit: false,
+      objectPosition: false,
     }
   }
 }

@@ -9,6 +9,7 @@ api/build
 client/dist
 shared/schema.gql
 config/Config.d.ts
+stats.html
 
 # data
 data/*

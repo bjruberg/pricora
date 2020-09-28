@@ -7,6 +7,8 @@ import PageContainer from "../../components/PageContainer";
 import { GetMeetingsQuery, GetMeetingsQueryVariables } from "./index.gql";
 import { Card } from "../../components/Card";
 import { routes } from "../../routes";
+import { TranslateContext } from "@denysvuika/preact-translate";
+import { useContext } from "preact/hooks";
 
 const meetingsQuery = gql`
   query getMeetings {
@@ -20,6 +22,7 @@ const meetingsQuery = gql`
 `;
 
 const ArrangementsPage: FunctionalComponent = () => {
+  const { t } = useContext(TranslateContext);
   const [{ data }] = useQuery<GetMeetingsQuery, GetMeetingsQueryVariables>({
     query: meetingsQuery,
     requestPolicy: "cache-and-network",
@@ -27,7 +30,7 @@ const ArrangementsPage: FunctionalComponent = () => {
 
   return (
     <PageContainer>
-      <h1>Veranstaltungen</h1>
+      <h1>{t("pages.meetinglist.title")}</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
         {data?.meetings.map((meeting) => {
           return (
