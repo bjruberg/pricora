@@ -73,5 +73,6 @@
     "required": "Notwendig",
     "email": "Es muss sich um eine E-Mail Adresse handeln",
     "atLeast": "Min. {count} Zeichen sind notwendig"
-  }
+  },
+  "pleaseLogIn": "Bitte einloggen"
 }

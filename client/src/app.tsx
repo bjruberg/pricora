@@ -29,7 +29,7 @@ const App = () => {
   const [mobileNavigationShown, setMobileNavigationShown] = useState<boolean>(false);
   const { t } = useContext(TranslateContext);
 
-  const { data: user, isLoading, refetch } = useQuery<SharedUser>(
+  const { data: user, isLoading, refetch, remove } = useQuery<SharedUser>(
     "user",
     () => {
       return fetch("/api/getUser", {
@@ -56,13 +56,14 @@ const App = () => {
       method: "POST",
     }).then(() => {
       route(routes.login);
+      remove();
     });
   });
 
   return (
     <Fragment>
-      <nav class="flex items-center justify-between flex-wrap bg-blue-800 p-6">
-        <div class="block lg:hidden">
+      <header class="flex items-center justify-between flex-wrap bg-blue-800 p-6">
+        <nav class="block flex lg:hidden">
           <button
             class="flex items-center px-3 py-2 border rounded text-gray-200 border-gray-400 hover:text-white hover:border-white"
             onClick={() => setMobileNavigationShown(!mobileNavigationShown)}
@@ -76,25 +77,31 @@ const App = () => {
               <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
             </svg>
           </button>
-        </div>
-        <div
+          <div class="text-white text-2xl ml-4">Pricora</div>
+        </nav>
+        <nav
           class={cn("w-full block flex-grow lg:flex lg:items-center lg:w-auto lg:block", {
             "xs:hidden": !mobileNavigationShown,
           })}
         >
           <div class="text-sm lg:flex-grow">
-            <Link
-              href={routes.meetinglist}
-              class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4"
-            >
-              {t("navigation.meetinglist")}
-            </Link>
-            <Link
-              href={routes.meetingadd}
-              class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4"
-            >
-              {t("navigation.addMeeting")}
-            </Link>
+            <span class="text-white text-2xl mr-4">Pricora</span>
+            {user ? (
+              <Fragment>
+                <Link
+                  href={routes.meetinglist}
+                  class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4"
+                >
+                  {t("navigation.meetinglist")}
+                </Link>
+                <Link
+                  href={routes.meetingadd}
+                  class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4"
+                >
+                  {t("navigation.addMeeting")}
+                </Link>
+              </Fragment>
+            ) : null}
             {user?.isAdmin ? (
               <Link
                 href={routes.register}
@@ -128,18 +135,18 @@ const App = () => {
               return null;
             })()}
           </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
       <UserContext.Provider value={user}>
         <Provider value={client}>
           <Router>
-            <PrivateRoute Component={RegisterPage} path={routes.register} />
-            <PrivateRoute Component={MeetingPage} path={routes.meeting()} />
-            <Route path={routes.meetingadd} component={MeetingAddPage} />
+            <PrivateRoute path={routes.register} Component={RegisterPage} />
+            <PrivateRoute path={routes.meeting()} Component={MeetingPage} />
+            <PrivateRoute path={routes.meetingadd} Component={MeetingAddPage} />
             <Route path={routes.login} refetchUser={refetch} component={LoginPage} />
-            <Route path={routes.meetinglist} component={MeetingListPage} />
+            <PrivateRoute path={routes.meetinglist} Component={MeetingListPage} />
             <Route path={routes.addattendant()} component={AddAttendant} />
-            <Route path="/" component={MeetingListPage} />
+            <PrivateRoute path="/" Component={MeetingListPage} />
           </Router>
         </Provider>
       </UserContext.Provider>
