@@ -9,6 +9,7 @@ import * as EmailValidator from "email-validator";
 import Button from "../../ui/button";
 import { ErrorMessage, SuccessMessage } from "../../ui/message";
 import Input from "../../ui/input";
+import { Label } from "../../ui/label";
 import Spinner from "../../ui/spinner";
 import PageContainer from "../../components/PageContainer";
 
@@ -22,8 +23,6 @@ interface FormData {
   lastName: string;
   password: string;
 }
-
-const labelClasses = "block text-gray-700 text-sm font-bold mt-2";
 
 const RegisterPage: FunctionalComponent = () => {
   const { t } = useContext(TranslateContext);
@@ -68,9 +67,7 @@ const RegisterPage: FunctionalComponent = () => {
         })}
       >
         <div className="container max-w-md">
-          <label class={labelClasses} for="email">
-            {t("entities.user.email")}
-          </label>
+          <Label for="email">{t("entities.user.email")}</Label>
           <Input
             error={!!errors["email"]}
             placeholder="me@server.com"
@@ -87,9 +84,7 @@ const RegisterPage: FunctionalComponent = () => {
           <ErrorMessage textSize="sm">
             {!!errors["email"] ? get(errors["email"], "message") : ""}
           </ErrorMessage>
-          <label class={labelClasses} for="password">
-            {t("entities.user.password")}
-          </label>
+          <Label for="password">{t("entities.user.password")}</Label>
           <Input
             error={!!errors["password"]}
             placeholder="*****"
@@ -103,9 +98,7 @@ const RegisterPage: FunctionalComponent = () => {
           <ErrorMessage textSize="sm">
             {!!errors["password"] ? get(errors["password"], "message") : ""}
           </ErrorMessage>
-          <label class={labelClasses} for="firstName">
-            {t("entities.user.firstName")}
-          </label>
+          <Label for="firstName">{t("entities.user.firstName")}</Label>
           <Input
             error={!!errors["firstName"]}
             placeholder={t("entities.user.firstNamePlaceholder")}
@@ -118,9 +111,7 @@ const RegisterPage: FunctionalComponent = () => {
           <ErrorMessage textSize="sm">
             {!!errors["firstName"] ? get(errors["firstName"], "message") : ""}
           </ErrorMessage>
-          <label class={labelClasses} for="lastName">
-            {t("entities.user.lastName")}
-          </label>
+          <Label for="lastName">{t("entities.user.lastName")}</Label>
           <Input
             error={!!errors["lastName"]}
             placeholder={t("entities.user.lastNamePlaceholder")}

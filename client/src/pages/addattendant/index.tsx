@@ -15,6 +15,7 @@ import {
 import Button from "../../ui/button";
 import { ErrorMessage, SuccessMessage } from "../../ui/message";
 import Input from "../../ui/input";
+import { Label } from "../../ui/label";
 import Spinner from "../../ui/spinner";
 import { TranslateContext } from "@denysvuika/preact-translate";
 
@@ -81,9 +82,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
         <form onSubmit={onSubmit}>
           <div className="container flex mt-4 max-w-md">
             <div className="flex-1">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="firstName">
-                {t("entities.attendant.firstName")}
-              </label>
+              <Label for="firstName">{t("entities.attendant.firstName")}</Label>
               <Input
                 autoComplete="given-name"
                 error={!!errors["firstName"]}
@@ -96,9 +95,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
             </div>
             <div className="w-2" />
             <div className="flex-1">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="lastName">
-                {t("entities.attendant.lastName")}
-              </label>
+              <Label for="lastName">{t("entities.attendant.lastName")}</Label>
               <Input
                 autoComplete="family-name"
                 error={!!errors["lastName"]}
@@ -113,9 +110,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
 
           <div className="container flex mt-4 max-w-md">
             <div className="w-3/4">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="firstName">
-                {t("entities.attendant.address")}
-              </label>
+              <Label for="firstName">{t("entities.attendant.address")}</Label>
               <Input
                 autoComplete="street-address"
                 error={!!errors["address"]}
@@ -128,9 +123,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
             </div>
             <div className="flex-initial w-2" />
             <div className="w-1/4">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="lastName">
-                {t("entities.attendant.postal")}
-              </label>
+              <Label for="lastName">{t("entities.attendant.postal")}</Label>
               <Input
                 autoComplete="postal-code"
                 error={!!errors["zip"]}
@@ -147,9 +140,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
 
           <div className="container flex mt-4 max-w-md">
             <div className="flex-1">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="city">
-                {t("entities.attendant.city")}
-              </label>
+              <Label for="city">{t("entities.attendant.city")}</Label>
               <Input
                 autoComplete="address-level2"
                 error={!!errors["city"]}
@@ -162,9 +153,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
             </div>
             <div className="flex-initial w-2" />
             <div className="flex-1">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="country">
-                {t("entities.attendant.country")}
-              </label>
+              <Label for="country">{t("entities.attendant.country")}</Label>
               <Input
                 autoComplete="country"
                 error={!!errors["country"]}
