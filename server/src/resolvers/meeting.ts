@@ -16,6 +16,57 @@ import { getKey } from "../keys";
 import { exportKey, generateKeyPair, generateSecret } from "../utils/encryption";
 import { privateDecrypt, publicEncrypt } from "crypto";
 
+export const decryptMeeting = async (
+  ctx: AuthorizedContext,
+  meetingId: string,
+): Promise<Omit<Entry, "encryptedRowSecret" | "encryptionIV">[]> => {
+  const connection = await sourcePlugin.getConnection(meetingId);
+
+  if (!connection) {
+    ctx.throw("Requested meeting is not available", 412);
+  }
+
+  const entryRepo = connection.getRepository(Entry);
+  const entries = await entryRepo.find();
+
+  const secretRep = connection.getRepository(Secret);
+  const secret = await secretRep.findOne({ user_id: ctx.user.id });
+
+  if (!secret) {
+    ctx.throw("User has no secret for this meeting", 401);
+  }
+
+  const userSecret = await getKey(ctx.user.id);
+
+  if (!userSecret) {
+    ctx.throw("Need to relogin to unlock user secret", 401);
+  }
+
+  const meetingDecryptionKey = decryptDataUsingKey(
+    userSecret,
+    secret.encryptionIV,
+    secret.encryptedDecriptionKey,
+  );
+
+  const decryptedEntries = map(entries, (entry) => {
+    const { created, encryptedRowSecret, encryptionIV, id, ...encryptedValues } = entry;
+    const rowSecret = privateDecrypt(meetingDecryptionKey, Buffer.from(encryptedRowSecret, "hex"));
+    return {
+      created: new Date(created).toISOString(),
+      id,
+      ...mapValues(encryptedValues, (encryptedData) => {
+        try {
+          return decryptDataUsingKey(rowSecret, encryptionIV, encryptedData);
+        } catch (e) {
+          return "<Decryption failure>";
+        }
+      }),
+    };
+  });
+
+  return decryptedEntries;
+};
+
 @Resolver(() => Meeting)
 export class MeetingResolver {
   constructor(
@@ -175,6 +226,12 @@ export class MeetingResolver {
 
       await queryRunner.manager.save(entry);
       await queryRunner.commitTransaction();
+
+      const meeting = await getConnection().manager.findOne(Meeting, { id: uuid });
+      if (meeting) {
+        meeting.numberOfAttendants = meeting.numberOfAttendants + 1;
+        void getConnection().manager.save(meeting);
+      }
     } catch (err) {
       await queryRunner.rollbackTransaction();
     } finally {
@@ -189,53 +246,6 @@ export class MeetingResolver {
     @Root() meeting: Meeting,
     @Ctx() ctx: AuthorizedContext,
   ): Promise<EntryOutput[]> {
-    const connection = await sourcePlugin.getConnection(meeting.id);
-
-    if (!connection) {
-      ctx.throw("Requested meeting is not available", 412);
-    }
-
-    const entryRepo = connection.getRepository(Entry);
-    const entries = await entryRepo.find();
-
-    const secretRep = connection.getRepository(Secret);
-    const secret = await secretRep.findOne({ user_id: ctx.user.id });
-
-    if (!secret) {
-      ctx.throw("User has no secret for this meeting", 401);
-    }
-
-    const userSecret = await getKey(ctx.user.id);
-
-    if (!userSecret) {
-      ctx.throw("Need to relogin to unlock user secret", 401);
-    }
-
-    const meetingDecryptionKey = decryptDataUsingKey(
-      userSecret,
-      secret.encryptionIV,
-      secret.encryptedDecriptionKey,
-    );
-
-    const decryptedEntries = map(entries, (entry) => {
-      const { created, encryptedRowSecret, encryptionIV, id, ...encryptedValues } = entry;
-      const rowSecret = privateDecrypt(
-        meetingDecryptionKey,
-        Buffer.from(encryptedRowSecret, "hex"),
-      );
-      return {
-        created,
-        id,
-        ...mapValues(encryptedValues, (encryptedData) => {
-          try {
-            return decryptDataUsingKey(rowSecret, encryptionIV, encryptedData);
-          } catch (e) {
-            return "<Decryption failure>";
-          }
-        }),
-      };
-    });
-
-    return decryptedEntries;
+    return decryptMeeting(ctx, meeting.id);
   }
 }

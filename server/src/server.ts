@@ -24,6 +24,7 @@ import { MeetingResolver } from "./resolvers/meeting";
 import { UserResolver } from "./resolvers/user";
 import { User } from "./entity/User";
 import { getConnection } from "./db";
+import { exportMeeting } from "./rest/export";
 
 const customAuthChecker: AuthChecker<Context> = async ({ context }, roles): Promise<boolean> => {
   if (!context || !context.user || !context.user.id) {
@@ -73,6 +74,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
   router.post("/api/login", koaBody(), loginUser);
   router.post("/api/logout", restrictedForUsers, logoutUser);
   router.post("/api/register", restrictedForAdmins, koaBody(), registerUser);
+  router.get("/api/exportMeeting", restrictedForUsers, exportMeeting);
 
   const schema = await buildSchema({
     authChecker: customAuthChecker,

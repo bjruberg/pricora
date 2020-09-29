@@ -37,6 +37,18 @@ export class Meeting extends MeetingInput {
   @Column({ default: false })
   archived: boolean;
 
+  @Field(() => Number, {
+    description: "The number of exports that have been generated for this meeting",
+  })
+  @Column({ default: 0 })
+  exportsCount: number;
+
+  @Field(() => Number, {
+    description: "The number of exports that have been added for this meeting",
+  })
+  @Column({ default: 0 })
+  numberOfAttendants: number;
+
   @Field(() => String)
   @CreateDateColumn()
   created: Date;

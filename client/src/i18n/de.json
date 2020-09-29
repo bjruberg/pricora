@@ -66,6 +66,7 @@
     "meeting": {
       "title": "Details zur Veranstaltung {meeting}",
       "addAttendant": "Teilnehmer hinzufügen",
+      "exportMeetingList": "Liste exportieren",
       "list": "Teilnehmerliste"
     },
     "meetingadd": {

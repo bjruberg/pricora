@@ -25,6 +25,8 @@ export type Meeting = {
   id: Scalars['ID'];
   user: User;
   archived: Scalars['Boolean'];
+  exportsCount: Scalars['Float'];
+  numberOfAttendants: Scalars['Float'];
   created: Scalars['String'];
   updated: Scalars['String'];
   attendants: Array<EntryOutput>;

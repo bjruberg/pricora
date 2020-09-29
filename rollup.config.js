@@ -106,7 +106,7 @@ export default (CLIArgs) => {
 				language: config.language,
 			 }),
 
-			 url({ limit: 300, destDir: "client/dist/assets", fileName:"[name][extname]", publicPath: "assets/" }), 
+			 url({ limit: 300, destDir: "client/dist/assets", fileName:"[name][extname]", publicPath: config.server.hostname + "/assets/" }), 
 			 
 			 isProduction ? undefined : visualizer()
 		],
