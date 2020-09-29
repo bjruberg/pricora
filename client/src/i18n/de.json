@@ -26,6 +26,7 @@
       "email": "E-Mail",
       "firstName": "Vorname",
       "firstNamePlaceholder": "Max",
+      "isAdmin": "Administrator",
       "lastName": "Nachname",
       "lastNamePlaceholder": "Muster",
       "password": "Passwort"

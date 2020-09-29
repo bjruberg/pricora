@@ -18,6 +18,7 @@ import { RegisterRequest, RegisterResponse } from "../../../../shared/api";
 import { TranslateContext } from "@denysvuika/preact-translate";
 
 interface FormData {
+  isAdmin: boolean;
   email: string;
   firstName: string;
   lastName: string;
@@ -70,6 +71,7 @@ const RegisterPage: FunctionalComponent = () => {
           <Label for="email">{t("entities.user.email")}</Label>
           <Input
             error={!!errors["email"]}
+            id="email"
             placeholder="me@server.com"
             name="email"
             inputRef={register({
@@ -88,6 +90,7 @@ const RegisterPage: FunctionalComponent = () => {
           <Input
             error={!!errors["password"]}
             placeholder="*****"
+            id="password"
             inputRef={register({
               minLength: { value: 8, message: t("forms.atLeast", { count: 8 }) },
               required: t("forms.required"),
@@ -102,6 +105,7 @@ const RegisterPage: FunctionalComponent = () => {
           <Input
             error={!!errors["firstName"]}
             placeholder={t("entities.user.firstNamePlaceholder")}
+            id="firstName"
             inputRef={register({
               required: t("forms.required"),
             })}
@@ -115,6 +119,7 @@ const RegisterPage: FunctionalComponent = () => {
           <Input
             error={!!errors["lastName"]}
             placeholder={t("entities.user.lastNamePlaceholder")}
+            id="lastName"
             inputRef={register({
               required: t("forms.required"),
             })}
@@ -124,19 +129,31 @@ const RegisterPage: FunctionalComponent = () => {
           <ErrorMessage textSize="sm">
             {!!errors["lastName"] ? get(errors["lastName"], "message") : ""}
           </ErrorMessage>
-          <Button
-            className="mr-2"
-            disabled={status === "loading" || submitSuccessful}
-            type="submit"
-            variant="primary"
-          >
-            {t("actions.register")}
-          </Button>
-          {status === "loading" ? <Spinner className="inline" /> : null}
-          {apiError ? <ErrorMessage inline>{apiError}</ErrorMessage> : null}
-          {submitSuccessful ? (
-            <SuccessMessage inline>{t("pages.register.success")}</SuccessMessage>
-          ) : null}
+          <Label class="inline-block" for="isAdmin">
+            {t("entities.user.isAdmin")}:
+            <input
+              class="inline-block m-2"
+              ref={register()}
+              id="isAdmin"
+              name="isAdmin"
+              type="checkbox"
+            />
+          </Label>
+          <div>
+            <Button
+              className="mr-2"
+              disabled={status === "loading" || submitSuccessful}
+              type="submit"
+              variant="primary"
+            >
+              {t("actions.register")}
+            </Button>
+            {status === "loading" ? <Spinner className="inline" /> : null}
+            {apiError ? <ErrorMessage inline>{apiError}</ErrorMessage> : null}
+            {submitSuccessful ? (
+              <SuccessMessage inline>{t("pages.register.success")}</SuccessMessage>
+            ) : null}
+          </div>
           {submitSuccessful ? (
             <div>
               <Button onClick={onRedo} variant="primary">

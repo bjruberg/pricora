@@ -94,7 +94,7 @@ export const createUser = async (password: string, passwordSalt: string): Promis
 };
 
 export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promise<void> => {
-  const { firstName, lastName, password, email } = ctx.request.body;
+  const { firstName, lastName, password, email, isAdmin } = ctx.request.body;
 
   if (!email || email.length < 3) {
     ctx.status = 400;
@@ -125,6 +125,7 @@ export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promis
   newUser.email = email;
   newUser.firstName = firstName;
   newUser.lastName = lastName;
+  newUser.isAdmin = isAdmin;
 
   await userRepository.save(newUser);
   ctx.status = 200;
