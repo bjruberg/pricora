@@ -1,4 +1,5 @@
 import { config } from "node-config-ts";
+import { includes, pick } from "lodash";
 import Koa, { Context } from "koa";
 import koaBody from "koa-body";
 import koaCompress from "koa-compress";
@@ -8,38 +9,42 @@ import koaServe from "koa-static-server";
 import koaGraphql from "koa-graphql";
 import { AuthChecker, buildSchema } from "type-graphql";
 
-import { Connection } from "typeorm";
-
 import {
-  checkUserAuthorization,
+  getUser,
   provideAuthorizationInContext,
   logoutUser,
+  restrictedForAdmins,
   restrictedForUsers,
 } from "./auth";
 
 import { loginUser, registerUser } from "./rest/user";
-import { getConnection } from "./db";
-import { Configuration } from "entity/Configuration";
-import { SharedUser } from "../../shared/user";
+
+import { Configuration } from "./entity/Configuration";
 import { MeetingResolver } from "./resolvers/meeting";
 import { UserResolver } from "./resolvers/user";
+import { User } from "./entity/User";
+import { getConnection } from "./db";
 
-declare module "koa" {
-  interface Context {
-    configuration: Configuration;
-    db: Connection;
-    user?: SharedUser | null;
+const customAuthChecker: AuthChecker<Context> = async ({ context }, roles): Promise<boolean> => {
+  if (!context || !context.user || !context.user.id) {
+    context.throw("Not logged in", 401);
+    return Promise.resolve(false);
   }
 
-  interface AuthorizedContext extends Koa.ParameterizedContext {
-    configuration: Configuration;
-    db: Connection;
-    user: SharedUser;
-  }
-}
+  const user = await context.db.manager.findOne(User, { id: context.user.id });
 
-const customAuthChecker: AuthChecker<Context> = ({ context }) => {
-  return !!context.user && !!context.user.id;
+  if (!user || user.deletedAt) {
+    context.throw("User does not exist", 401);
+    return Promise.resolve(false);
+  }
+
+  if (includes(roles, "ADMIN") && !user.isAdmin) {
+    context.throw("Not an admin", 401);
+    return Promise.resolve(false);
+  }
+
+  context.user = pick(user, ["id", "email", "firstName", "lastName", "isAdmin"]);
+  return Promise.resolve(true);
 };
 
 export const startServer = async (configuration: Configuration): Promise<void> => {
@@ -64,10 +69,10 @@ export const startServer = async (configuration: Configuration): Promise<void> =
 
   const router = new Router<any, Koa.Context>();
 
-  router.get("/api/getUser", restrictedForUsers, checkUserAuthorization);
+  router.get("/api/getUser", restrictedForUsers, getUser);
   router.post("/api/login", koaBody(), loginUser);
   router.post("/api/logout", restrictedForUsers, logoutUser);
-  router.post("/api/register", restrictedForUsers, koaBody(), registerUser);
+  router.post("/api/register", restrictedForAdmins, koaBody(), registerUser);
 
   const schema = await buildSchema({
     authChecker: customAuthChecker,

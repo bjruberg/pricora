@@ -26,7 +26,8 @@
       "types": ["node", "jest"],
       "allowSyntheticDefaultImports": true,
       "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true
+      "forceConsistentCasingInFileNames": true,
+      "typeRoots": ["./src/@types", "./node_modules/@types"],
    },
    "include": ["./src/**/*.ts", "../config/*.ts"],
 }

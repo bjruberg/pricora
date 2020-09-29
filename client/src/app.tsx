@@ -15,10 +15,12 @@ import AddAttendant from "./pages/addattendant";
 import MeetingPage from "./pages/meeting";
 import MeetingAddPage from "./pages/meetingadd";
 import MeetingListPage from "./pages/meetinglist";
-import PrivateRoute from "./components/PrivateRoute";
-import UserMenu from "./components/UserMenu";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
+
+import AdminRoute from "./components/AdminRoute";
+import PrivateRoute from "./components/PrivateRoute";
+import UserMenu from "./components/UserMenu";
 
 import { SharedUser } from "../../shared/user";
 import { UserContext } from "./contexts/user";
@@ -103,14 +105,6 @@ const App = () => {
                 </Link>
               </Fragment>
             ) : null}
-            {user?.isAdmin ? (
-              <Link
-                href={routes.register}
-                class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4"
-              >
-                {t("navigation.addUser")}
-              </Link>
-            ) : null}
           </div>
           <div>
             {(() => {
@@ -143,7 +137,7 @@ const App = () => {
         <Provider value={client}>
           <Router>
             <PrivateRoute path={routes.account} Component={AccountPage} />
-            <PrivateRoute path={routes.register} Component={RegisterPage} />
+            <AdminRoute path={routes.register} Component={RegisterPage} />
             <PrivateRoute path={routes.meeting()} Component={MeetingPage} />
             <PrivateRoute path={routes.meetingadd} Component={MeetingAddPage} />
             <Route path={routes.login} component={LoginPage} />

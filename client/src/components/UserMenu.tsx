@@ -42,6 +42,12 @@ const UserMenu: FunctionalComponent<UserMenuProps> = ({ logout, user }) => {
             {t("navigation.account")}
           </Link>
         </li>
+        {user.isAdmin ? (
+          <Link href={routes.register} class={menuLinkClass} onClick={toggleMenu}>
+            {t("navigation.addUser")}
+          </Link>
+        ) : null}
+
         <li role="none">
           <a
             class={menuLinkClass}

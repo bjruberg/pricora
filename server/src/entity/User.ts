@@ -1,6 +1,7 @@
 import {
   CreateDateColumn,
   Column,
+  DeleteDateColumn,
   Entity,
   Index,
   OneToMany,
@@ -53,4 +54,7 @@ export class User {
 
   @UpdateDateColumn()
   updated: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }
