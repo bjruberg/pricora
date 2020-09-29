@@ -50,9 +50,10 @@ const MeetingAddPage: FunctionalComponent = () => {
       <h1 className="pb-6">{t("pages.meetingadd.title")}</h1>
       <form onSubmit={onSubmit}>
         <div className="container mt-4 max-w-md">
-          <Label for="email">{t("entities.meeting.title")}</Label>
+          <Label for="title">{t("entities.meeting.title")}</Label>
           <Input
             error={!!errors["title"]}
+            id="title"
             placeholder={t("entities.meeting.titlePlaceholder")}
             name="title"
             inputRef={register({
@@ -67,6 +68,7 @@ const MeetingAddPage: FunctionalComponent = () => {
           <Input
             error={!!errors["date"]}
             name="date"
+            id="date"
             inputRef={register({
               required: t("forms.required"),
             })}

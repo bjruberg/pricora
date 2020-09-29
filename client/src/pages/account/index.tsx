@@ -58,12 +58,13 @@ const AccountPage: FunctionalComponent<LoginPageProps> = () => {
         <Card header="Passwort ändern">
           <form onSubmit={onSubmit}>
             <div className="container mt-4 max-w-md">
-              <Label className="mt-4" for="password">
+              <Label className="mt-4" for="currentPassword">
                 {t("pages.account.oldPassword")}
               </Label>
               <Input
                 autocomplete="current-password"
                 error={!!errors["currentPassword"]}
+                id="currentPassword"
                 placeholder="*****"
                 inputRef={register({
                   required: t("forms.required"),
@@ -74,12 +75,13 @@ const AccountPage: FunctionalComponent<LoginPageProps> = () => {
               <ErrorMessage>
                 {!!errors["currentPassword"] ? get(errors["currentPassword"], "message") : ""}
               </ErrorMessage>
-              <Label className="mt-4" for="password">
+              <Label className="mt-4" for="newPassword">
                 {t("pages.account.newPassword")}
               </Label>
               <Input
                 autocomplete="new-password"
                 error={!!errors["newPassword"]}
+                id="newPassword"
                 placeholder="*****"
                 inputRef={register({
                   minLength: { value: 8, message: t("forms.atLeast", { count: 8 }) },

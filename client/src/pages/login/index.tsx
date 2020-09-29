@@ -74,6 +74,7 @@ const LoginPage: FunctionalComponent = () => {
           <Input
             autocomplete="email"
             error={!!errors["username"]}
+            id="username"
             placeholder="me@server.com"
             name="username"
             inputRef={register({
@@ -94,6 +95,7 @@ const LoginPage: FunctionalComponent = () => {
           <Input
             autocomplete="current-password"
             error={!!errors["password"]}
+            id="password"
             placeholder="*****"
             inputRef={register({
               minLength: { value: 8, message: t("forms.atLeast", { count: 8 }) },

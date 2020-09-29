@@ -86,6 +86,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
               <Input
                 autoComplete="given-name"
                 error={!!errors["firstName"]}
+                id="firstName"
                 placeholder={t("entities.attendant.firstNamePlaceholder")}
                 name="firstName"
                 inputRef={register(standardRegister)}
@@ -98,6 +99,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
               <Label for="lastName">{t("entities.attendant.lastName")}</Label>
               <Input
                 autoComplete="family-name"
+                id="lastName"
                 error={!!errors["lastName"]}
                 placeholder={t("entities.attendant.lastNamePlaceholder")}
                 name="lastName"
@@ -110,10 +112,11 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
 
           <div className="container flex mt-4 max-w-md">
             <div className="w-3/4">
-              <Label for="firstName">{t("entities.attendant.address")}</Label>
+              <Label for="title">{t("entities.attendant.address")}</Label>
               <Input
                 autoComplete="street-address"
                 error={!!errors["address"]}
+                id="address"
                 placeholder={t("entities.attendant.addressPlaceholder")}
                 name="address"
                 inputRef={register(standardRegister)}
@@ -123,10 +126,11 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
             </div>
             <div className="flex-initial w-2" />
             <div className="w-1/4">
-              <Label for="lastName">{t("entities.attendant.postal")}</Label>
+              <Label for="zip">{t("entities.attendant.postal")}</Label>
               <Input
                 autoComplete="postal-code"
                 error={!!errors["zip"]}
+                id="zip"
                 placeholder={t("entities.attendant.postalPlaceholder")}
                 name="zip"
                 inputRef={register(standardRegister)}
@@ -144,6 +148,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
               <Input
                 autoComplete="address-level2"
                 error={!!errors["city"]}
+                id="city"
                 placeholder={t("entities.attendant.cityPlaceholder")}
                 name="city"
                 inputRef={register(standardRegister)}
@@ -157,6 +162,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
               <Input
                 autoComplete="country"
                 error={!!errors["country"]}
+                id="country"
                 placeholder={t("entities.attendant.countryPlaceholder")}
                 name="country"
                 inputRef={register(standardRegister)}
