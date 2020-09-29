@@ -6,9 +6,12 @@ Pricora is an node.js based OpenSource solution for attendance lists for events 
 
 - [x] Easy installation on any tiny node.js capable server
 - [x] User Password-based encryption of private data
-- [ ] Private information is hidden from other attendance
+- [ ] Private information is only visible to the meeting owner and not other attendants
+- [ ] Lists of attendans can be exported to csv or xlsx files
 - [ ] Possibility to add personal data using your own mobile device by scanning QR code
-- [ ] Export of encrypted data to various cloud storage servcies (Dropbox, S3)
+- [ ] Safely store the private data on various cloud storage services (Dropbox, S3)
+- [ ] Data of attendants is deleted automatically after a configureable period
+
 
 ## Why using Pricora?
 
@@ -20,6 +23,7 @@ Advantages over paper lists:
 - Attendants can use their own mobile phone to add their contact data (no pen touched by everyone)
 - Exported data is easily readable and search able by health authorities
 - Recorded data can easily be backuped
+- Data of attendants will be automatically deleted after three weeks
 - No waste of paper 
 
 Advantages over other software solutions:
