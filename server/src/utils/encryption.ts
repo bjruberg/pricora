@@ -4,8 +4,13 @@ import { promisify } from "util";
 
 const randomBytes = promisify(crypto.randomBytes);
 const generateKeyPairAsync = promisify(crypto.generateKeyPair);
+const pbkdf2Async = promisify(crypto.pbkdf2);
 
 const bufferToHex = (buffer: Buffer) => buffer.toString("hex");
+
+export const deriveAESKeyFromPassword = (password: string, salt: string): Promise<Buffer> => {
+  return pbkdf2Async(password, salt, 100000, 64, "sha512").then((b) => b.slice(32, 64));
+};
 
 export const generateIV = async (): Promise<string> => {
   return randomBytes(8).then(bufferToHex);

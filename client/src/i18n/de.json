@@ -1,5 +1,6 @@
 {
   "navigation": {
+    "account": "Nutzerprofil",
     "meetinglist": "Veranstaltungsliste",
     "addMeeting": "Veranstaltung anlegen",
     "addUser": "Nutzer anlegen",
@@ -39,9 +40,18 @@
     "add": "Hinzufügen",
     "create": "Erstellen",
     "login": "Anmelden",
-    "register": "Registrieren"
+    "register": "Registrieren",
+    "submit": "Absenden"
   },
   "pages": {
+    "account": {
+      "title": "Nutzerdaten von {name}",
+      "oldPassword": "Altes Passwort",
+      "newPassword": "Neues Passwort",
+      "passwordNotCorrect": "Das angegebene Passwort weicht vom derzeitigen ab",
+      "passwordChangeError": "Passwortänderung fehlgeschlagen",
+      "passwordChangeSuccess": "Passwort erfolgreich geändert"
+    },
     "addattendant": {
       "error": "Hinzufügen fehlgeschlagen",
       "success": "Teilnehmer hinzugefügt",

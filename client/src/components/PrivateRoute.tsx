@@ -1,29 +1,17 @@
 import { FunctionalComponent, h } from "preact";
-import { useContext, useEffect } from "preact/hooks";
-import { TranslateContext } from "@denysvuika/preact-translate";
-import { route } from "preact-router";
+import { useContext } from "preact/hooks";
 
-import PageContainer from "./PageContainer";
+import LoginPage from "../pages/login";
 import { UserContext } from "../contexts/user";
-import { routes } from "../routes";
 
 interface PrivateRouteProps {
   Component: FunctionalComponent<any>;
 }
 
 const PrivateRoute: FunctionalComponent<PrivateRouteProps> = ({ Component, ...props }) => {
-  const user = useContext(UserContext);
-  const { t } = useContext(TranslateContext);
-  useEffect(() => {
-    if (!user) {
-      route(routes.login);
-    }
-  }, [user]);
-  return user?.isAdmin ? (
-    <Component {...props} />
-  ) : (
-    <PageContainer>{t("pleaseLogIn")}</PageContainer>
-  );
+  const { user, isLoading } = useContext(UserContext);
+
+  return isLoading ? null : user ? <Component {...props} /> : <LoginPage />;
 };
 
 export default PrivateRoute;

@@ -3,7 +3,7 @@ import { config } from "node-config-ts";
 import { createClient } from "redis";
 import { promisify } from "util";
 
-const keysByUser: Record<string, string> = {};
+const keysByUser: Record<string, string | null> = {};
 const redisClient = createClient({
   host: config.redis.host,
   port: config.redis.port,
@@ -17,9 +17,9 @@ redisClient.on("error", () => {
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const getAsync = promisify(redisClient.get).bind(redisClient);
 
-export const saveKey = (id: string, key: string): void => {
+export const saveKey = (id: string, key: string | null): void => {
   if (redisClient.connected) {
-    redisClient.set(id, key);
+    redisClient.set(id, key || "");
   } else {
     keysByUser[id] = key;
   }

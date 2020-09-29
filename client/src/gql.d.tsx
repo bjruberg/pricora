@@ -50,6 +50,7 @@ export type EntryOutput = {
 export type Mutation = {
   createMeeting: Meeting;
   addAttendant: Scalars['Boolean'];
+  changePassword: Scalars['Boolean'];
 };
 
 
@@ -61,6 +62,12 @@ export type MutationCreateMeetingArgs = {
 export type MutationAddAttendantArgs = {
   meeting: Scalars['String'];
   input: EntryInput;
+};
+
+
+export type MutationChangePasswordArgs = {
+  newPassword: Scalars['String'];
+  currentPassword: Scalars['String'];
 };
 
 export type MeetingInput = {
@@ -76,6 +83,14 @@ export type EntryInput = {
   city: Scalars['String'];
   country: Scalars['String'];
 };
+
+export type ChangePasswordMutationVariables = Exact<{
+  currentPassword: Scalars['String'];
+  newPassword: Scalars['String'];
+}>;
+
+
+export type ChangePasswordMutation = Pick<Mutation, 'changePassword'>;
 
 export type GetMeetingQueryVariables = Exact<{
   id: Scalars['String'];

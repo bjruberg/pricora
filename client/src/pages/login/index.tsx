@@ -11,6 +11,7 @@ import Input from "../../ui/input";
 import { Label } from "../../ui/label";
 import Spinner from "../../ui/spinner";
 import PageContainer from "../../components/PageContainer";
+import { UserContext } from "../../contexts/user";
 
 import { typedFetch } from "../../utils/typedFetch";
 import { LoginRequest, LoginResponse } from "../../../../shared/api";
@@ -22,12 +23,9 @@ interface FormData {
   password: string;
 }
 
-interface LoginPageProps {
-  refetchUser: () => Promise<unknown>;
-}
-
-const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
+const LoginPage: FunctionalComponent = () => {
   const { t } = useContext(TranslateContext);
+  const { refetchUser } = useContext(UserContext);
   const { errors, handleSubmit, register } = useForm<FormData>();
 
   const [login, { error: apiError, status }] = useMutation<void, number, FormData>(
@@ -80,9 +78,9 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
             name="username"
             inputRef={register({
               validate: {
-                email: (val) => (EmailValidator.validate(val) ? true : t("form.email")),
+                email: (val) => (EmailValidator.validate(val) ? true : t("forms.email")),
               },
-              required: t("form.required"),
+              required: t("forms.required"),
             })}
             required
             type="email"
@@ -98,8 +96,8 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
             error={!!errors["password"]}
             placeholder="*****"
             inputRef={register({
-              minLength: { value: 8, message: t("form.atLeast", { count: 8 }) },
-              required: t("form.required"),
+              minLength: { value: 8, message: t("forms.atLeast", { count: 8 }) },
+              required: t("forms.required"),
             })}
             name="password"
             type="password"
@@ -112,7 +110,7 @@ const LoginPage: FunctionalComponent<LoginPageProps> = ({ refetchUser }) => {
           </Button>
           {status === "loading" ? <Spinner className="inline ml-2" /> : null}
           {apiError ? (
-            <ErrorMessage className="ml-4 inline-block">
+            <ErrorMessage inline className="ml-4 inline-block">
               {(() => {
                 if (apiError === 409) {
                   return t("pages.login.wrongCredentials");

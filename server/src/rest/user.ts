@@ -1,18 +1,70 @@
+import { AuthorizedContext } from "koa";
 import { compare, hash, genSalt } from "bcryptjs";
-import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { includes, pick } from "lodash";
-import { promisify } from "util";
+import { getRepository } from "typeorm";
 import { saveKey } from "../keys";
 import { User } from "../entity/User";
 import {
   encryptDataUsingKey,
   decryptDataUsingKey,
+  deriveAESKeyFromPassword,
   generateInitialSecret,
+  generateIV,
 } from "../utils/encryption";
 import { CustomContext, LoginResponse, RegisterResponse } from "../../../shared/api";
 
-const pbkdf2Async = promisify(crypto.pbkdf2);
+export const changePassword = async (
+  ctx: AuthorizedContext,
+  oldPassword: string,
+  newPassword: string,
+): Promise<boolean> => {
+  if (newPassword.length < 8) {
+    ctx.status = 406;
+    ctx.throw("New password needs to be at least 8 characters long", 406);
+  }
+
+  const userRepository = getRepository(User);
+  const requestedUser = await userRepository.findOne({ id: ctx.user.id });
+
+  if (!requestedUser) {
+    ctx.throw("User is not known", 401);
+  }
+
+  const matches = await compare(oldPassword, requestedUser.password);
+
+  if (!matches) {
+    ctx.status = 406;
+    ctx.throw("The entered password is not the current one", 406);
+  }
+
+  // Prepare to reencrypt the personal private key
+  const keyDerivedFromOldPassword = await deriveAESKeyFromPassword(
+    oldPassword,
+    requestedUser.passwordDeviationSalt,
+  );
+
+  const [oldIV, encryptedSecret] = requestedUser.encryptedSecretWithIV.split(":");
+
+  const decryptedSecret = decryptDataUsingKey(keyDerivedFromOldPassword, oldIV, encryptedSecret);
+
+  const newIV = await generateIV();
+
+  const keyDerivedFromNewPassword = await deriveAESKeyFromPassword(
+    newPassword,
+    requestedUser.passwordDeviationSalt,
+  );
+
+  const newEncryptedSecret = encryptDataUsingKey(keyDerivedFromNewPassword, newIV, decryptedSecret);
+  const newPasswordHash = await hash(newPassword, requestedUser.passwordDeviationSalt);
+
+  requestedUser.encryptedSecretWithIV = [newIV, ":", newEncryptedSecret].join("");
+  requestedUser.password = newPasswordHash;
+
+  return userRepository.save(requestedUser).then(() => {
+    return true;
+  });
+};
 
 export const createUser = async (password: string, passwordSalt: string): Promise<User> => {
   /* Generate a key pair. Public key will be used for encryption, private key will be saved in the database in encrypted form. */
@@ -25,13 +77,7 @@ export const createUser = async (password: string, passwordSalt: string): Promis
 
   const { generatedSecret, generatedInitializationVector } = await generateInitialSecret();
 
-  const keyDerivedFromPassword = await pbkdf2Async(
-    password,
-    generatedUserSalt,
-    100000,
-    64,
-    "sha512",
-  ).then((b) => b.slice(32, 64));
+  const keyDerivedFromPassword = await deriveAESKeyFromPassword(password, generatedUserSalt);
 
   const encryptedSecret = encryptDataUsingKey(
     keyDerivedFromPassword,
@@ -58,10 +104,10 @@ export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promis
     return;
   }
 
-  if (!password || password.length < 6) {
+  if (!password || password.length < 8) {
     ctx.status = 400;
     ctx.body = {
-      msg: "Please enter a password with min. 6 chars",
+      msg: "Please enter a password having min. 8 chars",
     };
     return;
   }
@@ -112,18 +158,15 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
   }
 
   try {
-    const keyDerivedFromPassword = await pbkdf2Async(
+    const keyDerivedFromPassword = await deriveAESKeyFromPassword(
       password,
       requestedUser.passwordDeviationSalt,
-      100000,
-      64,
-      "sha512",
-    ).then((b) => b.slice(32, 64));
+    );
 
-    const [iv, encryptendSecret] = requestedUser.encryptedSecretWithIV.split(":");
+    const [iv, encryptedSecret] = requestedUser.encryptedSecretWithIV.split(":");
 
     // Setup AES description using the passwordDerivedKey
-    const decryptedUserSecret = decryptDataUsingKey(keyDerivedFromPassword, iv, encryptendSecret);
+    const decryptedUserSecret = decryptDataUsingKey(keyDerivedFromPassword, iv, encryptedSecret);
 
     saveKey(requestedUser.id, decryptedUserSecret);
   } catch (e) {

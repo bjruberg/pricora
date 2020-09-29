@@ -1,6 +1,7 @@
 import { getConnection } from "typeorm";
 import { AuthorizedContext, Context, Next } from "koa";
 import jwt from "jsonwebtoken";
+import { saveKey } from "./keys";
 import { SharedUser } from "../../shared/user";
 import { User } from "./entity/User";
 
@@ -13,7 +14,8 @@ export const checkUserAuthorization = async (ctx: AuthorizedContext): Promise<vo
   }
 };
 
-export const logoutUser = async (ctx: Context, next: Next): Promise<void> => {
+export const logoutUser = async (ctx: AuthorizedContext, next: Next): Promise<void> => {
+  saveKey(ctx.user.id, null);
   ctx.cookies.set("Authorization", "");
   ctx.status = 200;
   await next();

@@ -72,7 +72,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
   }, [addMeeting, handleSubmit, uuid]);
 
   const standardRegister = {
-    required: t("form.required"),
+    required: t("forms.required"),
   };
 
   if (data) {

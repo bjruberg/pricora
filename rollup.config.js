@@ -4,7 +4,8 @@ import { config } from "node-config-ts";
 import commonjs from '@rollup/plugin-commonjs';
 import html, { makeHtmlAttributes } from '@rollup/plugin-html';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
-import postcss from 'rollup-plugin-postcss'
+import postcss from 'rollup-plugin-postcss';
+import url from '@rollup/plugin-url';
 import resolve from '@rollup/plugin-node-resolve';
 import visualizer from 'rollup-plugin-visualizer';
 import autoprefixer from 'autoprefixer'
@@ -104,6 +105,8 @@ export default (CLIArgs) => {
 				hostname: config.server.hostname,
 				language: config.language,
 			 }),
+
+			 url({ limit: 300, destDir: "client/dist/assets", fileName:"[name][extname]", publicPath: "assets/" }), 
 			 
 			 isProduction ? undefined : visualizer()
 		],

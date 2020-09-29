@@ -22,6 +22,7 @@ import { getConnection } from "./db";
 import { Configuration } from "entity/Configuration";
 import { SharedUser } from "../../shared/user";
 import { MeetingResolver } from "./resolvers/meeting";
+import { UserResolver } from "./resolvers/user";
 
 declare module "koa" {
   interface Context {
@@ -70,7 +71,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
 
   const schema = await buildSchema({
     authChecker: customAuthChecker,
-    resolvers: [MeetingResolver],
+    resolvers: [MeetingResolver, UserResolver],
     emitSchemaFile: {
       path: __dirname + "/../../shared/schema.gql",
       commentDescriptions: true,
@@ -105,7 +106,6 @@ export const startServer = async (configuration: Configuration): Promise<void> =
     }),
   );
 
-  // Serve files required for client
   app.use(
     koaServe({
       rootDir: `${__dirname}/../../client/dist`,

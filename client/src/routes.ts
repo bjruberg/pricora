@@ -1,4 +1,5 @@
 export const routes = {
+  account: "/account",
   login: "/login",
   meetingadd: "/meetingadd",
   meetinglist: "/meetinglist",

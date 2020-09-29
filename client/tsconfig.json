@@ -21,8 +21,9 @@
     "jsx": "react",
     "jsxFactory": "h",
     "skipLibCheck": true, // preact documentation for integration react libs in preact using ts
+    "typeRoots": ["./src/@types", "./node_modules/@types"],
   },
-  "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/i18n/de.js", "src/i18n/en.js"],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/i18n/*", "assets/*"],
   "exclude": [
     "dist"
   ]

@@ -1,20 +1,22 @@
 import { Fragment, h, render } from "preact";
 import "preact/devtools";
 import cn from "classnames";
-import { useContext, useState } from "preact/hooks";
+import { useContext, useMemo, useState } from "preact/hooks";
 import { TranslateContext, TranslateProvider } from "@denysvuika/preact-translate";
-import Router, { Route, route } from "preact-router";
+import Router, { Route } from "preact-router";
 import { Link } from "preact-router/match";
 import { useQuery, useMutation } from "react-query";
 import { createClient, Provider } from "@urql/preact";
 import { get } from "lodash";
 import "./base.css";
 
+import AccountPage from "./pages/account";
 import AddAttendant from "./pages/addattendant";
 import MeetingPage from "./pages/meeting";
 import MeetingAddPage from "./pages/meetingadd";
 import MeetingListPage from "./pages/meetinglist";
 import PrivateRoute from "./components/PrivateRoute";
+import UserMenu from "./components/UserMenu";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 
@@ -55,7 +57,6 @@ const App = () => {
       },
       method: "POST",
     }).then(() => {
-      route(routes.login);
       remove();
     });
   });
@@ -123,12 +124,7 @@ const App = () => {
                   </Link>
                 ) : (
                   <Fragment>
-                    <button
-                      class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-blue-900 hover:bg-white mt-4 lg:mt-0"
-                      onClick={() => logout()}
-                    >
-                      {t("navigation.logout")}
-                    </button>
+                    <UserMenu logout={logout} user={user} />
                   </Fragment>
                 );
               }
@@ -137,13 +133,20 @@ const App = () => {
           </div>
         </nav>
       </header>
-      <UserContext.Provider value={user}>
+      <UserContext.Provider
+        value={useMemo(() => ({ user, refetchUser: refetch, isLoading }), [
+          user,
+          isLoading,
+          refetch,
+        ])}
+      >
         <Provider value={client}>
           <Router>
+            <PrivateRoute path={routes.account} Component={AccountPage} />
             <PrivateRoute path={routes.register} Component={RegisterPage} />
             <PrivateRoute path={routes.meeting()} Component={MeetingPage} />
             <PrivateRoute path={routes.meetingadd} Component={MeetingAddPage} />
-            <Route path={routes.login} refetchUser={refetch} component={LoginPage} />
+            <Route path={routes.login} component={LoginPage} />
             <PrivateRoute path={routes.meetinglist} Component={MeetingListPage} />
             <Route path={routes.addattendant()} component={AddAttendant} />
             <PrivateRoute path="/" Component={MeetingListPage} />
