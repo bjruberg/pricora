@@ -20,18 +20,18 @@ Pricora's goal is to provide a simple installable and maintainable software pack
 It should be used by public institutions that need to keep records of attendances (e.g. for Covid tracking). Pricora is not a hosted service. The data should remain inside of the application and can only be accessed by the users running Pricora. 
 
 Advantages over paper lists:
-- Attendants can not access to contact data from other people
-- Attendants can use their own mobile phone to add their contact data (no pen touched by everyone)
-- Exported data is easily readable and search able by health authorities
+- Attendants have no access to contact data of other attendants
+- Attendants can use their own mobile phone to add their contact data (no pen or paper touched by everyone)
+- Exported data is easily readable and search able by health authorities and can be transmitted by email
 - Recorded data can easily be backuped
 - Data of attendants will be automatically deleted after three weeks
 - No waste of paper 
 
 Advantages over other software solutions:
-- No app needs to be installed by the attendant on their phone (purely web based!)
-- Data remains under your control and will not be transfered to servers of other parties
+- No app needs to be installed by the attendants on their phones (pricora is web based)
+- Data remains under your control and will not be transfered to servers of other parties (check it, it is OpenSource)
 - Data can be saved on public cloud storages because it is encrypted
-- Data can not be restored without passwords that you keep save
+- Data can not be decrypted without the passwords that you keep save
 
 
 ## Technologies used
