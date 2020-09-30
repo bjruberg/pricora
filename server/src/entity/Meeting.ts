@@ -2,6 +2,7 @@ import {
   CreateDateColumn,
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -9,6 +10,7 @@ import {
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 
 import { User } from "./User";
+import { EntryOutput } from "../entity_meeting/Entry";
 
 @ObjectType()
 @InputType()
@@ -30,8 +32,12 @@ export class Meeting extends MeetingInput {
   id: string;
 
   @Field(() => User, { description: "The user that owns the meeting" })
+  @JoinColumn({ name: "userId" })
   @ManyToOne(() => User, (user) => user.meetings)
   user: Promise<User>;
+
+  @Column({ nullable: false })
+  userId: string;
 
   @Field(() => Boolean, { description: "Is this an archived or an active meeting" })
   @Column({ default: false })
@@ -56,4 +62,13 @@ export class Meeting extends MeetingInput {
   @Field(() => String)
   @UpdateDateColumn()
   updated: Date;
+}
+
+@ObjectType()
+export class Attendants {
+  @Field(() => [EntryOutput])
+  list: EntryOutput[];
+
+  @Field()
+  error: string;
 }

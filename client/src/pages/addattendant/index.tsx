@@ -1,7 +1,9 @@
 import { FunctionalComponent, h } from "preact";
 import { useContext, useMemo } from "preact/hooks";
 import { useQuery, useMutation } from "@urql/preact";
+import { format, parseISO } from "date-fns";
 import gql from "graphql-tag";
+import { get } from "lodash";
 import { useForm } from "react-hook-form";
 
 import PageContainer from "../../components/PageContainer";
@@ -24,6 +26,7 @@ const meetingQuery = gql`
     meeting(id: $id) {
       id
       archived
+      date
       title
     }
   }
@@ -45,31 +48,46 @@ interface FormData {
 }
 
 interface AddAttendantProps {
+  matches: Record<string, string>;
   uuid: string;
 }
 
-const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
+const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uuid }) => {
+  const urqlContext = useMemo(() => {
+    return {
+      url: `${get(process.env, "hostname", "")}/graphql${
+        matches.auth ? `?auth=${matches.auth}` : ""
+      }`,
+    };
+  }, [matches.auth]);
+
   const { t } = useContext(TranslateContext);
   const { errors, handleSubmit, register } = useForm<FormData>();
-  const [{ data }] = useQuery<GetMeetingQuery, GetMeetingQueryVariables>({
+  const [{ data, error: fetchMeetingError }] = useQuery<GetMeetingQuery, GetMeetingQueryVariables>({
+    context: urqlContext,
     query: meetingQuery,
     requestPolicy: "cache-and-network",
     variables: { id: uuid },
   });
 
-  const [{ data: isSaved, error, fetching }, addMeeting] = useMutation<
+  const isUnauthorized = get(fetchMeetingError, "response.status") === 401;
+
+  const [{ data: isSaved, error: additionError, fetching }, addMeeting] = useMutation<
     AddAttendantMutation,
     AddAttendantMutationVariables
   >(addEntryMutation);
 
   const onSubmit = useMemo(() => {
     return handleSubmit((entry) => {
-      void addMeeting({
-        id: uuid,
-        input: entry,
-      });
+      void addMeeting(
+        {
+          id: uuid,
+          input: entry,
+        },
+        urqlContext,
+      );
     });
-  }, [addMeeting, handleSubmit, uuid]);
+  }, [addMeeting, urqlContext, handleSubmit, uuid]);
 
   const standardRegister = {
     required: t("forms.required"),
@@ -78,7 +96,12 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
   if (data) {
     return (
       <PageContainer>
-        <h1>{t("pages.addattendant.title", { meeting: data.meeting.title })}</h1>
+        <h1>
+          {t("pages.addattendant.title", {
+            meeting: data.meeting.title,
+            on: format(parseISO(data.meeting.date), process.env.dateFormat),
+          })}
+        </h1>
         <form onSubmit={onSubmit}>
           <div className="container flex mt-4 max-w-md">
             <div className="flex-1">
@@ -173,10 +196,10 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
             </div>
           </div>
 
-          <Button disabled={fetching} type="submit" variant="primary">
+          <Button class="mt-6" disabled={fetching} type="submit" variant="primary">
             {t("actions.add")}
           </Button>
-          {error ? (
+          {additionError ? (
             <ErrorMessage className="ml-2" inline>
               {t("pages.addattendant.error")}
             </ErrorMessage>
@@ -188,6 +211,14 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
           ) : null}
           {fetching ? <Spinner className="inline ml-2" /> : null}
         </form>
+      </PageContainer>
+    );
+  }
+
+  if (isUnauthorized) {
+    return (
+      <PageContainer>
+        <ErrorMessage>{t("pages.addattendant.unauthorized")}</ErrorMessage>
       </PageContainer>
     );
   }

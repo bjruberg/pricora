@@ -107,7 +107,7 @@ const LoginPage: FunctionalComponent = () => {
           <ErrorMessage>
             {!!errors["password"] ? get(errors["password"], "message") : ""}
           </ErrorMessage>
-          <Button disabled={status === "loading"} type="submit" variant="primary">
+          <Button class="mt-6" disabled={status === "loading"} type="submit" variant="primary">
             {t("actions.login")}
           </Button>
           {status === "loading" ? <Spinner className="inline ml-2" /> : null}

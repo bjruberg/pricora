@@ -29,13 +29,18 @@ export type Meeting = {
   numberOfAttendants: Scalars['Float'];
   created: Scalars['String'];
   updated: Scalars['String'];
-  attendants: Array<EntryOutput>;
+  attendants: Attendants;
 };
 
 export type User = {
   id: Scalars['ID'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
+};
+
+export type Attendants = {
+  list: Array<EntryOutput>;
+  error: Scalars['String'];
 };
 
 export type EntryOutput = {
@@ -52,6 +57,7 @@ export type EntryOutput = {
 export type Mutation = {
   createMeeting: Meeting;
   addAttendant: Scalars['Boolean'];
+  createAuthToken: Scalars['String'];
   changePassword: Scalars['Boolean'];
 };
 
@@ -64,6 +70,11 @@ export type MutationCreateMeetingArgs = {
 export type MutationAddAttendantArgs = {
   meeting: Scalars['String'];
   input: EntryInput;
+};
+
+
+export type MutationCreateAuthTokenArgs = {
+  meetingId: Scalars['String'];
 };
 
 
@@ -99,7 +110,7 @@ export type GetMeetingQueryVariables = Exact<{
 }>;
 
 
-export type GetMeetingQuery = { meeting: Pick<Meeting, 'id' | 'archived' | 'title'> };
+export type GetMeetingQuery = { meeting: Pick<Meeting, 'id' | 'archived' | 'date' | 'title'> };
 
 export type AddAttendantMutationVariables = Exact<{
   id: Scalars['String'];
@@ -109,14 +120,24 @@ export type AddAttendantMutationVariables = Exact<{
 
 export type AddAttendantMutation = Pick<Mutation, 'addAttendant'>;
 
+export type CreateMeetingTokenMutationVariables = Exact<{
+  meetingId: Scalars['String'];
+}>;
+
+
+export type CreateMeetingTokenMutation = Pick<Mutation, 'createAuthToken'>;
+
 export type GetMeetingDetailsQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
 export type GetMeetingDetailsQuery = { meeting: (
-    Pick<Meeting, 'id' | 'archived' | 'title'>
-    & { attendants: Array<Pick<EntryOutput, 'id' | 'firstName' | 'lastName'>> }
+    Pick<Meeting, 'id' | 'archived' | 'date' | 'title'>
+    & { attendants: (
+      Pick<Attendants, 'error'>
+      & { list: Array<Pick<EntryOutput, 'id' | 'firstName' | 'lastName'>> }
+    ) }
   ) };
 
 export type AddMeetingMutationVariables = Exact<{

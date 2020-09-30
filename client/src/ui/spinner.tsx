@@ -4,12 +4,13 @@ import cn from "classnames";
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 interface SpinnerProps extends JSX.SVGAttributes<SVGSVGElement> {
   className?: string;
+  customColor?: boolean;
 }
 
-const Spinner: FunctionalComponent<SpinnerProps> = ({ className }) => {
+const Spinner: FunctionalComponent<SpinnerProps> = ({ className, customColor }) => {
   return (
     <svg
-      class={cn("animate-spin h-5 w-5 text-blue-700", className)}
+      class={cn("animate-spin h-5 w-5", { "text-blue-700": !customColor }, className)}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

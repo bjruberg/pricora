@@ -29,5 +29,5 @@
       "forceConsistentCasingInFileNames": true,
       "typeRoots": ["./src/@types", "./node_modules/@types"],
    },
-   "include": ["./src/**/*.ts", "../config/*.ts"],
+   "include": ["./src/**/*.ts", "../config/*.ts", "src/jobs/removeOldTokens.ts"],
 }

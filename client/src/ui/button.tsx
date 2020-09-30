@@ -11,11 +11,12 @@ const Button: FunctionalComponent<ButtonProps> = ({ className, disabled, variant
     <button
       {...props}
       className={cn(
+        "text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
         {
-          "text-white font-bold py-2 px-4 mt-6 rounded focus:outline-none focus:shadow-outline":
-            variant === "primary",
-          "bg-blue-500 hover:bg-blue-700": !disabled,
-          "bg-gray-500 hover:bg-gray-700 cursor-not-allowed": disabled,
+          "cursor-not-allowed": disabled,
+          "bg-blue-500 hover:bg-blue-700": variant === "primary" && !disabled,
+          "bg-green-500 hover:bg-green-700": variant === "secondary" && !disabled,
+          "bg-gray-500 hover:bg-gray-700": disabled,
         },
         className,
       )}

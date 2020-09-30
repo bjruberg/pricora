@@ -35,7 +35,7 @@ const UserMenu: FunctionalComponent<UserMenuProps> = ({ logout, user }) => {
         role="menu"
       >
         <div class="px-2 border-gray-500">
-          Hallo <strong>{user.firstName}</strong>
+          {t("navigation.hello")} <strong>{user.firstName}</strong>
         </div>
         <li role="none">
           <Link class={menuLinkClass} href={routes.account} onClick={toggleMenu} role="menuitem">

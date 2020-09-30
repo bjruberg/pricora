@@ -7,9 +7,10 @@ import { Connection, getConnection, getRepository } from "typeorm";
 
 import { sourcePlugin } from "../listservice/plugin";
 import { Meta } from "../entity_meeting/Meta";
-import { Entry, EntryInput, EntryOutput } from "../entity_meeting/Entry";
+import { Entry, EntryInput } from "../entity_meeting/Entry";
 import { Secret } from "../entity_meeting/Secret";
-import { Meeting, MeetingInput } from "../entity/Meeting";
+import { Meeting, MeetingInput, Attendants } from "../entity/Meeting";
+import { MeetingToken } from "../entity/MeetingToken";
 import { User } from "../entity/User";
 import { getKey } from "../keys";
 
@@ -23,7 +24,7 @@ export const decryptMeeting = async (
   const connection = await sourcePlugin.getConnection(meetingId);
 
   if (!connection) {
-    ctx.throw("Requested meeting is not available", 412);
+    throw new Error("Requested meeting is not available");
   }
 
   const entryRepo = connection.getRepository(Entry);
@@ -33,13 +34,13 @@ export const decryptMeeting = async (
   const secret = await secretRep.findOne({ user_id: ctx.user.id });
 
   if (!secret) {
-    ctx.throw("User has no secret for this meeting", 401);
+    throw new Error("User has no secret for this meeting");
   }
 
   const userSecret = await getKey(ctx.user.id);
 
   if (!userSecret) {
-    ctx.throw("Need to relogin to unlock user secret", 401);
+    throw new Error("Need to relogin to unlock user secret");
   }
 
   const meetingDecryptionKey = decryptDataUsingKey(
@@ -83,13 +84,26 @@ export class MeetingResolver {
     return this.meetingRepo.find();
   }
 
-  @Authorized()
+  @Authorized("ATTENDANT")
   @Query(() => Meeting)
   async meeting(@Arg("id") id: string, @Ctx() ctx: AuthorizedContext): Promise<Meeting> {
     const meeting = await this.meetingRepo.findOne({ id });
+
     if (!meeting) {
       ctx.throw(`Failed to find the meeting ${id} in the local database`, 400);
     }
+
+    if (ctx.request.query.auth) {
+      // user has probably authorized via meetingToken
+      const meetingToken = await ctx.db.manager.findOne(MeetingToken, {
+        id: ctx.request.query.auth,
+      });
+      if (!meetingToken || meetingToken.meetingId !== id) {
+        // We have a valid access token - but for another meeting
+        ctx.throw("You do not have the authorization to add attendants to this meeting", 401);
+      }
+    }
+
     return meeting;
   }
 
@@ -187,17 +201,31 @@ export class MeetingResolver {
     return newMeeting;
   }
 
-  @Authorized()
+  @Authorized("ATTENDANT")
   @Mutation(() => Boolean)
   async addAttendant(
     @Arg("input") input: EntryInput,
     @Arg("meeting") uuid: string,
     @Ctx() ctx: AuthorizedContext,
   ): Promise<boolean> {
-    const connection = await sourcePlugin.getConnection(uuid);
+    const [meeting, connection] = await Promise.all([
+      getConnection().manager.findOne(Meeting, { id: uuid }),
+      sourcePlugin.getConnection(uuid),
+    ]);
 
-    if (!connection) {
+    if (!meeting || !connection) {
       ctx.throw("Requested meeting is not available for addition", 412);
+    }
+
+    if (ctx.request.query.auth) {
+      // user has probably authorized via meetingToken
+      const meetingToken = await getConnection().manager.findOne(MeetingToken, {
+        id: ctx.request.query.auth,
+      });
+      if (!meetingToken || meetingToken.meetingId !== uuid) {
+        // We have a valid access token - but for another meeting
+        ctx.throw("You do not have the authorization to add attendants to this meeting", 401);
+      }
     }
 
     const queryRunner = connection.createQueryRunner();
@@ -227,7 +255,6 @@ export class MeetingResolver {
       await queryRunner.manager.save(entry);
       await queryRunner.commitTransaction();
 
-      const meeting = await getConnection().manager.findOne(Meeting, { id: uuid });
       if (meeting) {
         meeting.numberOfAttendants = meeting.numberOfAttendants + 1;
         void getConnection().manager.save(meeting);
@@ -241,11 +268,40 @@ export class MeetingResolver {
     return sourcePlugin.updated(uuid).then(() => true);
   }
 
-  @FieldResolver(() => [EntryOutput])
-  async attendants(
-    @Root() meeting: Meeting,
+  @Authorized()
+  @Mutation(() => String)
+  async createAuthToken(
+    @Arg("meetingId") id: string,
     @Ctx() ctx: AuthorizedContext,
-  ): Promise<EntryOutput[]> {
-    return decryptMeeting(ctx, meeting.id);
+  ): Promise<string> {
+    const meeting = await ctx.db.manager.findOne(Meeting, { id });
+
+    if (!meeting || meeting.userId !== ctx.user.id) {
+      ctx.throw("This is not your meeting", 406);
+    }
+
+    const token = ctx.db.manager.create(MeetingToken);
+    token.meetingId = id;
+
+    const createdToken = await ctx.db.manager.save(token);
+    return createdToken.id;
+  }
+
+  @FieldResolver(() => Attendants)
+  async attendants(@Root() meeting: Meeting, @Ctx() ctx: AuthorizedContext): Promise<Attendants> {
+    return decryptMeeting(ctx, meeting.id).then(
+      (list) => {
+        return {
+          list,
+          error: "",
+        };
+      },
+      (err) => {
+        return {
+          list: [],
+          error: String(err),
+        };
+      },
+    );
   }
 }

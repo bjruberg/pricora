@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { getConnection } from "./db";
 import { startServer } from "./server";
 import { createUser } from "./rest/user";
+import removeOldTokens from "./jobs/removeOldTokens";
 import { init } from "./listservice/initialize";
 
 import { Configuration } from "./entity/Configuration";
@@ -35,6 +36,8 @@ const initializeApp = async (): Promise<void> => {
   void startServer(configuration);
   void configRepository.save(configuration);
   void init();
+  removeOldTokens();
+  setInterval(removeOldTokens, 1000 * 60 * 2);
 };
 
 void initializeApp();

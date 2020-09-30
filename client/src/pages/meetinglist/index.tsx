@@ -2,7 +2,7 @@ import { Fragment, FunctionalComponent, h } from "preact";
 import { Link } from "preact-router/match";
 import { useQuery } from "@urql/preact";
 import gql from "graphql-tag";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import PageContainer from "../../components/PageContainer";
 import { GetMeetingsQuery, GetMeetingsQueryVariables } from "./index.gql";
 import { Card } from "../../components/Card";
@@ -41,7 +41,7 @@ const ArrangementsPage: FunctionalComponent = () => {
                     {meeting.title}
                   </Link>
                   <span class="float-right text-gray-600">
-                    {format(new Date(meeting.date), "MM/dd/yyyy")}
+                    {format(parseISO(meeting.date), process.env.dateFormat)}
                   </span>
                 </Fragment>
               }

@@ -76,7 +76,7 @@ const MeetingAddPage: FunctionalComponent = () => {
             type="date"
           />
           <ErrorMessage>{!!errors["date"] ? get(errors["date"], "message") : ""}</ErrorMessage>
-          <Button disabled={fetching} type="submit" variant="primary">
+          <Button class="mt-6" disabled={fetching} type="submit" variant="primary">
             {t("actions.create")}
           </Button>
           {fetching ? <Spinner className="inline ml-2" /> : null}

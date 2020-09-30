@@ -1,5 +1,5 @@
 import { config } from "node-config-ts";
-import { includes, pick } from "lodash";
+
 import Koa, { Context } from "koa";
 import koaBody from "koa-body";
 import koaCompress from "koa-compress";
@@ -7,10 +7,11 @@ import koaError from "koa-better-error-handler";
 import Router from "koa-router";
 import koaServe from "koa-static-server";
 import koaGraphql from "koa-graphql";
-import { AuthChecker, buildSchema } from "type-graphql";
+import { buildSchema } from "type-graphql";
 
 import {
   getUser,
+  graphqlAuthChecker,
   provideAuthorizationInContext,
   logoutUser,
   restrictedForAdmins,
@@ -22,31 +23,8 @@ import { loginUser, registerUser } from "./rest/user";
 import { Configuration } from "./entity/Configuration";
 import { MeetingResolver } from "./resolvers/meeting";
 import { UserResolver } from "./resolvers/user";
-import { User } from "./entity/User";
 import { getConnection } from "./db";
 import { exportMeeting } from "./rest/export";
-
-const customAuthChecker: AuthChecker<Context> = async ({ context }, roles): Promise<boolean> => {
-  if (!context || !context.user || !context.user.id) {
-    context.throw("Not logged in", 401);
-    return Promise.resolve(false);
-  }
-
-  const user = await context.db.manager.findOne(User, { id: context.user.id });
-
-  if (!user || user.deletedAt) {
-    context.throw("User does not exist", 401);
-    return Promise.resolve(false);
-  }
-
-  if (includes(roles, "ADMIN") && !user.isAdmin) {
-    context.throw("Not an admin", 401);
-    return Promise.resolve(false);
-  }
-
-  context.user = pick(user, ["id", "email", "firstName", "lastName", "isAdmin"]);
-  return Promise.resolve(true);
-};
 
 export const startServer = async (configuration: Configuration): Promise<void> => {
   const app = new Koa();
@@ -77,7 +55,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
   router.get("/api/exportMeeting", restrictedForUsers, exportMeeting);
 
   const schema = await buildSchema({
-    authChecker: customAuthChecker,
+    authChecker: graphqlAuthChecker,
     resolvers: [MeetingResolver, UserResolver],
     emitSchemaFile: {
       path: __dirname + "/../../shared/schema.gql",

@@ -48,7 +48,7 @@ const App = () => {
         return Promise.reject();
       });
     },
-    { retry: false },
+    { retry: false, refetchOnWindowFocus: false },
   );
 
   const [logout] = useMutation(() => {

@@ -4,6 +4,7 @@
     "meetinglist": "Veranstaltungsliste",
     "addMeeting": "Veranstaltung anlegen",
     "addUser": "Nutzer anlegen",
+    "hello": "Hallo",
     "login": "Login",
     "logout": "Ausloggen"
   },
@@ -56,7 +57,8 @@
     "addattendant": {
       "error": "Hinzufügen fehlgeschlagen",
       "success": "Teilnehmer hinzugefügt",
-      "title": "Eintragen für {meeting}"
+      "title": "Eintragen für {meeting} am {on}",
+      "unauthorized": "Sie haben keine gültigen Zugangsdaten für diese Veranstaltung."
     },
     "login": {
       "title": "Als Benutzer anmelden",
@@ -67,7 +69,9 @@
       "title": "Details zur Veranstaltung {meeting}",
       "addAttendant": "Teilnehmer hinzufügen",
       "exportMeetingList": "Liste exportieren",
-      "list": "Teilnehmerliste"
+      "list": "Teilnehmerliste",
+      "shareExplanation": "Sie können folgend einen Link erstellen, den Teilnehmer benutzen können um sich für die Veranstaltung einzutragen",
+      "createShareLink": "Erstelle Link für Teilnehmer"
     },
     "meetingadd": {
       "title": "Veranstaltung anlegen"
