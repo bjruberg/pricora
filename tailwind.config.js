@@ -2,6 +2,9 @@
 const { colors } = require('tailwindcss/defaultTheme')
 
 module.exports = {
+  purge: [
+    './client/src/**/*.tsx',
+  ],
   theme: {
     colors: {
       // Remove colors indigo and purple
@@ -42,5 +45,9 @@ module.exports = {
       objectFit: false,
       objectPosition: false,
     }
-  }
+  },
+  future: {
+    purgeLayersByDefault: true,
+    removeDeprecatedGapUtilities: true,
+  },
 }

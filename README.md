@@ -26,6 +26,7 @@ Advantages over paper lists:
 - Recorded data can easily be backuped
 - Data of attendants will be automatically deleted after three weeks
 - No waste of paper 
+- Owners can immediately check whether their guests use serious names on their own device
 
 Advantages over other software solutions:
 - No app needs to be installed by the attendants on their phones (pricora is web based)

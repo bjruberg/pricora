@@ -7,10 +7,15 @@ import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import postcss from 'rollup-plugin-postcss';
 import url from '@rollup/plugin-url';
 import resolve from '@rollup/plugin-node-resolve';
+import { terser } from "rollup-plugin-terser";
+
 import visualizer from 'rollup-plugin-visualizer';
+import cssnano from "cssnano"
 import autoprefixer from 'autoprefixer'
 import cssimport from 'postcss-import'
 import tailwindcss from 'tailwindcss'
+
+import path from "path";
 
 const extensions = [ '.js', '.jsx', '.ts', '.tsx' ];
 
@@ -97,7 +102,7 @@ export default (CLIArgs) => {
 			}),
 			
 			postcss({
-				plugins: [cssimport, tailwindcss, autoprefixer]
+				plugins: [cssimport, tailwindcss].concat(isProduction ? [cssnano({ preset: "default"}), autoprefixer] : [])
 			}),
 			
 			injectProcessEnv({ 
@@ -107,18 +112,30 @@ export default (CLIArgs) => {
 				language: config.language,
 			 }),
 
+			 isProduction ? terser() : undefined,
+
 			 url({ limit: 300, destDir: "client/dist/assets", fileName:"[name][extname]", publicPath: config.server.hostname + "/assets/" }), 
 			 
-			 isProduction ? undefined : visualizer()
+			 visualizer()
 		],
 
 		output: [
 			{
-				file: 'client/dist/bundle.esm.js',
+				entryFileNames: isProduction ? "[name]-[hash].js" : "[name].js",
+				dir: 'client/dist/',
 				format: 'es',
 				globals: {}
 			}
 		],
+
+		manualChunks(id) {
+			if (id.includes('node_modules')) {
+				// Return the directory name following the last `node_modules`.
+				// Usually this is the package, but it could also be the scope.
+				const dirs = id.split(path.sep);
+				return dirs[dirs.lastIndexOf('node_modules') + 1];
+			}
+		},
 
 		watch: {
 			buildDelay: 2000

@@ -4,14 +4,17 @@
   "description": "Simple installable node.js based web application for handling attendance lists",
   "main": "index.ts",
   "scripts": {
-    "build:js": "NODE_ENV=production rollup -c",
+    "build": "concurrently \"npm:build:client\" \"npm:build:server\"",
+    "build:server": "NODE_ENV=production tsc --build server/tsconfig.json",
+    "build:client": "NODE_ENV=production rollup -c",
     "dev": "concurrently \"npm:dev:rollup\" \"npm:dev:types\" \"npm:dev:server\"",
     "dev:client": "concurrently \"npm:dev:rollup\" \"npm:dev:types\"",
     "dev:rollup": "NODE_ENV=dev rollup -c --watch",
-    "dev:types": "graphql-codegen generate --watch",
-    "dev:server": "NODE_ENV=\"development\" ts-node-dev --script-mode --transpile-only --respawn server/src/app.ts",
     "dev:redis": "redis-server redis.conf",
+    "dev:server": "NODE_ENV=\"development\" ts-node-dev --script-mode --transpile-only --respawn server/src/app.ts",
+    "dev:types": "graphql-codegen generate --watch",
     "postinstall": "node-config-ts",
+    "start": "NODE_ENV=production node server/build/app.js",
     "test": "jest"
   },
   "author": "Björn Ruberg",
@@ -29,9 +32,9 @@
     "@graphql-codegen/typescript-operations": "^1.17.8",
     "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-babel": "5.2.0",
-    "@rollup/plugin-commonjs": "15.0.0",
+    "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-html": "^0.2.0",
-    "@rollup/plugin-node-resolve": "9.0.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-url": "^5.0.1",
     "@types/bcryptjs": "^2.4.2",
     "@types/classnames": "^2.2.10",
@@ -99,12 +102,12 @@
     "lodash": "^4.17.20",
     "node-config-ts": "^3.0.4",
     "preact": "^10.4.8",
-    "preact-compat": "^3.19.0",
     "preact-router": "^3.2.1",
     "qrcode.react": "^1.0.0",
     "react-hook-form": "^6.8.2",
     "react-query": "^2.21.0",
     "reflect-metadata": "^0.1.13",
+    "rollup-plugin-terser": "^7.0.2",
     "sqlite": "^4.0.14",
     "sqlite3": "^5.0.0",
     "type-graphql": "^1.0.0",
@@ -112,5 +115,9 @@
     "urql": "^1.10.1",
     "uuid": "^8.3.0"
   },
-  "browserslist": "> 0.25%, not dead, not IE 11, not IE_Mob 11"
+  "browserslist": "> 0.25%, not dead, not IE 11, not IE_Mob 11, not op_mini all, not ios_saf 10.3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bjruberg/pricora"
+  }
 }

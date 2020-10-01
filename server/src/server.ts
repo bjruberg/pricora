@@ -1,5 +1,8 @@
 import { config } from "node-config-ts";
 
+import fs from "fs";
+import http2 from "http2";
+
 import Koa, { Context } from "koa";
 import koaBody from "koa-body";
 import koaCompress from "koa-compress";
@@ -93,11 +96,31 @@ export const startServer = async (configuration: Configuration): Promise<void> =
 
   app.use(
     koaServe({
+      last: false,
+      maxage: 1000 * 60 * 60 * 24 * 10,
+      rootDir: `${__dirname}/../../client/dist`,
+    }),
+  );
+
+  app.use(
+    koaServe({
+      maxage: 0, // no cache for index.html
       rootDir: `${__dirname}/../../client/dist`,
       notFoundFile: `index.html`,
     }),
   );
 
-  app.listen(config.server.port);
-  console.log("Server is listening on port 3000");
+  console.log(`Server is listening on port ${config.server.port}`);
+
+  //http.createServer(app.callback()).listen(config.server.port);
+  http2
+    .createSecureServer(
+      {
+        key: fs.readFileSync(config.server.pathToKeyFile),
+        cert: fs.readFileSync(config.server.pathToCertFile),
+      },
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      app.callback(),
+    )
+    .listen(config.server.port + 1);
 };

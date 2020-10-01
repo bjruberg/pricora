@@ -55,11 +55,10 @@ export const restrictedForAdmins = async (ctx: Context, next: Next): Promise<voi
   await next();
 };
 
-export const graphqlAuthChecker: AuthChecker<Context> = async (
+export const graphqlAuthChecker: AuthChecker<Context, "ATTENDANT" | "ADMIN"> = async (
   { context },
   roles,
 ): Promise<boolean> => {
-  console.log({ roles });
   if (!context || !context.user || !context.user.id) {
     if (includes(roles, "ATTENDANT")) {
       const { auth } = context.query;
@@ -70,7 +69,7 @@ export const graphqlAuthChecker: AuthChecker<Context> = async (
         const timeSinceTokenCreation =
           new Date().valueOf() - new Date(tokenFound.created).valueOf();
 
-        // Check for limited validity of token
+        // Check for limited 2h validity of token
         if (timeSinceTokenCreation < 1000 * 60 * 60 * 2) {
           return Promise.resolve(true);
         }
