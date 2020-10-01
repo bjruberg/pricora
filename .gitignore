@@ -3,6 +3,7 @@
 
 # misc
 **/.DS_Store
+cypress/videos
 
 # generated
 api/build
@@ -16,6 +17,7 @@ stats.html
 !data
 data/*
 database.sqlite
+test.sqlite
 
 # user config
 config/env/*
