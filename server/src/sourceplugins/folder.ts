@@ -19,7 +19,7 @@ class FolderPlugin implements ISourcePlugin {
         database: `${dbFileFolder}/${uuid}.sqlite`,
         name: uuid,
         type: "sqlite",
-        entities: [__dirname + "/../entity_meeting/*.ts"],
+        entities: [__dirname + "/../entity_meeting/{*.ts,*.js}"],
         synchronize: true,
       });
     });

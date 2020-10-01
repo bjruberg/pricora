@@ -13,6 +13,7 @@ config/Config.d.ts
 stats.html
 
 # data
+!data
 data/*
 database.sqlite
 
