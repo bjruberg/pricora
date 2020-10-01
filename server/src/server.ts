@@ -1,6 +1,7 @@
 import { config } from "node-config-ts";
 
 import fs from "fs";
+import http from "http";
 import http2 from "http2";
 
 import Koa, { Context } from "koa";
@@ -110,17 +111,22 @@ export const startServer = async (configuration: Configuration): Promise<void> =
     }),
   );
 
-  console.log(`Server is listening on port ${config.server.port}`);
+  if (config.server.https) {
+    // path for directly exposed application
+    http2
+      .createSecureServer(
+        {
+          key: fs.readFileSync(config.server.pathToKeyFile),
+          cert: fs.readFileSync(config.server.pathToCertFile),
+        },
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        app.callback(),
+      )
+      .listen(config.server.port);
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    http.createServer(app.callback()).listen(config.server.port);
+  }
 
-  //http.createServer(app.callback()).listen(config.server.port);
-  http2
-    .createSecureServer(
-      {
-        key: fs.readFileSync(config.server.pathToKeyFile),
-        cert: fs.readFileSync(config.server.pathToCertFile),
-      },
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      app.callback(),
-    )
-    .listen(config.server.port + 1);
+  console.log(`Server is listening on port ${config.server.port}`);
 };

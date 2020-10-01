@@ -15,3 +15,6 @@ stats.html
 # data
 data/*
 database.sqlite
+
+# user config
+config/env/*

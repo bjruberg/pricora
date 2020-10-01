@@ -10,7 +10,8 @@
     "pathToCertFile": "dev/localhost.crt",
     "pathToKeyFile": "dev/localhost.key",
     "hostname": "https://localhost:3001",
-    "port": 3000
+    "port": 3000,
+    "https": true
   },
   "redis": {
     "host": "localhost",
