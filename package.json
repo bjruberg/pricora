@@ -15,7 +15,7 @@
     "test": "jest"
   },
   "author": "Björn Ruberg",
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@babel/core": "7.11.5",
     "@babel/plugin-proposal-class-properties": "7.10.4",
