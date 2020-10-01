@@ -1,11 +1,19 @@
 import { config } from "node-config-ts";
 import { promises } from "fs";
 import { forEach, has, omit } from "lodash";
-import { Connection, createConnection } from "typeorm";
+import { Connection, ConnectionOptions, createConnection } from "typeorm";
 
 import { ISourcePlugin } from "../listservice/plugin";
 
 const dbFileFolder = config.plugins.folder.path;
+
+const createConnectionOptions = (uuid: string): ConnectionOptions => ({
+  database: `${dbFileFolder}/${uuid}.sqlite`,
+  name: uuid,
+  type: "sqlite",
+  entities: [__dirname + "/../entity_meeting/{*.ts,*.js}"],
+  synchronize: true,
+});
 
 class FolderPlugin implements ISourcePlugin {
   connections: Record<string, Promise<Connection>>;
@@ -15,13 +23,7 @@ class FolderPlugin implements ISourcePlugin {
 
   createConnections(uuids: string[]): void {
     forEach(uuids, (uuid) => {
-      this.connections[uuid] = createConnection({
-        database: `${dbFileFolder}/${uuid}.sqlite`,
-        name: uuid,
-        type: "sqlite",
-        entities: [__dirname + "/../entity_meeting/{*.ts,*.js}"],
-        synchronize: true,
-      });
+      this.connections[uuid] = createConnection(createConnectionOptions(uuid));
     });
   }
 
@@ -34,13 +36,7 @@ class FolderPlugin implements ISourcePlugin {
   }
 
   addMeeting(uuid: string): Promise<Connection> {
-    const newConnection = createConnection({
-      database: `${dbFileFolder}/${uuid}.sqlite`,
-      name: uuid,
-      type: "sqlite",
-      entities: [__dirname + "/../entity_meeting/*.ts"],
-      synchronize: true,
-    });
+    const newConnection = createConnection(createConnectionOptions(uuid));
     this.connections[uuid] = newConnection;
     return newConnection;
   }
