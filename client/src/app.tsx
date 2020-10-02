@@ -30,7 +30,7 @@ import { createButtonClasses } from "./ui/button";
 import { pageTitle } from "./constants";
 import { routes } from "./routes";
 
-const client = createClient({ url: `${get(process.env, "hostname", "")}/graphql` });
+const gqlClient = createClient({ url: `${get(process.env, "hostname", "")}/graphql` });
 
 const App = () => {
   const [mobileNavigationShown, setMobileNavigationShown] = useState<boolean>(false);
@@ -71,7 +71,7 @@ const App = () => {
       <Fragment>
         <Link
           href={routes.meetinglist}
-          class={cn("block lg:inline-block text-gray-200 hover:text-white mr-4")}
+          class={cn("block lg:inline-block text-gray-200 hover:text-white ml-4 mr-4")}
         >
           {t("navigation.meetinglist")}
         </Link>
@@ -141,8 +141,16 @@ const App = () => {
           </div>
           <nav class={cn("py-2", { hidden: !mobileNavigationShown })}>{LinkNode}</nav>
         </header>
-
-        <Provider value={client}>
+        {user?.requirePasswordChange ? (
+          <div class="width-full bg-red-600 px-5 py-1 text-white text-xs">
+            {t("general.passwordChangeWarning")}{" "}
+            <Link href={routes.account}>
+              <strong>{t("navigation.account")}</strong>
+            </Link>
+          </div>
+        ) : null}
+        <div></div>
+        <Provider value={gqlClient}>
           <Router>
             <PrivateRoute path={routes.account} Component={AccountPage} />
             <AdminRoute path={routes.register} Component={RegisterPage} />
