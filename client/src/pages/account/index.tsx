@@ -35,7 +35,7 @@ const changePasswordMutation = gql`
 
 const AccountPage: FunctionalComponent<LoginPageProps> = () => {
   const { t } = useContext(TranslateContext);
-  const { user } = useContext(UserContext);
+  const { refetchUser, user } = useContext(UserContext);
   const { errors, handleSubmit, register } = useForm<FormData>();
 
   const [{ data: isChanged, error, fetching }, changePassword] = useMutation<
@@ -45,9 +45,9 @@ const AccountPage: FunctionalComponent<LoginPageProps> = () => {
 
   const onSubmit = useMemo(() => {
     return handleSubmit((formData) => {
-      void changePassword(formData);
+      void changePassword(formData).then(() => refetchUser());
     });
-  }, [changePassword, handleSubmit]);
+  }, [changePassword, handleSubmit, refetchUser]);
 
   return (
     <PageContainer>

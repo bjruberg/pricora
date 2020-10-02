@@ -20,7 +20,6 @@ export const changePassword = async (
   newPassword: string,
 ): Promise<boolean> => {
   if (newPassword.length < 8) {
-    ctx.status = 406;
     ctx.throw("New password needs to be at least 8 characters long", 406);
   }
 
@@ -34,7 +33,6 @@ export const changePassword = async (
   const matches = await compare(oldPassword, requestedUser.password);
 
   if (!matches) {
-    ctx.status = 406;
     ctx.throw("The entered password is not the current one", 406);
   }
 
@@ -60,6 +58,7 @@ export const changePassword = async (
 
   requestedUser.encryptedSecretWithIV = [newIV, ":", newEncryptedSecret].join("");
   requestedUser.password = newPasswordHash;
+  requestedUser.requirePasswordChange = false;
 
   return userRepository.save(requestedUser).then(() => {
     return true;
@@ -93,7 +92,10 @@ export const createUser = async (password: string, passwordSalt: string): Promis
   return newUser;
 };
 
-export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promise<void> => {
+export const registerUser = async (
+  ctx: CustomContext<RegisterResponse>,
+  next: Next,
+): Promise<void> => {
   const { firstName, lastName, password, email, isAdmin } = ctx.request.body;
 
   if (!email || email.length < 3) {
@@ -101,6 +103,7 @@ export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promis
     ctx.body = {
       msg: "Please enter a username with min. 3 chars",
     };
+    await next();
     return;
   }
 
@@ -109,6 +112,7 @@ export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promis
     ctx.body = {
       msg: "Please enter a password having min. 8 chars",
     };
+    await next();
     return;
   }
 
@@ -132,9 +136,10 @@ export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promis
   ctx.body = {
     msg: "Ok",
   };
+  await next();
 };
 
-export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): Promise<void> => {
+export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): Promise<any> => {
   const { password, email } = ctx.request.body;
   const { configuration, db } = ctx;
   const userRepository = db.getRepository(User);
@@ -145,7 +150,8 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): 
     ctx.body = {
       msg: "User or password is incorrect",
     };
-    return void next();
+    await next();
+    return;
   }
 
   const matches = await compare(password, requestedUser.password);
@@ -155,7 +161,8 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): 
     ctx.body = {
       msg: "User or password is incorrect",
     };
-    return void next();
+    await next();
+    return;
   }
 
   try {
@@ -177,11 +184,19 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): 
       msg: "Encryption setup failed",
     };
     console.error(e);
-    return void next();
+    await next();
+    return;
   }
 
   const token = jwt.sign(
-    pick(requestedUser, ["email", "firstName", "id", "isAdmin", "lastName"]),
+    pick(requestedUser, [
+      "email",
+      "firstName",
+      "id",
+      "isAdmin",
+      "lastName",
+      "requirePasswordChange",
+    ]),
     configuration.jwtSecretKey,
     {
       expiresIn: "7d",
@@ -195,4 +210,6 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): 
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
+
+  await next();
 };

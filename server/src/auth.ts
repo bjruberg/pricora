@@ -7,9 +7,23 @@ import { saveKey } from "./keys";
 import { SharedUser } from "../../shared/user";
 import { MeetingToken } from "./entity/MeetingToken";
 
-export const getUser = (ctx: AuthorizedContext): void => {
-  ctx.status = 200;
-  ctx.body = ctx.user;
+const publicUserData = [
+  "id",
+  "email",
+  "firstName",
+  "lastName",
+  "isAdmin",
+  "requirePasswordChange",
+] as const;
+
+export const getUser = async (ctx: AuthorizedContext): Promise<void> => {
+  const user = await ctx.db.manager.findOne(User, { id: ctx.user.id });
+  if (user) {
+    ctx.status = 200;
+    ctx.body = pick(user, publicUserData);
+  } else {
+    ctx.status = 401;
+  }
 };
 
 export const logoutUser = async (ctx: AuthorizedContext, next: Next): Promise<void> => {
@@ -96,6 +110,6 @@ export const graphqlAuthChecker: AuthChecker<Context, "ATTENDANT" | "ADMIN"> = a
     return Promise.resolve(false);
   }
 
-  context.user = pick(user, ["id", "email", "firstName", "lastName", "isAdmin"]);
+  context.user = pick(user, publicUserData);
   return Promise.resolve(true);
 };

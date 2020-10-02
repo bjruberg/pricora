@@ -46,6 +46,10 @@ export class User {
   @Index()
   isAdmin: boolean;
 
+  @Field()
+  @Column({ default: false, nullable: true })
+  requirePasswordChange: boolean;
+
   @OneToMany(() => Meeting, (meeting) => meeting.user)
   meetings: Promise<Meeting[]>;
 

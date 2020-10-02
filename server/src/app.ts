@@ -24,12 +24,13 @@ const initializeApp = async (): Promise<void> => {
   configuration.jwtSecretKey = configuration.jwtSecretKey || uuidv4();
   configuration.passwordSalt = configuration.passwordSalt || bcrypt.genSaltSync(10);
 
-  const adminUser = await connection.manager.findOne(User, { email: config.adminEmail });
+  const adminUser = await connection.manager.findOne(User, { isAdmin: true });
   if (!adminUser) {
     const createdUser = await createUser(config.initialAdminPassword, configuration.passwordSalt);
     createdUser.email = config.adminEmail;
     createdUser.firstName = "Admin";
     createdUser.isAdmin = true;
+    createdUser.requirePasswordChange = true;
     void connection.manager.save(createdUser);
   }
 

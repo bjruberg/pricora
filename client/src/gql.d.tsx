@@ -36,6 +36,7 @@ export type User = {
   id: Scalars['ID'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
+  requirePasswordChange: Scalars['Boolean'];
 };
 
 export type Attendants = {
