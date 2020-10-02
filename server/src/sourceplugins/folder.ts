@@ -1,6 +1,6 @@
 import { config } from "node-config-ts";
 import { promises } from "fs";
-import { forEach, has, omit } from "lodash";
+import { map, has, omit } from "lodash";
 import { Connection, ConnectionOptions, createConnection } from "typeorm";
 
 import { ISourcePlugin } from "../listservice/plugin";
@@ -21,10 +21,16 @@ class FolderPlugin implements ISourcePlugin {
     this.connections = {};
   }
 
-  createConnections(uuids: string[]): void {
-    forEach(uuids, (uuid) => {
+  createConnections(uuids: string[]): Promise<Connection>[] {
+    return map(uuids, (uuid) => {
       this.connections[uuid] = createConnection(createConnectionOptions(uuid));
+      return this.connections[uuid];
     });
+  }
+
+  createConnection(uuid: string): Promise<Connection> {
+    this.connections[uuid] = createConnection(createConnectionOptions(uuid));
+    return this.connections[uuid];
   }
 
   getConnection(uuid: string): Promise<Connection> | undefined {

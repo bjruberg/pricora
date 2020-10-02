@@ -1,11 +1,16 @@
-import { difference, intersection, map } from "lodash";
+import { difference, find, forEach, intersection, map } from "lodash";
 import { getRepository } from "typeorm";
 
 import { Meeting } from "../entity/Meeting";
+import { User } from "../entity/User";
+import { Meta } from "../entity_meeting/Meta";
+import { Secret } from "../entity_meeting/Secret";
 import { sourcePlugin } from "./plugin";
 
 export const init = async (): Promise<void> => {
   const meetingRepo = getRepository(Meeting);
+  const userRepo = getRepository(User);
+  const usersQuery = userRepo.find({ select: ["id", "email"] });
   const [meetings, filenames] = await Promise.all([
     meetingRepo
       .createQueryBuilder("meeting")
@@ -17,8 +22,34 @@ export const init = async (): Promise<void> => {
       .then((files) => map(files, (filename) => filename.split(".").slice(0, -1).join("."))),
   ]);
 
-  const meetingsOnlyInDatabase = difference(meetings, filenames);
-  // const meetingsUnknown = difference(filenames, meetings);
-  const meetingsExpected = intersection(filenames, meetings);
-  sourcePlugin.createConnections([...meetingsOnlyInDatabase, ...meetingsExpected]);
+  // const meetingsOnlyInDatabase = difference(meetings, filenames);
+  const meetingsOnlyInFiles = difference(filenames, meetings);
+  const meetingsBothFound = intersection(filenames, meetings);
+  sourcePlugin.createConnections(meetingsBothFound);
+
+  const users = await usersQuery;
+  console.log({ meetingsOnlyInFiles });
+  // reconstruct meeting in database from meeting file
+  forEach(meetingsOnlyInFiles, async (meetingOnlyAsFile) => {
+    try {
+      const connection = await sourcePlugin.createConnection(meetingOnlyAsFile);
+      const metaInfo = await connection.manager.findOne(Meta);
+      const secrets = await connection.manager.find(Secret);
+
+      // check whether there is a secret that we have a user for
+      const matchingUsers = intersection(map(secrets, "user_email"), map(users, "email"));
+
+      if (metaInfo && matchingUsers.length > 0) {
+        const foundUser = find(users, { email: matchingUsers[0] });
+        const newMeeting = meetingRepo.create();
+        newMeeting.title = metaInfo.title;
+        newMeeting.date = metaInfo.date;
+        newMeeting.userId = foundUser!.id;
+        void meetingRepo.save(newMeeting);
+      }
+    } catch (e) {
+      console.log(`Failed to import meeting file ${meetingOnlyAsFile}`);
+      console.log(e);
+    }
+  });
 };

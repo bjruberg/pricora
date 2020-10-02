@@ -4,7 +4,8 @@ import FolderPlugin from "../sourceplugins/folder";
 
 export interface ISourcePlugin {
   getMeetingFileList(): Promise<string[]>;
-  createConnections(uuids: string[]): void;
+  createConnections(uuids: string[]): Promise<Connection>[];
+  createConnection(uuid: string): Promise<Connection>;
   getConnection(uuid: string): Promise<Connection> | undefined;
 
   addMeeting(uuid: string): Promise<Connection>;
