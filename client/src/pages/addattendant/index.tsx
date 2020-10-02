@@ -20,6 +20,7 @@ import Input from "../../ui/input";
 import { Label } from "../../ui/label";
 import Spinner from "../../ui/spinner";
 import { TranslateContext } from "@denysvuika/preact-translate";
+import { dateFormat, defaultCountry } from "../../constants";
 
 const meetingQuery = gql`
   query getMeeting($id: String!) {
@@ -40,10 +41,13 @@ const addEntryMutation = gql`
 
 interface FormData {
   address: string;
+  city: string;
   country: string;
+  email: string;
   firstName: string;
   lastName: string;
-  city: string;
+  phone: string;
+  random: string;
   zip: string;
 }
 
@@ -62,7 +66,20 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
   }, [matches.auth]);
 
   const { t } = useContext(TranslateContext);
-  const { errors, handleSubmit, register } = useForm<FormData>();
+  const {
+    errors,
+    formState: { isDirty, submitCount },
+    handleSubmit,
+    register,
+    reset,
+  } = useForm<FormData>({
+    defaultValues: {
+      country: defaultCountry,
+    },
+  });
+
+  console.log({ isDirty, submitCount });
+
   const [{ data, error: fetchMeetingError }] = useQuery<GetMeetingQuery, GetMeetingQueryVariables>({
     context: urqlContext,
     query: meetingQuery,
@@ -85,24 +102,62 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
           input: entry,
         },
         urqlContext,
-      );
+      ).then(() => {
+        reset(entry, {
+          isDirty: false,
+          isValid: true,
+          dirtyFields: false, // dirtyFields will be reset
+          errors: true, // anything with true will not be reset
+          isSubmitted: true,
+          touched: false,
+          submitCount: true,
+        });
+      });
     });
-  }, [addMeeting, urqlContext, handleSubmit, uuid]);
+  }, [addMeeting, urqlContext, handleSubmit, reset, uuid]);
 
-  const standardRegister = {
+  const requiredRegister = {
     required: t("forms.required"),
   };
 
   if (data) {
     return (
       <PageContainer>
-        <h1>
+        <h1 className="mb-3">
           {t("pages.addattendant.title", {
             meeting: data.meeting.title,
-            on: format(parseISO(data.meeting.date), process.env.dateFormat),
+            on: format(parseISO(data.meeting.date), dateFormat),
           })}
         </h1>
+        {t("pages.addattendant.disclaimer")}
         <form onSubmit={onSubmit}>
+          <div className="container flex mt-3 max-w-md">
+            <div className="flex-1">
+              <Label for="email">{t("entities.attendant.email")}*</Label>
+              <Input
+                autoComplete="email"
+                error={!!errors["email"]}
+                id="email"
+                placeholder="me@server.com"
+                name="email"
+                inputRef={register(requiredRegister)}
+                type="email"
+              />
+            </div>
+            <div className="w-2" />
+            <div className="flex-1">
+              <Label for="phone">{t("entities.attendant.phone")}*</Label>
+              <Input
+                autoComplete="tel"
+                id="phone"
+                error={!!errors["phone"]}
+                placeholder="555 51234567"
+                name="phone"
+                inputRef={register(requiredRegister)}
+                type="tel"
+              />
+            </div>
+          </div>
           <div className="container flex mt-4 max-w-md">
             <div className="flex-1">
               <Label for="firstName">{t("entities.attendant.firstName")}</Label>
@@ -112,8 +167,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                 id="firstName"
                 placeholder={t("entities.attendant.firstNamePlaceholder")}
                 name="firstName"
-                inputRef={register(standardRegister)}
-                required
+                inputRef={register()}
                 type="text"
               />
             </div>
@@ -126,8 +180,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                 error={!!errors["lastName"]}
                 placeholder={t("entities.attendant.lastNamePlaceholder")}
                 name="lastName"
-                inputRef={register(standardRegister)}
-                required
+                inputRef={register()}
                 type="text"
               />
             </div>
@@ -142,8 +195,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                 id="address"
                 placeholder={t("entities.attendant.addressPlaceholder")}
                 name="address"
-                inputRef={register(standardRegister)}
-                required
+                inputRef={register()}
                 type="text"
               />
             </div>
@@ -156,9 +208,8 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                 id="zip"
                 placeholder={t("entities.attendant.postalPlaceholder")}
                 name="zip"
-                inputRef={register(standardRegister)}
+                inputRef={register()}
                 maxLength={6}
-                required
                 size={6}
                 type="text"
               />
@@ -174,8 +225,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                 id="city"
                 placeholder={t("entities.attendant.cityPlaceholder")}
                 name="city"
-                inputRef={register(standardRegister)}
-                required
+                inputRef={register()}
                 type="text"
               />
             </div>
@@ -188,28 +238,54 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                 id="country"
                 placeholder={t("entities.attendant.countryPlaceholder")}
                 name="country"
-                inputRef={register(standardRegister)}
-                required
+                inputRef={register()}
                 type="text"
-                value="Deutschland"
               />
             </div>
           </div>
 
-          <Button class="mt-6" disabled={fetching} type="submit" variant="primary">
-            {t("actions.add")}
-          </Button>
-          {additionError ? (
-            <ErrorMessage className="ml-2" inline>
-              {t("pages.addattendant.error")}
-            </ErrorMessage>
-          ) : null}
-          {isSaved ? (
-            <SuccessMessage className="ml-2" inline>
-              {t("pages.addattendant.success")}
-            </SuccessMessage>
-          ) : null}
-          {fetching ? <Spinner className="inline ml-2" /> : null}
+          <div className="container mt-4 max-w-md">
+            <Label for="random">{t("entities.attendant.random")}</Label>
+            <textarea
+              class="shadow border block w-full"
+              id="random"
+              name="random"
+              ref={register()}
+            ></textarea>
+          </div>
+          <div className="max-w-md mt-6">
+            <div className="inline-grid grid-cols-3 mb-2 w-full">
+              <span class="col-span-2">
+                <Button
+                  class="mr-2"
+                  disabled={fetching || (submitCount > 0 && !isDirty)}
+                  type="submit"
+                  variant="primary"
+                >
+                  {t("actions.add")}
+                </Button>
+                {fetching ? <Spinner className="inline ml-2" /> : null}
+              </span>
+              <Button
+                disabled={!(submitCount > 0 && !isDirty)}
+                onClick={() => {
+                  reset({});
+                }}
+                type="button"
+                variant="secondary"
+              >
+                {t("actions.clear")}
+              </Button>
+            </div>
+            <div>
+              {additionError ? (
+                <ErrorMessage inline>{t("pages.addattendant.error")}</ErrorMessage>
+              ) : null}
+              {isSaved ? (
+                <SuccessMessage inline>{t("pages.addattendant.success")}</SuccessMessage>
+              ) : null}
+            </div>
+          </div>
         </form>
       </PageContainer>
     );

@@ -3,6 +3,7 @@
   "initialAdminPassword": "mimikama",
   "language": "de",
   "dateFormat": "dd.MM.yyyy",
+  "defaultCountry": "Deutschland",
   "pageTitle": "My Restaurant",
   "database": {
     "path": "database.sqlite"

@@ -11,18 +11,21 @@
   },
   "entities": {
     "attendant": {
+      "email": "E-Mail",
       "firstName": "Vorname",
       "firstNamePlaceholder": "Max",
       "lastName": "Nachname",
       "lastNamePlaceholder": "Muster",
       "address": "Straße",
       "addressPlaceholder": "Hauptstraße 33",
+      "phone": "Telefonnummer",
       "postal": "PLZ",
       "postalPlaceholder": "13222",
       "city": "Stadt",
       "cityPlaceholder": "Berlin",
       "country": "Land",
-      "countryPlaceholder": "Deutschland"
+      "countryPlaceholder": "Deutschland",
+      "random": "Weitere Angaben"
     },
     "user": {
       "email": "E-Mail",
@@ -41,6 +44,8 @@
   },
   "actions": {
     "add": "Hinzufügen",
+    "clear": "Leeren",
+    
     "create": "Erstellen",
     "login": "Anmelden",
     "register": "Registrieren",
@@ -56,6 +61,7 @@
       "passwordChangeSuccess": "Passwort erfolgreich geändert"
     },
     "addattendant": {
+      "disclaimer": "Alle Daten werden verschlüsselt gespeichert.",
       "error": "Hinzufügen fehlgeschlagen",
       "success": "Teilnehmer hinzugefügt",
       "title": "Eintragen für {meeting} am {on}",

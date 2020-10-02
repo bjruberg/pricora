@@ -5,28 +5,40 @@ import { ObjectType, Field, ID, InputType } from "type-graphql";
 @InputType()
 export class EntryInput {
   @Field(() => String)
-  @Column()
+  @Column({ nullable: true })
+  email: string;
+
+  @Field(() => String)
+  @Column({ nullable: true })
   firstName: string;
 
   @Field(() => String)
-  @Column()
+  @Column({ nullable: true })
   lastName: string;
 
   @Field(() => String)
-  @Column()
+  @Column({ nullable: true })
   address: string;
 
   @Field(() => String)
-  @Column()
+  @Column({ nullable: true })
+  phone: string;
+
+  @Field(() => String)
+  @Column({ nullable: true })
   zip: string;
 
   @Field(() => String)
-  @Column()
+  @Column({ nullable: true })
   city: string;
 
   @Field(() => String)
-  @Column()
+  @Column({ nullable: true })
   country: string;
+
+  @Field(() => String)
+  @Column({ nullable: true, type: "text" })
+  random: string;
 }
 
 @ObjectType()

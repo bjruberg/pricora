@@ -45,12 +45,15 @@ export type Attendants = {
 };
 
 export type EntryOutput = {
+  email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   address: Scalars['String'];
+  phone: Scalars['String'];
   zip: Scalars['String'];
   city: Scalars['String'];
   country: Scalars['String'];
+  random: Scalars['String'];
   id: Scalars['ID'];
   created: Scalars['String'];
 };
@@ -90,12 +93,15 @@ export type MeetingInput = {
 };
 
 export type EntryInput = {
+  email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   address: Scalars['String'];
+  phone: Scalars['String'];
   zip: Scalars['String'];
   city: Scalars['String'];
   country: Scalars['String'];
+  random: Scalars['String'];
 };
 
 export type ChangePasswordMutationVariables = Exact<{
