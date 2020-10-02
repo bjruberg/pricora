@@ -28,7 +28,6 @@ export const init = async (): Promise<void> => {
   sourcePlugin.createConnections(meetingsBothFound);
 
   const users = await usersQuery;
-  console.log({ meetingsOnlyInFiles });
   // reconstruct meeting in database from meeting file
   forEach(meetingsOnlyInFiles, async (meetingOnlyAsFile) => {
     try {

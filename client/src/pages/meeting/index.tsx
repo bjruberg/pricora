@@ -21,6 +21,7 @@ import {
 import Button from "../../ui/button";
 import Spinner from "../../ui/spinner";
 import { routes } from "../../routes";
+import { dateFormat } from "../../constants";
 
 const createMeetingTokenMutation = gql`
   mutation createMeetingToken($meetingId: String!) {
@@ -76,7 +77,7 @@ const MeetingPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
     return (
       <PageContainer>
         <h1>{t("pages.meeting.title", { meeting: meeting.title })}</h1>
-        <div>{format(parseISO(meeting.date), process.env.dateFormat)}</div>
+        <div>{format(parseISO(meeting.date), dateFormat)}</div>
         <Link href={routes.addattendant(uuid)}>
           <Button class="mr-2" variant="primary">
             {t("pages.meeting.addAttendant")}
