@@ -47,7 +47,7 @@ const MeetingAddPage: FunctionalComponent = () => {
 
   return (
     <PageContainer>
-      <h1 className="pb-6">{t("pages.meetingadd.title")}</h1>
+      <h1>{t("pages.meetingadd.title")}</h1>
       <form onSubmit={onSubmit}>
         <div className="container mt-4 max-w-md">
           <Label for="title">{t("entities.meeting.title")}</Label>

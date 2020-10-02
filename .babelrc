@@ -1,4 +1,5 @@
 {
+  "compact": true,
   "presets": [
     "@babel/env",
     ["@babel/typescript", { "jsxPragma": "h" } ]

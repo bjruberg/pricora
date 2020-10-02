@@ -1,4 +1,4 @@
-import { AuthorizedContext } from "koa";
+import { AuthorizedContext, Next } from "koa";
 import { compare, hash, genSalt } from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { includes, pick } from "lodash";
@@ -134,7 +134,7 @@ export const registerUser = async (ctx: CustomContext<RegisterResponse>): Promis
   };
 };
 
-export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void> => {
+export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): Promise<void> => {
   const { password, email } = ctx.request.body;
   const { configuration, db } = ctx;
   const userRepository = db.getRepository(User);
@@ -145,7 +145,7 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
     ctx.body = {
       msg: "User or password is incorrect",
     };
-    return;
+    return void next();
   }
 
   const matches = await compare(password, requestedUser.password);
@@ -155,7 +155,7 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
     ctx.body = {
       msg: "User or password is incorrect",
     };
-    return;
+    return void next();
   }
 
   try {
@@ -177,7 +177,7 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>): Promise<void
       msg: "Encryption setup failed",
     };
     console.error(e);
-    return;
+    return void next();
   }
 
   const token = jwt.sign(

@@ -94,7 +94,7 @@ const AccountPage: FunctionalComponent<LoginPageProps> = () => {
                 {!!errors["newPassword"] ? get(errors["newPassword"], "message") : ""}
               </ErrorMessage>
             </div>
-            <Button disabled={fetching} type="submit" variant="primary">
+            <Button className="mt-4" disabled={fetching} type="submit" variant="primary">
               {t("actions.submit")}
             </Button>
             {fetching ? <Spinner className="inline ml-2" /> : null}

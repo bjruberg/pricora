@@ -3,26 +3,27 @@ import cn from "classnames";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 interface ButtonProps extends JSX.HTMLAttributes {
-  variant: "primary" | "secondary";
+  variant: "primary" | "secondary" | "inline";
 }
 
-const Button: FunctionalComponent<ButtonProps> = ({ className, disabled, variant, ...props }) => {
-  return (
-    <button
-      {...props}
-      className={cn(
-        "text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
-        {
-          "cursor-not-allowed": disabled,
-          "bg-blue-500 hover:bg-blue-700": variant === "primary" && !disabled,
-          "bg-green-500 hover:bg-green-700": variant === "secondary" && !disabled,
-          "bg-gray-500 hover:bg-gray-700": disabled,
-        },
-        className,
-      )}
-      disabled={disabled}
-    />
+export const createButtonClasses = ({ className, disabled, variant }: ButtonProps): string => {
+  return cn(
+    "text-white py-2 px-4 inline-block rounded focus:outline-none focus:shadow-outline",
+    {
+      "cursor-not-allowed": disabled,
+      "font-bold": variant === "primary" || variant === "secondary",
+      "bg-blue-500 hover:bg-blue-700": variant === "primary" && !disabled,
+      "bg-green-500 hover:bg-green-700": variant === "secondary" && !disabled,
+      "font-normal leading-none border border-white hover:border-transparent hover:text-black hover:bg-white":
+        variant === "inline" && !disabled,
+      "bg-gray-500 hover:bg-gray-700": disabled,
+    },
+    className,
   );
+};
+
+const Button: FunctionalComponent<ButtonProps> = (props) => {
+  return <button {...props} class={createButtonClasses(props)} disabled={props.disabled} />;
 };
 
 export default Button;

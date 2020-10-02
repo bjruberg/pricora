@@ -20,11 +20,14 @@ import RegisterPage from "./pages/register";
 
 import AdminRoute from "./components/AdminRoute";
 import PrivateRoute from "./components/PrivateRoute";
+import Topline from "./components/Topline";
 import UserMenu from "./components/UserMenu";
 
 import { SharedUser } from "../../shared/user";
 import { UserContext } from "./contexts/user";
 
+import { createButtonClasses } from "./ui/button";
+import { pageTitle } from "./constants";
 import { routes } from "./routes";
 
 const client = createClient({ url: `${get(process.env, "hostname", "")}/graphql` });
@@ -63,70 +66,22 @@ const App = () => {
     });
   });
 
+  const LinkNode = useMemo(
+    () => (
+      <Fragment>
+        <Link
+          href={routes.meetinglist}
+          class={cn("block lg:inline-block text-gray-200 hover:text-white mr-4")}
+        >
+          {t("navigation.meetinglist")}
+        </Link>
+      </Fragment>
+    ),
+    [t],
+  );
+
   return (
     <Fragment>
-      <header class="flex items-center justify-between flex-wrap bg-blue-800 p-6">
-        <nav class="block flex lg:hidden">
-          <button
-            class="flex items-center px-3 py-2 border rounded text-gray-200 border-gray-400 hover:text-white hover:border-white"
-            onClick={() => setMobileNavigationShown(!mobileNavigationShown)}
-          >
-            <svg
-              class="fill-current h-3 w-3"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <title>Menu</title>
-              <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-            </svg>
-          </button>
-          <div class="text-white text-2xl ml-4">Pricora</div>
-        </nav>
-        <nav
-          class={cn("w-full block flex-grow lg:flex lg:items-center lg:w-auto lg:block", {
-            "xs:hidden": !mobileNavigationShown,
-          })}
-        >
-          <div class="text-sm lg:flex-grow">
-            <span class="text-white text-2xl mr-4">Pricora</span>
-            {user ? (
-              <Fragment>
-                <Link
-                  href={routes.meetinglist}
-                  class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4"
-                >
-                  {t("navigation.meetinglist")}
-                </Link>
-                <Link
-                  href={routes.meetingadd}
-                  class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4"
-                >
-                  {t("navigation.addMeeting")}
-                </Link>
-              </Fragment>
-            ) : null}
-          </div>
-          <div>
-            {(() => {
-              if (!isLoading) {
-                return !user ? (
-                  <Link
-                    href={routes.login}
-                    class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
-                  >
-                    {t("navigation.login")}
-                  </Link>
-                ) : (
-                  <Fragment>
-                    <UserMenu logout={logout} user={user} />
-                  </Fragment>
-                );
-              }
-              return null;
-            })()}
-          </div>
-        </nav>
-      </header>
       <UserContext.Provider
         value={useMemo(() => ({ user, refetchUser: refetch, isLoading }), [
           user,
@@ -134,6 +89,59 @@ const App = () => {
           refetch,
         ])}
       >
+        <Topline />
+        <header class="bg-blue-800 w-full px-4">
+          <div class="flex items-center py-1">
+            <nav class="block flex flex-grow lg:hidden">
+              <button
+                class={cn(
+                  "flex items-center px-3 py-2 border rounded text-gray-200 border-gray-400 hover:text-white hover:border-white mr-4",
+                  {
+                    hidden: !user,
+                  },
+                )}
+                onClick={() => setMobileNavigationShown(!mobileNavigationShown)}
+              >
+                <svg
+                  class="fill-current h-3 w-3"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <title>Menu</title>
+                  <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+                </svg>
+              </button>
+            </nav>
+            <nav class="w-full block flex-grow lg:flex lg:items-center lg:w-auto lg:block p-2">
+              <div class="text-white text-xl xl:text-2xl">{pageTitle}</div>
+              <div
+                class={cn("text-sm lg:flex-grow hidden sm:block", {
+                  hidden: !user,
+                })}
+              >
+                {LinkNode}
+              </div>
+            </nav>
+            <div>
+              {(() => {
+                if (!isLoading) {
+                  return !user ? (
+                    <Link href={routes.login} class={createButtonClasses({ variant: "inline" })}>
+                      {t("navigation.login")}
+                    </Link>
+                  ) : (
+                    <Fragment>
+                      <UserMenu logout={logout} />
+                    </Fragment>
+                  );
+                }
+                return null;
+              })()}
+            </div>
+          </div>
+          <nav class={cn("py-2", { hidden: !mobileNavigationShown })}>{LinkNode}</nav>
+        </header>
+
         <Provider value={client}>
           <Router>
             <PrivateRoute path={routes.account} Component={AccountPage} />

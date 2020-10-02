@@ -84,7 +84,7 @@ export default (CLIArgs) => {
 			}),
 
       // Create an index.html file in dist
-			html({ title: "Pricora", publicPath: config.server.hostname + "/", attributes: { 
+			html({ title: config.pageTitle, publicPath: config.server.hostname + "/", attributes: { 
 					html: {
 						lang: config.language,
 					},
@@ -110,13 +110,14 @@ export default (CLIArgs) => {
 				dateFormat: config.dateFormat,
 				hostname: config.server.hostname,
 				language: config.language,
+				pageTitle: config.pageTitle
 			 }),
 
 			 isProduction ? terser() : undefined,
 
 			 url({ limit: 300, destDir: "client/dist/assets", fileName:"[name][extname]", publicPath: config.server.hostname + "/assets/" }), 
 			 
-			 visualizer()
+			 // visualizer()
 		],
 
 		output: [
@@ -124,7 +125,8 @@ export default (CLIArgs) => {
 				entryFileNames: isProduction ? "[name]-[hash].js" : "[name].js",
 				dir: 'client/dist/',
 				format: 'es',
-				globals: {}
+				globals: {},
+				minifyInternalExports: isProduction,
 			}
 		],
 

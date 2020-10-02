@@ -2,7 +2,8 @@
   "adminEmail": "pricoraowner@somewhere.de",
   "initialAdminPassword": "mimikama",
   "language": "de",
-  "dateFormat": "MM/dd/yyyy",
+  "dateFormat": "dd.MM.yyyy",
+  "pageTitle": "My Restaurant",
   "database": {
     "path": "database.sqlite"
   },

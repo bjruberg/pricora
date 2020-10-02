@@ -4,11 +4,14 @@ import { useQuery } from "@urql/preact";
 import gql from "graphql-tag";
 import { format, parseISO } from "date-fns";
 import PageContainer from "../../components/PageContainer";
+import Button from "../../ui/button";
 import { GetMeetingsQuery, GetMeetingsQueryVariables } from "./index.gql";
 import { Card } from "../../components/Card";
 import { routes } from "../../routes";
 import { TranslateContext } from "@denysvuika/preact-translate";
 import { useContext } from "preact/hooks";
+
+import { dateFormat } from "../../constants";
 
 const meetingsQuery = gql`
   query getMeetings {
@@ -30,7 +33,12 @@ const ArrangementsPage: FunctionalComponent = () => {
 
   return (
     <PageContainer>
-      <h1>{t("pages.meetinglist.title")}</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 ">
+        <h1>{t("pages.meetinglist.title")}</h1>
+        <Link class="md:justify-self-end" href={routes.meetingadd}>
+          <Button variant="secondary">{t("navigation.addMeeting")}</Button>
+        </Link>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
         {data?.meetings.map((meeting) => {
           return (
@@ -41,7 +49,7 @@ const ArrangementsPage: FunctionalComponent = () => {
                     {meeting.title}
                   </Link>
                   <span class="float-right text-gray-600">
-                    {format(parseISO(meeting.date), process.env.dateFormat)}
+                    {format(parseISO(meeting.date), dateFormat)}
                   </span>
                 </Fragment>
               }
