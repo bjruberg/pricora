@@ -91,5 +91,8 @@
     "email": "Es muss sich um eine E-Mail Adresse handeln",
     "atLeast": "Min. {count} Zeichen sind notwendig"
   },
-  "adminRightRequired": "Nur Administrationen haben Zugang zu diesem Bereich."
+  "general": {
+    "passwordChangeWarning": "Ihr Nutzerpasswort muss geändert werden!",
+    "adminRightRequired": "Nur Administrationen haben Zugang zu diesem Bereich."
+  }
 }

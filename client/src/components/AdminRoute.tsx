@@ -18,7 +18,7 @@ const AdminRoute: FunctionalComponent<AdminRouteProps> = ({ Component, ...props 
     <Component {...props} />
   ) : (
     <PageContainer>
-      <ErrorMessage>{t("adminRightRequired")}</ErrorMessage>
+      <ErrorMessage>{t("general.adminRightRequired")}</ErrorMessage>
     </PageContainer>
   );
 };
