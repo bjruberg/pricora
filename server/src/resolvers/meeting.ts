@@ -3,7 +3,7 @@ import { forEach, map, mapValues } from "lodash";
 import { AuthorizedContext } from "koa";
 import { config } from "node-config-ts";
 import { Ctx, Resolver, Query, Arg, Mutation, Authorized, FieldResolver, Root } from "type-graphql";
-import { Connection, getConnection, getRepository } from "typeorm";
+import { Connection, getConnection, getRepository, Not } from "typeorm";
 
 import { sourcePlugin } from "../listservice/plugin";
 import { Meta } from "../entity_meeting/Meta";
@@ -16,6 +16,7 @@ import { getKey } from "../keys";
 
 import { exportKey, generateKeyPair, generateSecret } from "../utils/encryption";
 import { privateDecrypt, publicEncrypt } from "crypto";
+import { createSecret } from "../listservice/secret";
 
 export const decryptMeeting = async (
   ctx: AuthorizedContext,
@@ -31,7 +32,9 @@ export const decryptMeeting = async (
   const entries = await entryRepo.find();
 
   const secretRep = connection.getRepository(Secret);
-  const secret = await secretRep.findOne({ user_id: ctx.user.id });
+  const secret = await secretRep.findOne({
+    where: [{ user_id: ctx.user.id }, { user_email: ctx.user.email }],
+  });
 
   if (!secret) {
     throw new Error("User has no secret for this meeting");
@@ -117,7 +120,7 @@ export class MeetingResolver {
     const queryRunner = connection.createQueryRunner();
     const meeting = this.meetingRepo.create({ ...input });
     const user = await this.userRepo.findOne(ctx.user.id);
-    const adminQuery = this.userRepo.find({ isAdmin: true });
+    const adminQuery = this.userRepo.find({ where: { isAdmin: true, id: Not(ctx.user.id) } });
 
     if (!user) {
       ctx.throw("Authorized user not found in database", 406);
@@ -145,8 +148,6 @@ export class MeetingResolver {
       privateKey: meetingDecryptionKey,
     } = await generateKeyPair(4096);
 
-    const generatedIV = await generateIV();
-
     const newQueryRunner = newDbConnection.createQueryRunner();
 
     const metadata = newQueryRunner.manager.create(Meta);
@@ -155,39 +156,22 @@ export class MeetingResolver {
     metadata.encryptionKey = exportKey(meetingEncryptionKey);
     metadata.title = input.title;
 
-    const newSecret = newQueryRunner.manager.create(Secret);
-
     const exportedDecryptionKey = exportKey(meetingDecryptionKey);
-
-    newSecret.encryptionIV = generatedIV;
-    newSecret.encryptedDecriptionKey = encryptDataUsingKey(
-      userSecret,
-      generatedIV,
-      exportedDecryptionKey,
-    );
-    newSecret.user_id = user.id;
 
     await queryRunner.startTransaction();
     await newQueryRunner.startTransaction();
 
+    await createSecret(user, userSecret, exportedDecryptionKey, newQueryRunner.manager);
+
     forEach(await adminQuery, async (admin) => {
       const adminSecret = await getKey(admin.id);
       if (adminSecret) {
-        const adminSecretRow = newQueryRunner.manager.create(Secret);
-        adminSecretRow.encryptionIV = generatedIV;
-        adminSecretRow.encryptedDecriptionKey = encryptDataUsingKey(
-          adminSecret,
-          generatedIV,
-          exportedDecryptionKey,
-        );
-        adminSecretRow.user_id = admin.id;
-        void newQueryRunner.manager.save(adminSecretRow);
+        await createSecret(admin, adminSecret, exportedDecryptionKey, newQueryRunner.manager);
       }
     });
 
     try {
       void newQueryRunner.manager.save(metadata);
-      void newQueryRunner.manager.save(newSecret);
 
       await Promise.all([queryRunner.commitTransaction(), newQueryRunner.commitTransaction()]);
     } catch (err) {

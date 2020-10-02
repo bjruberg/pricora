@@ -14,6 +14,9 @@ export class Secret {
   @Column()
   user_id: string;
 
+  @Column({ nullable: true })
+  user_email: string;
+
   @Column()
   encryptionIV: string;
 
