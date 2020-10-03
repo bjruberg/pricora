@@ -14,6 +14,8 @@ import AccountPage from "./pages/account";
 import AddAttendant from "./pages/addattendant";
 import MeetingPage from "./pages/meeting";
 import MeetingAddPage from "./pages/meetingadd";
+import MeetingAttendantsPage from "./pages/meetingattendants";
+import MeetingSharePage from "./pages/meetingshare";
 import MeetingListPage from "./pages/meetinglist";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
@@ -156,9 +158,12 @@ const App = () => {
             <AdminRoute path={routes.register} Component={RegisterPage} />
             <PrivateRoute path={routes.meeting()} Component={MeetingPage} />
             <PrivateRoute path={routes.meetingadd} Component={MeetingAddPage} />
+            <PrivateRoute path={routes.meetingattendants()} Component={MeetingAttendantsPage} />
+            <PrivateRoute path={routes.meetingshare()} Component={MeetingSharePage} />
             <Route path={routes.login} component={LoginPage} />
             <PrivateRoute path={routes.meetinglist} Component={MeetingListPage} />
             <Route path={routes.addattendant()} component={AddAttendant} />
+
             <PrivateRoute path="/" Component={MeetingListPage} />
           </Router>
         </Provider>

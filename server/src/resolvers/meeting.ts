@@ -29,7 +29,7 @@ export const decryptMeeting = async (
   }
 
   const entryRepo = connection.getRepository(Entry);
-  const entries = await entryRepo.find();
+  const entries = await entryRepo.find({ order: { created: "DESC" } });
 
   const secretRep = connection.getRepository(Secret);
   const secret = await secretRep.findOne({

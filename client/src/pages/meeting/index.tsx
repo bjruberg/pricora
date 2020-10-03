@@ -1,64 +1,42 @@
 import { FunctionalComponent, h } from "preact";
 import { TranslateContext } from "@denysvuika/preact-translate";
 import { useContext } from "preact/hooks";
-import { useQuery, useMutation } from "@urql/preact";
+import { useQuery } from "@urql/preact";
 import gql from "graphql-tag";
-import { map } from "lodash";
-import QRCode from "qrcode.react";
 import { Link } from "preact-router/match";
 import { format, parseISO } from "date-fns";
+import addCircleIcon from "../../assets/add_circle.svg";
 
 import { downloadExport } from "./export";
 
 import PageContainer from "../../components/PageContainer";
-import {
-  CreateMeetingTokenMutation,
-  CreateMeetingTokenMutationVariables,
-  GetMeetingDetailsQuery,
-  GetMeetingDetailsQueryVariables,
-} from "./index.gql";
+import { GetMeetingDetailsQuery, GetMeetingDetailsQueryVariables } from "./index.gql";
 
 import Button from "../../ui/button";
 import Spinner from "../../ui/spinner";
 import { routes } from "../../routes";
 import { dateFormat } from "../../constants";
-
-const createMeetingTokenMutation = gql`
-  mutation createMeetingToken($meetingId: String!) {
-    createAuthToken(meetingId: $meetingId)
-  }
-`;
+import { useShareLink } from "../../utils/useShareLink";
 
 const meetingQuery = gql`
   query getMeetingDetails($id: String!) {
     meeting(id: $id) {
       id
       archived
-      attendants {
-        list {
-          id
-          firstName
-          lastName
-        }
-        error
-      }
       date
       title
     }
   }
 `;
 
-interface AddAttendantProps {
+interface MeetingPageProps {
   uuid: string;
 }
 
-const MeetingPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
+const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
   const { t } = useContext(TranslateContext);
 
-  const [{ data: generatedToken, fetching: fetchingToken }, createMeetingToken] = useMutation<
-    CreateMeetingTokenMutation,
-    CreateMeetingTokenMutationVariables
-  >(createMeetingTokenMutation);
+  const [{ fetching: fetchingToken }, createMeetingToken, generatedToken] = useShareLink(uuid);
 
   const [{ data }] = useQuery<GetMeetingDetailsQuery, GetMeetingDetailsQueryVariables>({
     query: meetingQuery,
@@ -66,65 +44,62 @@ const MeetingPage: FunctionalComponent<AddAttendantProps> = ({ uuid }) => {
     variables: { id: uuid },
   });
 
-  const shareLink = generatedToken
-    ? (process.env.hostname || "") +
-      routes.addattendant(uuid) +
-      `?auth=${generatedToken.createAuthToken}`
-    : "";
-
   if (data) {
     const { meeting } = data;
     return (
       <PageContainer>
-        <h1>{t("pages.meeting.title", { meeting: meeting.title })}</h1>
-        <div>{format(parseISO(meeting.date), dateFormat)}</div>
-        <Link href={routes.addattendant(uuid)}>
-          <Button class="mr-2" variant="primary">
-            {t("pages.meeting.addAttendant")}
-          </Button>
-        </Link>
+        <div class="grid grid-cols-1 md:grid-cols-2 mb-2 ">
+          <div>
+            <h1>
+              {t("pages.meeting.title")}: <strong>{meeting.title}</strong>
+            </h1>
+            <div className="mb-2">
+              {t("pages.meeting.date")}: {format(parseISO(meeting.date), dateFormat)}
+            </div>
+          </div>
+          <Link class="md:justify-self-end" href={routes.addattendant(uuid)}>
+            <Button class="mr-2" variant="secondary">
+              <img alt="icon" class="inline mb-1 mr-1" src={addCircleIcon} />
+              {t("pages.meeting.addAttendant")}
+            </Button>
+          </Link>
+        </div>
 
-        <Button onClick={() => downloadExport(uuid)} variant="primary">
-          {t("pages.meeting.exportMeetingList")}
-        </Button>
-        <div class="container max-w-xl mb-1 mt-4">{t("pages.meeting.shareExplanation")}</div>
-        <div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
           <Button
             disabled={fetchingToken}
             onClick={() => createMeetingToken({ meetingId: uuid })}
-            variant="secondary"
+            variant="primary"
           >
             {t("pages.meeting.createShareLink")}{" "}
             {fetchingToken ? <Spinner class="inline-block ml-2 text-white" customColor /> : null}
           </Button>
-          {shareLink ? (
+          <Link href={routes.meetingshare(uuid)}>
+            <Button class="w-full" variant="primary">
+              {t("pages.meeting.showQR")}
+            </Button>
+          </Link>
+          {generatedToken ? (
             <div>
-              <QRCode value={shareLink} />
-              <a class="text-blue-700 hover:bg-blue-200 font-bold" href={shareLink}>
+              <a class="text-blue-700 hover:bg-blue-200 font-bold" href={generatedToken}>
                 Link
               </a>
             </div>
           ) : null}
         </div>
-        <h2 className="h2 mt-8 mb-4">{t("pages.meeting.list")}</h2>
-        <table class="-m-2">
-          <thead>
-            <tr>
-              <th class="p-2">{t("entities.attendant.firstName")}</th>
-              <th class="p-2">{t("entities.attendant.lastName")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {map(data.meeting.attendants.list, (attendant) => {
-              return (
-                <tr>
-                  <td class="px-2">{attendant.firstName}</td>
-                  <td class="px-2">{attendant.lastName}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div class="container max-w-md mt-4">{t("pages.meeting.shareExplanation")}</div>
+
+        <h2 className="mt-6">{t("pages.meeting.attendants")}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
+          <Link href={routes.meetingattendants(uuid)}>
+            <Button class="mt-6 w-full" variant="secondary">
+              {t("pages.meeting.showAttendants")}
+            </Button>
+          </Link>
+          <Button class="mt-6 w-full" onClick={() => downloadExport(uuid)} variant="secondary">
+            {t("pages.meeting.exportAttendantList")}
+          </Button>
+        </div>
       </PageContainer>
     );
   }

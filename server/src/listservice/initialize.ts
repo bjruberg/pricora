@@ -29,9 +29,9 @@ export const init = async (): Promise<void> => {
 
   const users = await usersQuery;
   // reconstruct meeting in database from meeting file
-  forEach(meetingsOnlyInFiles, async (meetingOnlyAsFile) => {
+  forEach(meetingsOnlyInFiles, async (meetingOnlyAsFileUuid) => {
     try {
-      const connection = await sourcePlugin.createConnection(meetingOnlyAsFile);
+      const connection = await sourcePlugin.createConnection(meetingOnlyAsFileUuid);
       const metaInfo = await connection.manager.findOne(Meta);
       const secrets = await connection.manager.find(Secret);
 
@@ -41,13 +41,14 @@ export const init = async (): Promise<void> => {
       if (metaInfo && matchingUsers.length > 0) {
         const foundUser = find(users, { email: matchingUsers[0] });
         const newMeeting = meetingRepo.create();
+        newMeeting.id = meetingOnlyAsFileUuid;
         newMeeting.title = metaInfo.title;
         newMeeting.date = metaInfo.date;
-        newMeeting.userId = foundUser!.id;
+        newMeeting.userId = foundUser.id;
         void meetingRepo.save(newMeeting);
       }
     } catch (e) {
-      console.log(`Failed to import meeting file ${meetingOnlyAsFile}`);
+      console.log(`Failed to import meeting file ${meetingOnlyAsFileUuid}`);
       console.log(e);
     }
   });

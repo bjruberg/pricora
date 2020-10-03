@@ -45,15 +45,15 @@ export type Attendants = {
 };
 
 export type EntryOutput = {
-  email: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  address: Scalars['String'];
-  phone: Scalars['String'];
-  zip: Scalars['String'];
-  city: Scalars['String'];
-  country: Scalars['String'];
-  random: Scalars['String'];
+  email?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+  zip?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  random?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   created: Scalars['String'];
 };
@@ -93,15 +93,15 @@ export type MeetingInput = {
 };
 
 export type EntryInput = {
-  email: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  address: Scalars['String'];
-  phone: Scalars['String'];
-  zip: Scalars['String'];
-  city: Scalars['String'];
-  country: Scalars['String'];
-  random: Scalars['String'];
+  email?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+  zip?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  random?: Maybe<Scalars['String']>;
 };
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -127,25 +127,12 @@ export type AddAttendantMutationVariables = Exact<{
 
 export type AddAttendantMutation = Pick<Mutation, 'addAttendant'>;
 
-export type CreateMeetingTokenMutationVariables = Exact<{
-  meetingId: Scalars['String'];
-}>;
-
-
-export type CreateMeetingTokenMutation = Pick<Mutation, 'createAuthToken'>;
-
 export type GetMeetingDetailsQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetMeetingDetailsQuery = { meeting: (
-    Pick<Meeting, 'id' | 'archived' | 'date' | 'title'>
-    & { attendants: (
-      Pick<Attendants, 'error'>
-      & { list: Array<Pick<EntryOutput, 'id' | 'firstName' | 'lastName'>> }
-    ) }
-  ) };
+export type GetMeetingDetailsQuery = { meeting: Pick<Meeting, 'id' | 'archived' | 'date' | 'title'> };
 
 export type AddMeetingMutationVariables = Exact<{
   meeting: MeetingInput;
@@ -154,7 +141,27 @@ export type AddMeetingMutationVariables = Exact<{
 
 export type AddMeetingMutation = { createMeeting: Pick<Meeting, 'id'> };
 
+export type GetMeetingDetailsAttendantsQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetMeetingDetailsAttendantsQuery = { meeting: (
+    Pick<Meeting, 'id' | 'date' | 'title'>
+    & { attendants: (
+      Pick<Attendants, 'error'>
+      & { list: Array<Pick<EntryOutput, 'created' | 'id' | 'email' | 'firstName' | 'lastName' | 'phone'>> }
+    ) }
+  ) };
+
 export type GetMeetingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetMeetingsQuery = { meetings: Array<Pick<Meeting, 'id' | 'date' | 'archived' | 'title'>> };
+
+export type CreateMeetingTokenMutationVariables = Exact<{
+  meetingId: Scalars['String'];
+}>;
+
+
+export type CreateMeetingTokenMutation = Pick<Mutation, 'createAuthToken'>;

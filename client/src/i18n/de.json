@@ -10,6 +10,7 @@
     "logout": "Ausloggen"
   },
   "entities": {
+    "created": "Erstellt",
     "attendant": {
       "email": "E-Mail",
       "firstName": "Vorname",
@@ -73,18 +74,30 @@
       "networkError": "Login fehlgeschlagen"
     },
     "meeting": {
-      "title": "Details zur Veranstaltung {meeting}",
+      "title": "Details zur Veranstaltung",
       "addAttendant": "Teilnehmer hinzufügen",
-      "exportMeetingList": "Liste exportieren",
+      "attendants": "Angemeldete Teilnehmer",
+      "date": "Datum der Veranstaltung",
+      "exportAttendantList": "Als CSV speichern",
       "list": "Teilnehmerliste",
-      "shareExplanation": "Sie können folgend einen Link erstellen, den Teilnehmer benutzen können um sich für die Veranstaltung einzutragen",
-      "createShareLink": "Erstelle Link für Teilnehmer"
+      "shareExplanation": "Ihre Teilnehmer können sich selbstständig eintragen indem Sie ihnen einen Link zu schicken oder hier einen QR-Code anzeigen lassen.",
+      "showAttendants": "Teilnehmer anzeigen",
+      "createShareLink": "Erstelle Link",
+      "showQR": "Zeige QR Code"
     },
     "meetingadd": {
       "title": "Veranstaltung anlegen"
     },
+    "meetingattendants": {
+      "title": "Teilnehmer der Veranstaltung",
+      "explanation": "Die Teilnehmerliste wird automatisch alle 30 Sekunden aktualisiert."
+    },
     "meetinglist": {
       "title": "Veranstaltungen"
+    },
+    "meetingshare": {
+      "title": "Eintragen für",
+      "validityExp": "Der QR Code erlaubt das Eintragen für 2 Stunden und wird alle 30 Minuten aktualisiert."
     },
     "register": {
       "title": "Neuen Benutzer anlagen",
