@@ -5,6 +5,7 @@ import { useQuery } from "@urql/preact";
 import { format, parseISO } from "date-fns";
 import gql from "graphql-tag";
 import { map } from "lodash";
+import { ErrorMessage } from "../../ui/message";
 import PageContainer from "../../components/PageContainer";
 import {
   GetMeetingDetailsAttendantsQuery,
@@ -58,33 +59,37 @@ const MeetingAttendantsPage: FunctionalComponent<MeetingAttendantsProps> = ({ uu
           {t("pages.meetingattendants.title")}: <strong>{meeting.title}</strong>
         </h1>
         <em>{t("pages.meetingattendants.explanation")}</em>
-        <table class="mt-2">
-          <thead>
-            <tr>
-              <th class="p-2">{t("entities.created")}</th>
-              <th class="p-2">{t("entities.attendant.firstName")}</th>
-              <th class="p-2">{t("entities.attendant.lastName")}</th>
-              <th class="p-2">{t("entities.attendant.email")}</th>
-              <th class="p-2">{t("entities.attendant.phone")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {map(data.meeting.attendants.list, (attendant) => {
-              const d = parseISO(attendant.created);
-              return (
-                <tr>
-                  <td class="px-2">
-                    {format(d, dateFormat)} {format(d, "HH:mm")}
-                  </td>
-                  <td class="px-2">{attendant.firstName}</td>
-                  <td class="px-2">{attendant.lastName}</td>
-                  <td class="px-2">{attendant.email}</td>
-                  <td class="px-2">{attendant.phone}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        {meeting.attendants.error ? (
+          <ErrorMessage>{t("pages.meetingattendants.decryptionError")}</ErrorMessage>
+        ) : (
+          <table class="mt-2">
+            <thead>
+              <tr>
+                <th class="p-2">{t("entities.created")}</th>
+                <th class="p-2">{t("entities.attendant.firstName")}</th>
+                <th class="p-2">{t("entities.attendant.lastName")}</th>
+                <th class="p-2">{t("entities.attendant.email")}</th>
+                <th class="p-2">{t("entities.attendant.phone")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {map(meeting.attendants.list, (attendant) => {
+                const d = parseISO(attendant.created);
+                return (
+                  <tr>
+                    <td class="px-2">
+                      {format(d, dateFormat)} {format(d, "HH:mm")}
+                    </td>
+                    <td class="px-2">{attendant.firstName}</td>
+                    <td class="px-2">{attendant.lastName}</td>
+                    <td class="px-2">{attendant.email}</td>
+                    <td class="px-2">{attendant.phone}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
       </PageContainer>
     );
   }
