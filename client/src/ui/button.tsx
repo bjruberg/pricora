@@ -3,7 +3,7 @@ import cn from "classnames";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 interface ButtonProps extends JSX.HTMLAttributes {
-  variant: "primary" | "secondary" | "inline";
+  variant: "primary" | "secondary" | "inline" | "dangerous";
 }
 
 export const createButtonClasses = ({ className, disabled, variant }: ButtonProps): string => {
@@ -14,6 +14,7 @@ export const createButtonClasses = ({ className, disabled, variant }: ButtonProp
       "font-bold": variant === "primary" || variant === "secondary",
       "bg-blue-500 hover:bg-blue-700": variant === "primary" && !disabled,
       "bg-green-500 hover:bg-green-700": variant === "secondary" && !disabled,
+      "bg-red-500 hover:bg-red-700": variant === "dangerous" && !disabled,
       "font-normal leading-none border border-white hover:border-transparent hover:text-black hover:bg-white":
         variant === "inline" && !disabled,
       "bg-gray-500 hover:bg-gray-700": disabled,
