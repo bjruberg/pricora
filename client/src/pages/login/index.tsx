@@ -1,6 +1,7 @@
 import { get } from "lodash";
 import { FunctionalComponent, h } from "preact";
 import { useContext, useMemo } from "preact/hooks";
+import { TranslateContext } from "@denysvuika/preact-translate";
 import { route } from "preact-router";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
@@ -16,7 +17,7 @@ import { UserContext } from "../../contexts/user";
 import { typedFetch } from "../../utils/typedFetch";
 import { LoginRequest, LoginResponse } from "../../../../shared/api";
 import { ErrorMessage } from "../../ui/message";
-import { TranslateContext } from "@denysvuika/preact-translate";
+import { routes } from "../../routes";
 
 interface FormData {
   username: string;
@@ -54,7 +55,7 @@ const LoginPage: FunctionalComponent = () => {
     {
       onSuccess: () => {
         void refetchUser();
-        route("/");
+        route(routes.meetinglist);
       },
     },
   );

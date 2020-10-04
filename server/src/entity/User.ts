@@ -42,6 +42,7 @@ export class User {
   @Column({ nullable: true })
   lastLogin: Date;
 
+  @Field()
   @Column({ default: false })
   @Index()
   isAdmin: boolean;

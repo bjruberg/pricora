@@ -4,6 +4,7 @@
   "language": "de",
   "dateFormat": "dd.MM.yyyy",
   "defaultCountry": "Deutschland",
+  "greeting": "Digital contact lists.",
   "pageTitle": "My Restaurant",
   "database": {
     "path": "database.sqlite"

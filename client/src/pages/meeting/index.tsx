@@ -17,6 +17,7 @@ import Spinner from "../../ui/spinner";
 import { routes } from "../../routes";
 import { dateFormat } from "../../constants";
 import { useShareLink } from "../../utils/useShareLink";
+import { UserContext } from "../../contexts/user";
 
 const meetingQuery = gql`
   query getMeetingDetails($id: String!) {
@@ -25,6 +26,12 @@ const meetingQuery = gql`
       archived
       date
       title
+      user {
+        id
+        firstName
+        lastName
+        isAdmin
+      }
     }
   }
 `;
@@ -35,6 +42,7 @@ interface MeetingPageProps {
 
 const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
   const { t } = useContext(TranslateContext);
+  const { user } = useContext(UserContext);
 
   const [{ fetching: fetchingToken }, createMeetingToken, generatedToken] = useShareLink(uuid);
 
@@ -55,6 +63,9 @@ const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
             </h1>
             <div className="mb-2">
               {t("pages.meeting.date")}: {format(parseISO(meeting.date), dateFormat)}
+            </div>
+            <div>
+              {t("pages.meeting.owner")}: {meeting.user.firstName} {meeting.user.lastName}
             </div>
           </div>
           <Link class="md:justify-self-end" href={routes.addattendant(uuid)}>
@@ -90,16 +101,18 @@ const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
         <div class="container max-w-md mt-4">{t("pages.meeting.shareExplanation")}</div>
 
         <h2 className="mt-6">{t("pages.meeting.attendants")}</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
-          <Link href={routes.meetingattendants(uuid)}>
-            <Button class="mt-6 w-full" variant="secondary">
-              {t("pages.meeting.showAttendants")}
+        {meeting.user.userId === user?.id || meeting.user.isAdmin ? (
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
+            <Link href={routes.meetingattendants(uuid)}>
+              <Button class="mt-6 w-full" variant="secondary">
+                {t("pages.meeting.showAttendants")}
+              </Button>
+            </Link>
+            <Button class="mt-6 w-full" onClick={() => downloadExport(uuid)} variant="secondary">
+              {t("pages.meeting.exportAttendantList")}
             </Button>
-          </Link>
-          <Button class="mt-6 w-full" onClick={() => downloadExport(uuid)} variant="secondary">
-            {t("pages.meeting.exportAttendantList")}
-          </Button>
-        </div>
+          </div>
+        ) : null}
       </PageContainer>
     );
   }

@@ -108,6 +108,7 @@ export default (CLIArgs) => {
 			injectProcessEnv({ 
 				NODE_ENV: process.env.NODE_ENV,
 				dateFormat: config.dateFormat,
+				greeting: config.greeting,
 				hostname: config.server.hostname,
 				language: config.language,
 				pageTitle: config.pageTitle

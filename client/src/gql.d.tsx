@@ -24,6 +24,7 @@ export type Meeting = {
   date: Scalars['String'];
   id: Scalars['ID'];
   user: User;
+  userId: Scalars['String'];
   archived: Scalars['Boolean'];
   exportsCount: Scalars['Float'];
   numberOfAttendants: Scalars['Float'];

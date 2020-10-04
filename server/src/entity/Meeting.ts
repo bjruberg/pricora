@@ -36,6 +36,7 @@ export class Meeting extends MeetingInput {
   @ManyToOne(() => User, (user) => user.meetings)
   user: Promise<User>;
 
+  @Field()
   @Column({ nullable: false })
   userId: string;
 

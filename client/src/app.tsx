@@ -12,6 +12,7 @@ import "./base.css";
 
 import AccountPage from "./pages/account";
 import AddAttendant from "./pages/addattendant";
+import LandingPage from "./pages/landing";
 import MeetingPage from "./pages/meeting";
 import MeetingAddPage from "./pages/meetingadd";
 import MeetingAttendantsPage from "./pages/meetingattendants";
@@ -164,7 +165,7 @@ const App = () => {
             <PrivateRoute path={routes.meetinglist} Component={MeetingListPage} />
             <Route path={routes.addattendant()} component={AddAttendant} />
 
-            <PrivateRoute path="/" Component={MeetingListPage} />
+            <Route path="/" component={LandingPage} />
           </Router>
         </Provider>
       </UserContext.Provider>
