@@ -46,8 +46,8 @@
   "actions": {
     "add": "Hinzufügen",
     "clear": "Leeren",
-    
     "create": "Erstellen",
+    "delete": "Löschen",
     "login": "Anmelden",
     "register": "Registrieren",
     "submit": "Absenden"
@@ -95,6 +95,7 @@
     "meetingattendants": {
       "title": "Teilnehmer der Veranstaltung",
       "decryptionError": "Entschlüsselung des Datensatzes fehlgeschlagen",
+      "deleteModeToggle": "Löschen einschalten",
       "explanation": "Die Teilnehmerliste wird automatisch alle 30 Sekunden aktualisiert."
     },
     "meetinglist": {

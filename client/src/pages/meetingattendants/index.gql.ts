@@ -20,3 +20,14 @@ export type GetMeetingDetailsAttendantsQuery = (
     ) }
   ) }
 );
+
+export type DeleteAttendantMutationVariables = Types.Exact<{
+  attendantId: Types.Scalars['String'];
+  meetingId: Types.Scalars['String'];
+}>;
+
+
+export type DeleteAttendantMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Types.Mutation, 'deleteAttendant'>
+);

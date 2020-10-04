@@ -78,8 +78,6 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
     },
   });
 
-  console.log({ isDirty, submitCount });
-
   const [{ data, error: fetchMeetingError }] = useQuery<GetMeetingQuery, GetMeetingQueryVariables>({
     context: urqlContext,
     query: meetingQuery,

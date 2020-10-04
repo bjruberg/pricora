@@ -1,11 +1,11 @@
 import * as Types from '../../gql.d';
 
-export type GetMeetingDetailsQueryVariables = Types.Exact<{
+export type GetMeetingShareQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
 }>;
 
 
-export type GetMeetingDetailsQuery = (
+export type GetMeetingShareQuery = (
   { __typename?: 'Query' }
   & { meeting: (
     { __typename?: 'Meeting' }

@@ -9,10 +9,10 @@ import QRCode from "qrcode.react";
 import PageContainer from "../../components/PageContainer";
 import { useShareLink } from "../../utils/useShareLink";
 import useInterval from "../../utils/useInterval";
-import { GetMeetingDetailsQuery, GetMeetingDetailsQueryVariables } from "./index.gql";
+import { GetMeetingShareQuery, GetMeetingShareQueryVariables } from "./index.gql";
 
 const meetingQuery = gql`
-  query getMeetingDetails($id: String!) {
+  query getMeetingShare($id: String!) {
     meeting(id: $id) {
       id
       archived
@@ -35,7 +35,7 @@ const MeetingSharePage: FunctionalComponent<MeetingShareProps> = ({ uuid }) => {
     void generateToken({ meetingId: uuid });
   }, 1000 * 60 * 30);
 
-  const [{ data }] = useQuery<GetMeetingDetailsQuery, GetMeetingDetailsQueryVariables>({
+  const [{ data }] = useQuery<GetMeetingShareQuery, GetMeetingShareQueryVariables>({
     query: meetingQuery,
     requestPolicy: "cache-and-network",
     variables: { id: uuid },

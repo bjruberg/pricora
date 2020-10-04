@@ -37,6 +37,7 @@ export type User = {
   id: Scalars['ID'];
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
+  isAdmin: Scalars['Boolean'];
   requirePasswordChange: Scalars['Boolean'];
 };
 
@@ -61,7 +62,9 @@ export type EntryOutput = {
 
 export type Mutation = {
   createMeeting: Meeting;
+  deleteMeeting: Scalars['Boolean'];
   addAttendant: Scalars['Boolean'];
+  deleteAttendant: Scalars['Boolean'];
   createAuthToken: Scalars['String'];
   changePassword: Scalars['Boolean'];
 };
@@ -72,9 +75,20 @@ export type MutationCreateMeetingArgs = {
 };
 
 
+export type MutationDeleteMeetingArgs = {
+  meeting: Scalars['String'];
+};
+
+
 export type MutationAddAttendantArgs = {
   meeting: Scalars['String'];
   input: EntryInput;
+};
+
+
+export type MutationDeleteAttendantArgs = {
+  attendantId: Scalars['String'];
+  meetingId: Scalars['String'];
 };
 
 
@@ -133,7 +147,17 @@ export type GetMeetingDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetMeetingDetailsQuery = { meeting: Pick<Meeting, 'id' | 'archived' | 'date' | 'title'> };
+export type GetMeetingDetailsQuery = { meeting: (
+    Pick<Meeting, 'id' | 'archived' | 'date' | 'title'>
+    & { user: Pick<User, 'id' | 'firstName' | 'lastName' | 'isAdmin'> }
+  ) };
+
+export type DeleteMeetingMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteMeetingMutation = Pick<Mutation, 'deleteMeeting'>;
 
 export type AddMeetingMutationVariables = Exact<{
   meeting: MeetingInput;
@@ -155,6 +179,14 @@ export type GetMeetingDetailsAttendantsQuery = { meeting: (
     ) }
   ) };
 
+export type DeleteAttendantMutationVariables = Exact<{
+  attendantId: Scalars['String'];
+  meetingId: Scalars['String'];
+}>;
+
+
+export type DeleteAttendantMutation = Pick<Mutation, 'deleteAttendant'>;
+
 export type GetMeetingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -162,6 +194,13 @@ export type GetMeetingsQuery = { meetings: Array<(
     Pick<Meeting, 'id' | 'date' | 'archived' | 'title'>
     & { user: Pick<User, 'id' | 'firstName' | 'lastName'> }
   )> };
+
+export type GetMeetingShareQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetMeetingShareQuery = { meeting: Pick<Meeting, 'id' | 'archived' | 'date' | 'title'> };
 
 export type CreateMeetingTokenMutationVariables = Exact<{
   meetingId: Scalars['String'];

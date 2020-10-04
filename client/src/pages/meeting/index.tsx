@@ -11,7 +11,12 @@ import addCircleIcon from "../../assets/add_circle.svg";
 import { downloadExport } from "./export";
 
 import PageContainer from "../../components/PageContainer";
-import { GetMeetingDetailsQuery, GetMeetingDetailsQueryVariables } from "./index.gql";
+import {
+  DeleteMeetingMutation,
+  DeleteMeetingMutationVariables,
+  GetMeetingDetailsQuery,
+  GetMeetingDetailsQueryVariables,
+} from "./index.gql";
 
 import Button from "../../ui/button";
 import Spinner from "../../ui/spinner";
@@ -61,7 +66,9 @@ const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
     variables: { id: uuid },
   });
 
-  const [, deleteMeeting] = useMutation(deleteMeetingMutation);
+  const [, deleteMeeting] = useMutation<DeleteMeetingMutation, DeleteMeetingMutationVariables>(
+    deleteMeetingMutation,
+  );
 
   if (data) {
     const { meeting } = data;

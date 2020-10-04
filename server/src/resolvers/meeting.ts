@@ -201,7 +201,7 @@ export class MeetingResolver {
     const meeting = await ctx.db.manager.findOne(Meeting, { id: uuid });
 
     if (!(meeting.userId === ctx.user.id) && !ctx.user.isAdmin) {
-      ctx.throw("You have not right to delete this meeting");
+      ctx.throw("You have not rights to delete this meeting");
     }
 
     await ctx.db.manager.delete(Meeting, { id: uuid });
@@ -276,6 +276,25 @@ export class MeetingResolver {
     }
 
     return sourcePlugin.updated(uuid).then(() => true);
+  }
+
+  @Authorized()
+  @Mutation(() => Boolean)
+  async deleteAttendant(
+    @Arg("meetingId") meetingId: string,
+    @Arg("attendantId") attendantId: string,
+    @Ctx() ctx: AuthorizedContext,
+  ): Promise<boolean> {
+    const meeting = await ctx.db.manager.findOne(Meeting, { id: meetingId });
+
+    if (!(meeting.userId === ctx.user.id) && !ctx.user.isAdmin) {
+      ctx.throw("You have no rights to delete attendents from this meeting");
+    }
+
+    const connection = await sourcePlugin.getConnection(meetingId);
+    await connection.manager.delete(Entry, { id: attendantId });
+
+    return sourcePlugin.updated(meetingId).then(() => true);
   }
 
   @Authorized()
