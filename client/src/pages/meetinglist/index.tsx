@@ -46,8 +46,6 @@ const ArrangementsPage: FunctionalComponent = () => {
     return new Date(day).valueOf() > now;
   });
 
-  console.log({ before, after });
-
   const renderDay = (day: string) => {
     const meetings = dayGroupedMeetings[day];
     return (
