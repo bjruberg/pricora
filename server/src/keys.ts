@@ -5,6 +5,7 @@ import { promisify } from "util";
 
 const keysByUser: Record<string, string | null> = {};
 let redisClient: RedisClient;
+let getAsync: (arg1: string) => Promise<string>;
 
 if (process.env.NODE_ENV === "development") {
   redisClient = createClient({
@@ -20,10 +21,10 @@ if (process.env.NODE_ENV === "development") {
   redisClient.on("error", () => {
     console.log("No redis server found");
   });
-}
 
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const getAsync = promisify(redisClient.get).bind(redisClient);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  getAsync = promisify(redisClient.get).bind(redisClient);
+}
 
 export const saveKey = (id: string, key: string | null): void => {
   if (redisClient?.connected) {

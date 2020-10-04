@@ -16,7 +16,8 @@
     "dev:server": "NODE_ENV=\"development\" ts-node-dev --script-mode --transpile-only --respawn server/src/app.ts",
     "dev:types": "graphql-codegen generate --watch",
     "postinstall": "node-config-ts",
-    "start": "NODE_ENV=production node server/build/app.js",
+    "start": "NODE_ENV=production nodemon --exec node server/build/app.js",
+    "start:production": "pm2 start --name 'pricora' node -- server/build/app.js",
     "test-e2e": "NODE_ENV=\"test\" rollup -c && concurrently \"npm:test:server\" \"npm:cypress:run\"",
     "test:server": "ts-node-dev --script-mode --transpile-only server/src/app.ts",
     "test": "jest"
