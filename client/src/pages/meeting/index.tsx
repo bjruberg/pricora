@@ -1,8 +1,9 @@
 import { FunctionalComponent, h } from "preact";
 import { TranslateContext } from "@denysvuika/preact-translate";
 import { useContext } from "preact/hooks";
-import { useQuery } from "@urql/preact";
+import { useQuery, useMutation } from "@urql/preact";
 import gql from "graphql-tag";
+import { route } from "preact-router";
 import { Link } from "preact-router/match";
 import { format, parseISO } from "date-fns";
 import addCircleIcon from "../../assets/add_circle.svg";
@@ -17,6 +18,7 @@ import Spinner from "../../ui/spinner";
 import { routes } from "../../routes";
 import { dateFormat } from "../../constants";
 import { useShareLink } from "../../utils/useShareLink";
+import { useToggle } from "../../utils/useToggle";
 import { UserContext } from "../../contexts/user";
 
 const meetingQuery = gql`
@@ -36,6 +38,12 @@ const meetingQuery = gql`
   }
 `;
 
+const deleteMeetingMutation = gql`
+  mutation deleteMeeting($id: String!) {
+    deleteMeeting(meeting: $id)
+  }
+`;
+
 interface MeetingPageProps {
   uuid: string;
 }
@@ -43,6 +51,7 @@ interface MeetingPageProps {
 const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
   const { t } = useContext(TranslateContext);
   const { user } = useContext(UserContext);
+  const [showRealDeleteButton, toggleShowRealDeleteButton] = useToggle(false);
 
   const [{ fetching: fetchingToken }, createMeetingToken, generatedToken] = useShareLink(uuid);
 
@@ -51,6 +60,8 @@ const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
     requestPolicy: "cache-and-network",
     variables: { id: uuid },
   });
+
+  const [, deleteMeeting] = useMutation(deleteMeetingMutation);
 
   if (data) {
     const { meeting } = data;
@@ -111,6 +122,17 @@ const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
             <Button class="mt-6 w-full" onClick={() => downloadExport(uuid)} variant="secondary">
               {t("pages.meeting.exportAttendantList")}
             </Button>
+            <Button onClick={toggleShowRealDeleteButton} variant="dangerous">
+              {t("pages.meeting.deleteMeeting")}
+            </Button>
+            {showRealDeleteButton ? (
+              <Button
+                onClick={() => deleteMeeting({ id: uuid }).then(() => route(routes.meetinglist))}
+                variant="dangerous"
+              >
+                {t("pages.meeting.finalDeleteMeeting")}
+              </Button>
+            ) : null}
           </div>
         ) : null}
       </PageContainer>

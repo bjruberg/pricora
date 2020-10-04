@@ -79,7 +79,9 @@
       "attendants": "Angemeldete Teilnehmer",
       "createShareLink": "Erstelle Link",
       "date": "Datum der Veranstaltung",
+      "deleteMeeting": "Lösche Veranstaltung",
       "exportAttendantList": "Als CSV speichern",
+      "finalDeleteMeeting": "Wirklich löschen!",
       "list": "Teilnehmerliste",
       "owner": "Veranstalter",
       "shareExplanation": "Ihre Teilnehmer können sich selbstständig eintragen indem Sie ihnen einen Link zu schicken oder hier einen QR-Code anzeigen lassen.",
@@ -92,6 +94,7 @@
     },
     "meetingattendants": {
       "title": "Teilnehmer der Veranstaltung",
+      "decryptionError": "Entschlüsselung des Datensatzes fehlgeschlagen",
       "explanation": "Die Teilnehmerliste wird automatisch alle 30 Sekunden aktualisiert."
     },
     "meetinglist": {

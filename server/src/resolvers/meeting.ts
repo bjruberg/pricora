@@ -192,6 +192,25 @@ export class MeetingResolver {
     return newMeeting;
   }
 
+  @Authorized()
+  @Mutation(() => Boolean)
+  async deleteMeeting(
+    @Arg("meeting") uuid: string,
+    @Ctx() ctx: AuthorizedContext,
+  ): Promise<boolean> {
+    const meeting = await ctx.db.manager.findOne(Meeting, { id: uuid });
+
+    if (!(meeting.userId === ctx.user.id) && !ctx.user.isAdmin) {
+      ctx.throw("You have not right to delete this meeting");
+    }
+
+    await ctx.db.manager.delete(Meeting, { id: uuid });
+
+    await sourcePlugin.deleteMeeting(uuid);
+
+    return true;
+  }
+
   @Authorized("ATTENDANT")
   @Mutation(() => Boolean)
   async addAttendant(
