@@ -11,7 +11,7 @@
     "cypress:run": "cypress run",
     "dev": "concurrently \"npm:dev:rollup\" \"npm:dev:types\" \"npm:dev:server\"",
     "dev:client": "concurrently \"npm:dev:rollup\" \"npm:dev:types\"",
-    "dev:rollup": "NODE_ENV=dev rollup -c --watch",
+    "dev:rollup": "NODE_ENV=development rollup -c --watch",
     "dev:redis": "redis-server redis.conf",
     "dev:server": "NODE_ENV=\"development\" ts-node-dev --script-mode --transpile-only --respawn server/src/app.ts",
     "dev:types": "graphql-codegen generate --watch",

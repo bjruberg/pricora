@@ -34,8 +34,8 @@ export type Meeting = {
 
 export type User = {
   id: Scalars['ID'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
   requirePasswordChange: Scalars['Boolean'];
 };
 
@@ -157,7 +157,10 @@ export type GetMeetingDetailsAttendantsQuery = { meeting: (
 export type GetMeetingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMeetingsQuery = { meetings: Array<Pick<Meeting, 'id' | 'date' | 'archived' | 'title'>> };
+export type GetMeetingsQuery = { meetings: Array<(
+    Pick<Meeting, 'id' | 'date' | 'archived' | 'title'>
+    & { user: Pick<User, 'id' | 'firstName' | 'lastName'> }
+  )> };
 
 export type CreateMeetingTokenMutationVariables = Exact<{
   meetingId: Scalars['String'];

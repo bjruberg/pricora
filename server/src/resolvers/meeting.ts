@@ -1,9 +1,10 @@
 import { decryptDataUsingKey, encryptDataUsingKey, generateIV } from "./../utils/encryption";
+import { sub } from "date-fns";
 import { forEach, map, mapValues } from "lodash";
 import { AuthorizedContext } from "koa";
 import { config } from "node-config-ts";
 import { Ctx, Resolver, Query, Arg, Mutation, Authorized, FieldResolver, Root } from "type-graphql";
-import { Connection, getConnection, getRepository, Not } from "typeorm";
+import { Connection, getConnection, getRepository, MoreThan, Not } from "typeorm";
 
 import { sourcePlugin } from "../listservice/plugin";
 import { Meta } from "../entity_meeting/Meta";
@@ -84,7 +85,12 @@ export class MeetingResolver {
   @Authorized()
   @Query(() => [Meeting])
   meetings(): Promise<Meeting[]> {
-    return this.meetingRepo.find();
+    return this.meetingRepo.find({
+      where: {
+        // see: https://github.com/typeorm/typeorm/issues/2286
+        date: MoreThan(sub(new Date(), { weeks: 3 }).toISOString().replace("T", " ")),
+      },
+    });
   }
 
   @Authorized("ATTENDANT")
@@ -128,14 +134,6 @@ export class MeetingResolver {
     meeting.user = Promise.resolve(user);
 
     let newDbConnection: Connection;
-    let newMeeting: Meeting;
-
-    try {
-      newMeeting = await queryRunner.manager.save(meeting);
-      newDbConnection = await sourcePlugin.addMeeting(meeting.id);
-    } catch (e) {
-      ctx.throw("Failed to save the meeting", 500);
-    }
 
     const userSecret = await getKey(user.id);
 
@@ -143,12 +141,24 @@ export class MeetingResolver {
       ctx.throw("Need to relogin to unlock user secret");
     }
 
+    const keyPairGeneration = generateKeyPair(4096);
+    await queryRunner.startTransaction();
+    const newMeeting = await queryRunner.manager.save(meeting);
+
+    try {
+      newDbConnection = await sourcePlugin.addMeeting(newMeeting.id);
+    } catch (e) {
+      console.error(e);
+      ctx.throw("Failed to save the meeting", 500);
+    }
+
     const {
       publicKey: meetingEncryptionKey,
       privateKey: meetingDecryptionKey,
-    } = await generateKeyPair(4096);
+    } = await keyPairGeneration;
 
     const newQueryRunner = newDbConnection.createQueryRunner();
+    await newQueryRunner.startTransaction();
 
     const metadata = newQueryRunner.manager.create(Meta);
     metadata.date = input.date;
@@ -157,9 +167,6 @@ export class MeetingResolver {
     metadata.title = input.title;
 
     const exportedDecryptionKey = exportKey(meetingDecryptionKey);
-
-    await queryRunner.startTransaction();
-    await newQueryRunner.startTransaction();
 
     await createSecret(user, userSecret, exportedDecryptionKey, newQueryRunner.manager);
 
@@ -171,12 +178,12 @@ export class MeetingResolver {
     });
 
     try {
-      void newQueryRunner.manager.save(metadata);
-
+      await newQueryRunner.manager.save(metadata);
       await Promise.all([queryRunner.commitTransaction(), newQueryRunner.commitTransaction()]);
     } catch (err) {
       await queryRunner.rollbackTransaction();
       await newQueryRunner.rollbackTransaction();
+      ctx.throw("Creating the meeting failed");
     } finally {
       await queryRunner.release();
       await newQueryRunner.release();

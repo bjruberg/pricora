@@ -86,13 +86,15 @@
       "showQR": "Zeige QR Code"
     },
     "meetingadd": {
-      "title": "Veranstaltung anlegen"
+      "title": "Veranstaltung anlegen",
+      "error": "Anlegen der Veranstaltung fehlgeschlagen"
     },
     "meetingattendants": {
       "title": "Teilnehmer der Veranstaltung",
       "explanation": "Die Teilnehmerliste wird automatisch alle 30 Sekunden aktualisiert."
     },
     "meetinglist": {
+      "owner": "Veranstalter",
       "title": "Veranstaltungen"
     },
     "meetingshare": {

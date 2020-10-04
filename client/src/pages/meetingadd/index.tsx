@@ -33,14 +33,17 @@ const MeetingAddPage: FunctionalComponent = () => {
   const { t } = useContext(TranslateContext);
   const { errors, handleSubmit, register } = useForm<FormData>();
 
-  const [{ fetching }, addMeeting] = useMutation<AddMeetingMutation, AddMeetingMutationVariables>(
-    AddMeeting,
-  );
+  const [{ error, fetching }, addMeeting] = useMutation<
+    AddMeetingMutation,
+    AddMeetingMutationVariables
+  >(AddMeeting);
 
   const onSubmit = useMemo(() => {
     return handleSubmit((d) => {
-      void addMeeting({ meeting: d }).then(() => {
-        route(routes.meetinglist);
+      void addMeeting({ meeting: d }).then((res) => {
+        if (res.data) {
+          route(routes.meeting(res.data.createMeeting.id));
+        }
       });
     });
   }, [handleSubmit, addMeeting]);
@@ -76,10 +79,11 @@ const MeetingAddPage: FunctionalComponent = () => {
             type="date"
           />
           <ErrorMessage>{!!errors["date"] ? get(errors["date"], "message") : ""}</ErrorMessage>
-          <Button class="mt-6" disabled={fetching} type="submit" variant="primary">
+          <Button class="mt-6 mr-2 mb-2" disabled={fetching} type="submit" variant="primary">
             {t("actions.create")}
           </Button>
           {fetching ? <Spinner className="inline ml-2" /> : null}
+          {!!error ? <ErrorMessage>{t("pages.meetingadd.error")}</ErrorMessage> : ""}
         </div>
       </form>
     </PageContainer>

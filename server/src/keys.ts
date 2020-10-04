@@ -1,24 +1,32 @@
 /* In-memory or redis store of decrypted by-user encryption keys */
 import { config } from "node-config-ts";
-import { createClient } from "redis";
+import { createClient, RedisClient } from "redis";
 import { promisify } from "util";
 
 const keysByUser: Record<string, string | null> = {};
-const redisClient = createClient({
-  host: config.redis.host,
-  port: config.redis.port,
-  retry_strategy: () => {
-    return undefined;
-  },
-});
-redisClient.on("error", () => {
-  console.log("No redis server found");
-});
+let redisClient: RedisClient;
+
+if (process.env.NODE_ENV === "development") {
+  redisClient = createClient({
+    disable_resubscribing: true,
+    enable_offline_queue: false,
+
+    host: config.redis.host,
+    port: config.redis.port,
+    retry_strategy: () => {
+      return undefined;
+    },
+  });
+  redisClient.on("error", () => {
+    console.log("No redis server found");
+  });
+}
+
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const getAsync = promisify(redisClient.get).bind(redisClient);
 
 export const saveKey = (id: string, key: string | null): void => {
-  if (redisClient.connected) {
+  if (redisClient?.connected) {
     redisClient.set(id, key || "");
   } else {
     keysByUser[id] = key;
@@ -26,7 +34,7 @@ export const saveKey = (id: string, key: string | null): void => {
 };
 
 export const getKey = async (id: string): Promise<string | null> => {
-  if (redisClient.connected) {
+  if (redisClient?.connected) {
     return getAsync(id);
   } else {
     return Promise.resolve(keysByUser[id]);

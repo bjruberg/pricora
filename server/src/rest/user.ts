@@ -211,5 +211,8 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): 
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 
+  requestedUser.lastLogin = new Date();
+  void userRepository.save(requestedUser);
+
   await next();
 };

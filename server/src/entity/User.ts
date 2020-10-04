@@ -31,16 +31,16 @@ export class User {
   @Column()
   passwordDeviationSalt: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   firstName: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   lastName: string;
 
   @Column({ nullable: true })
-  lastLogin: number;
+  lastLogin: Date;
 
   @Column({ default: false })
   @Index()
