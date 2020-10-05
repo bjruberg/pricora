@@ -83,11 +83,12 @@ const UserMenu: FunctionalComponent<UserMenuProps> = ({ logout, toggleMenu }) =>
 const UserAvatar: FunctionalComponent<UserAvatarProps> = ({ logout }) => {
   const [menuState, toggleMenu] = useToggle(false);
 
+  const { t } = useContext(TranslateContext);
   return (
     <div id="usermenu">
       <div class="relative">
         <button aria-haspopup={true} aria-expanded={menuState} onClick={toggleMenu}>
-          <img class="w-8 h-8" src={avatar} />
+          <img class="w-8 h-8" src={avatar} alt={t("navigation.toggleUserMenu")} />
         </button>
       </div>
       {menuState ? <UserMenu logout={logout} toggleMenu={toggleMenu} /> : null}

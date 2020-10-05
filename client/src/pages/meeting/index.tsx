@@ -88,7 +88,7 @@ const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
           </div>
           <Link class="md:justify-self-end" href={routes.addattendant(uuid)}>
             <Button class="mr-2" variant="secondary">
-              <img alt="icon" class="inline mb-1 mr-1" src={addCircleIcon} />
+              <img alt="" class="inline mb-1 mr-1" role="presentation" src={addCircleIcon} />
               {t("pages.meeting.addAttendant")}
             </Button>
           </Link>
