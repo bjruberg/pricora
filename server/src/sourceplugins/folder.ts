@@ -1,6 +1,6 @@
 import { config } from "node-config-ts";
 import { promises } from "fs";
-import { map, has, omit } from "lodash";
+import { filter, includes, map, has, omit } from "lodash";
 import { Connection, ConnectionOptions, createConnection } from "typeorm";
 
 import { ISourcePlugin } from "../listservice/plugin";
@@ -38,7 +38,9 @@ class FolderPlugin implements ISourcePlugin {
   }
 
   getMeetingFileList(): Promise<string[]> {
-    return promises.readdir(config.plugins.folder.path);
+    return promises
+      .readdir(config.plugins.folder.path)
+      .then((filelist) => filter(filelist, (filename) => includes(filename, ".sqlite")));
   }
 
   addMeeting(uuid: string): Promise<Connection> {
