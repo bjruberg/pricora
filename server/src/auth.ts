@@ -17,7 +17,7 @@ const publicUserData = [
 ] as const;
 
 export const getUser = async (ctx: AuthorizedContext): Promise<void> => {
-  const user = await ctx.db.manager.findOne(User, { id: ctx.user.id });
+  const user = await (await ctx.db).manager.findOne(User, { id: ctx.user.id });
   if (user) {
     ctx.status = 200;
     ctx.body = pick(user, publicUserData);
@@ -61,7 +61,7 @@ export const restrictedForAdmins = async (ctx: Context, next: Next): Promise<voi
     ctx.throw(401);
   }
 
-  const user = await ctx.db.manager.findOne(User, { id: ctx.user.id });
+  const user = await (await ctx.db).manager.findOne(User, { id: ctx.user.id });
   if (!user || !user.isAdmin || user.deletedAt) {
     ctx.throw(401);
   }
@@ -73,10 +73,11 @@ export const graphqlAuthChecker: AuthChecker<Context, "ATTENDANT" | "ADMIN"> = a
   { context },
   roles,
 ): Promise<boolean> => {
+  const db = await context.db;
   if (!context || !context.user || !context.user.id) {
     if (includes(roles, "ATTENDANT")) {
       const { auth } = context.query;
-      const tokenFound = await context.db.manager.findOne(MeetingToken, {
+      const tokenFound = await db.manager.findOne(MeetingToken, {
         id: auth,
       });
       if (tokenFound) {
@@ -98,7 +99,7 @@ export const graphqlAuthChecker: AuthChecker<Context, "ATTENDANT" | "ADMIN"> = a
     return Promise.resolve(false);
   }
 
-  const user = await context.db.manager.findOne(User, { id: context.user.id });
+  const user = await db.manager.findOne(User, { id: context.user.id });
 
   if (!user || user.deletedAt) {
     context.status = 401;

@@ -5,13 +5,13 @@ import { SharedUser } from "../../../shared/user";
 declare module "koa" {
   interface Context {
     configuration: Configuration;
-    db: Connection;
+    db: Promise<Connection>;
     user?: SharedUser | null;
   }
 
   interface AuthorizedContext extends ParameterizedContext {
     configuration: Configuration;
-    db: Connection;
+    db: Promise<Connection>;
     user: SharedUser;
   }
 }

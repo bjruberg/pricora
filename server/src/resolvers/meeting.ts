@@ -104,7 +104,7 @@ export class MeetingResolver {
 
     if (ctx.request.query.auth) {
       // user has probably authorized via meetingToken
-      const meetingToken = await ctx.db.manager.findOne(MeetingToken, {
+      const meetingToken = await (await ctx.db).manager.findOne(MeetingToken, {
         id: ctx.request.query.auth,
       });
       if (!meetingToken || meetingToken.meetingId !== id) {
@@ -198,13 +198,14 @@ export class MeetingResolver {
     @Arg("meeting") uuid: string,
     @Ctx() ctx: AuthorizedContext,
   ): Promise<boolean> {
-    const meeting = await ctx.db.manager.findOne(Meeting, { id: uuid });
+    const db = await ctx.db;
+    const meeting = await db.manager.findOne(Meeting, { id: uuid });
 
     if (!(meeting.userId === ctx.user.id) && !ctx.user.isAdmin) {
       ctx.throw("You have not rights to delete this meeting");
     }
 
-    await ctx.db.manager.delete(Meeting, { id: uuid });
+    await db.manager.delete(Meeting, { id: uuid });
 
     await sourcePlugin.deleteMeeting(uuid);
 
@@ -285,7 +286,7 @@ export class MeetingResolver {
     @Arg("attendantId") attendantId: string,
     @Ctx() ctx: AuthorizedContext,
   ): Promise<boolean> {
-    const meeting = await ctx.db.manager.findOne(Meeting, { id: meetingId });
+    const meeting = await (await ctx.db).manager.findOne(Meeting, { id: meetingId });
 
     if (!(meeting.userId === ctx.user.id) && !ctx.user.isAdmin) {
       ctx.throw("You have no rights to delete attendents from this meeting");
@@ -303,16 +304,17 @@ export class MeetingResolver {
     @Arg("meetingId") id: string,
     @Ctx() ctx: AuthorizedContext,
   ): Promise<string> {
-    const meeting = await ctx.db.manager.findOne(Meeting, { id });
+    const db = await ctx.db;
+    const meeting = await db.manager.findOne(Meeting, { id });
 
     if (!meeting || meeting.userId !== ctx.user.id) {
       ctx.throw("This is not your meeting", 406);
     }
 
-    const token = ctx.db.manager.create(MeetingToken);
+    const token = db.manager.create(MeetingToken);
     token.meetingId = id;
 
-    const createdToken = await ctx.db.manager.save(token);
+    const createdToken = await db.manager.save(token);
     return createdToken.id;
   }
 

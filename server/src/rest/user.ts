@@ -117,7 +117,7 @@ export const registerUser = async (
   }
 
   const { configuration, db } = ctx;
-  const userRepository = db.getRepository(User);
+  const userRepository = (await db).getRepository(User);
   const existingUser = await userRepository.findOne({ email });
 
   if (existingUser) {
@@ -142,7 +142,7 @@ export const registerUser = async (
 export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): Promise<any> => {
   const { password, email } = ctx.request.body;
   const { configuration, db } = ctx;
-  const userRepository = db.getRepository(User);
+  const userRepository = (await db).getRepository(User);
   const requestedUser = await userRepository.findOne({ email });
 
   if (!requestedUser) {

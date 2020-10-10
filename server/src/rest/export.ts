@@ -8,7 +8,7 @@ import { Meeting } from "../entity/Meeting";
 
 export const exportMeeting = async (ctx: AuthorizedContext): Promise<void> => {
   const meetingId = ctx.query.id;
-  const meeting = await ctx.db.manager.findOne(Meeting, { id: meetingId });
+  const meeting = await (await ctx.db).manager.findOne(Meeting, { id: meetingId });
 
   if (!meeting) {
     ctx.throw("Meeting does not exist");

@@ -44,7 +44,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
 
   // Provide repeatedly used functionality in ctx
   app.use(async (ctx: Context, next) => {
-    ctx.db = await getConnection();
+    ctx.db = getConnection();
     ctx.configuration = configuration;
     await next();
   });
@@ -81,7 +81,9 @@ export const startServer = async (configuration: Configuration): Promise<void> =
     return next().catch((err): void => {
       ctx.status = err?.status || 500;
       ctx.body = { error: err?.message };
-      console.error(err);
+      if (ctx.status !== 401) {
+        console.error(err);
+      }
     });
   });
 
@@ -124,9 +126,17 @@ export const startServer = async (configuration: Configuration): Promise<void> =
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       app.callback(),
     );
+
+    /* 
+      Workaround bug in koa-body caused by http2 usage:
+      https://github.com/nodejs/node/issues/31309
+      https://github.com/dlau/koa-body/issues/154
+    */
+    server.setTimeout(5000);
   } else if (config.server.http2) {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     server = http2.createServer(app.callback());
+    server.setTimeout(5000);
   } else if (config.server.https) {
     server = https.createServer(
       {

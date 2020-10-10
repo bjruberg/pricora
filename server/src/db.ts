@@ -1,12 +1,12 @@
 import { config } from "node-config-ts";
 import { Connection, createConnection } from "typeorm";
-let connection: Connection;
+let connection: Promise<Connection>;
 
-export const getConnection = async (): Promise<Connection> => {
-  if (connection) {
+export const getConnection = (): Promise<Connection> => {
+  if (typeof connection !== "undefined") {
     return connection;
   }
-  connection = await createConnection({
+  connection = createConnection({
     type: "sqlite",
     database: config.database.path,
     entities: [__dirname + "/entity/{*.ts,*.js}"],
@@ -14,5 +14,6 @@ export const getConnection = async (): Promise<Connection> => {
     migrationsTableName: "migrations",
     synchronize: true,
   });
+
   return connection;
 };
