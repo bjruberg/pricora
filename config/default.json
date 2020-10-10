@@ -1,21 +1,33 @@
 {
-  "adminEmail": "pricoraowner@somewhere.de",
-  "initialAdminPassword": "mimikama",
-  "language": "de",
-  "dateFormat": "dd.MM.yyyy",
-  "defaultCountry": "Deutschland",
-  "greeting": "Digital contact lists.",
-  "pageTitle": "My Restaurant",
+  "setup": {
+    "_adminEmail_desc": "E-Mail address of the initial admin",
+    "adminEmail": "pricoraowner@somewhere.de",
+    "_initialAdminPassword_desc": "Initial password for the initial admin. You will have to change it afterwards.",
+    "initialAdminPassword": "mimikama"
+  },
   "database": {
     "path": "database.sqlite"
   },
+  "frontend": {
+    "dateFormat": "dd.MM.yyyy",
+    "defaultCountry": "Deutschland",
+    "hostname": "https://localhost:3000",
+    "language": "de",
+    "greeting": "Digital contact lists.",
+    "pageTitle": "My Restaurant"
+  },
   "server": {
     "bind": "localhost",
+    "_bind_desc": "Bind server on this in ip address",
+    "_cert_desc": "Required certificate files for https mode",
     "pathToCertFile": "dev/localhost.crt",
     "pathToKeyFile": "dev/localhost.key",
-    "hostname": "https://localhost:3000",
+    "_port_desc": "Bind server on this port",
     "port": 3000,
-    "https": true
+    "_https_desc": "Activate https encrypted transport",
+    "https": true,
+    "_http2_desc": "Activate http/2 mode",
+    "http2": true
   },
   "redis": {
     "host": "localhost",

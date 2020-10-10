@@ -49,7 +49,7 @@ const htmlTemplate = ({ attributes, files, meta, publicPath, title }) => {
 <html${makeHtmlAttributes(attributes.html)}>
 	<head>
 		${scripts}
-		<link rel="preload" href="i18n/${config.language}.json" as="fetch" >
+		<link rel="preload" href="i18n/${config.frontend.language}.json" as="fetch" >
     ${metas}
     <title>${title}</title>
     ${links}
@@ -84,9 +84,9 @@ export default (CLIArgs) => {
 			}),
 
       // Create an index.html file in dist
-			html({ title: config.pageTitle, publicPath: config.server.hostname + "/", attributes: { 
+			html({ title: config.frontend.pageTitle, publicPath: config.frontend.hostname + "/", attributes: { 
 					html: {
-						lang: config.language,
+						lang: config.frontend.language,
 					},
 				},
 				meta: [{ charset: 'utf-8' }, { name: "viewport", content: "width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0"}],
@@ -107,16 +107,12 @@ export default (CLIArgs) => {
 			
 			injectProcessEnv({ 
 				NODE_ENV: process.env.NODE_ENV,
-				dateFormat: config.dateFormat,
-				greeting: config.greeting,
-				hostname: config.server.hostname,
-				language: config.language,
-				pageTitle: config.pageTitle
+				...config.frontend,
 			 }),
 
 			 isProduction ? terser() : undefined,
 
-			 url({ limit: 300, destDir: "client/dist/assets", fileName:"[name][extname]", publicPath: config.server.hostname + "/assets/" }), 
+			 url({ limit: 300, destDir: "client/dist/assets", fileName:"[name][extname]", publicPath: config.frontend.hostname + "/assets/" }), 
 			 
 			 // visualizer()
 		],

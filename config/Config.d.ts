@@ -2,14 +2,9 @@
 /* eslint-disable */
 declare module "node-config-ts" {
   interface IConfig {
-    adminEmail: string
-    initialAdminPassword: string
-    language: string
-    dateFormat: string
-    defaultCountry: string
-    greeting: string
-    pageTitle: string
+    setup: Setup
     database: Database
+    frontend: Frontend
     server: Server
     redis: Redis
     source: Source
@@ -31,14 +26,33 @@ declare module "node-config-ts" {
   }
   interface Server {
     bind: string
+    _bind_desc: string
+    _cert_desc: string
     pathToCertFile: string
     pathToKeyFile: string
-    hostname: string
+    _port_desc: string
     port: number
+    _https_desc: string
     https: boolean
+    _http2_desc: string
+    http2: boolean
+  }
+  interface Frontend {
+    dateFormat: string
+    defaultCountry: string
+    hostname: string
+    language: string
+    greeting: string
+    pageTitle: string
   }
   interface Database {
     path: string
+  }
+  interface Setup {
+    _adminEmail_desc: string
+    adminEmail: string
+    _initialAdminPassword_desc: string
+    initialAdminPassword: string
   }
   export const config: Config
   export type Config = IConfig

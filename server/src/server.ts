@@ -2,6 +2,7 @@ import { config } from "node-config-ts";
 
 import fs from "fs";
 import http from "http";
+import https from "https";
 import http2 from "http2";
 
 import Koa, { Context } from "koa";
@@ -111,22 +112,36 @@ export const startServer = async (configuration: Configuration): Promise<void> =
     }),
   );
 
-  if (config.server.https) {
+  let server: http.Server | https.Server | http2.Http2Server;
+
+  if (config.server.https && config.server.http2) {
     // path for directly exposed application
-    http2
-      .createSecureServer(
-        {
-          key: fs.readFileSync(config.server.pathToKeyFile),
-          cert: fs.readFileSync(config.server.pathToCertFile),
-        },
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        app.callback(),
-      )
-      .listen(config.server.port, config.server.bind);
+    server = http2.createSecureServer(
+      {
+        key: fs.readFileSync(config.server.pathToKeyFile),
+        cert: fs.readFileSync(config.server.pathToCertFile),
+      },
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      app.callback(),
+    );
+  } else if (config.server.http2) {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    server = http2.createServer(app.callback());
+  } else if (config.server.https) {
+    server = https.createServer(
+      {
+        key: fs.readFileSync(config.server.pathToKeyFile),
+        cert: fs.readFileSync(config.server.pathToCertFile),
+      },
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      app.callback(),
+    );
   } else {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    http.createServer(app.callback()).listen(config.server.port, config.server.bind);
+    server = http.createServer(app.callback());
   }
+
+  server.listen(config.server.port, config.server.bind);
 
   console.log(
     `Server is listening on port ${config.server.https ? "https" : "http"}://${config.server.bind}:${config.server.port}`,
