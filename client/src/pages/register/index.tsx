@@ -9,6 +9,7 @@ import * as EmailValidator from "email-validator";
 import Button from "../../ui/button";
 import { ErrorMessage, SuccessMessage } from "../../ui/message";
 import Input from "../../ui/input";
+import PasswordInput from "../../components/PasswordInput";
 import { Label } from "../../ui/label";
 import Spinner from "../../ui/spinner";
 import PageContainer from "../../components/PageContainer";
@@ -87,7 +88,7 @@ const RegisterPage: FunctionalComponent = () => {
             {!!errors["email"] ? get(errors["email"], "message") : ""}
           </ErrorMessage>
           <Label for="password">{t("entities.user.password")}</Label>
-          <Input
+          <PasswordInput
             error={!!errors["password"]}
             placeholder="*****"
             id="password"
@@ -96,7 +97,6 @@ const RegisterPage: FunctionalComponent = () => {
               required: t("forms.required"),
             })}
             name="password"
-            type="password"
           />
           <ErrorMessage textSize="sm">
             {!!errors["password"] ? get(errors["password"], "message") : ""}

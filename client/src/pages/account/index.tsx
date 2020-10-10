@@ -8,8 +8,8 @@ import gql from "graphql-tag";
 import { UserContext } from "../../contexts/user";
 import Button from "../../ui/button";
 import { ErrorMessage, SuccessMessage } from "../../ui/message";
-import Input from "../../ui/input";
 import { Label } from "../../ui/label";
+import PasswordInput from "../../components/PasswordInput";
 import Spinner from "../../ui/spinner";
 import { Card } from "../../components/Card";
 import PageContainer from "../../components/PageContainer";
@@ -61,7 +61,7 @@ const AccountPage: FunctionalComponent<LoginPageProps> = () => {
               <Label className="mt-4" for="currentPassword">
                 {t("pages.account.oldPassword")}
               </Label>
-              <Input
+              <PasswordInput
                 autocomplete="current-password"
                 error={!!errors["currentPassword"]}
                 id="currentPassword"
@@ -70,7 +70,6 @@ const AccountPage: FunctionalComponent<LoginPageProps> = () => {
                   required: t("forms.required"),
                 })}
                 name="currentPassword"
-                type="password"
               />
               <ErrorMessage>
                 {!!errors["currentPassword"] ? get(errors["currentPassword"], "message") : ""}
@@ -78,7 +77,7 @@ const AccountPage: FunctionalComponent<LoginPageProps> = () => {
               <Label className="mt-4" for="newPassword">
                 {t("pages.account.newPassword")}
               </Label>
-              <Input
+              <PasswordInput
                 autocomplete="new-password"
                 error={!!errors["newPassword"]}
                 id="newPassword"
@@ -88,7 +87,6 @@ const AccountPage: FunctionalComponent<LoginPageProps> = () => {
                   required: t("forms.required"),
                 })}
                 name="newPassword"
-                type="password"
               />
               <ErrorMessage>
                 {!!errors["newPassword"] ? get(errors["newPassword"], "message") : ""}

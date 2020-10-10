@@ -11,6 +11,7 @@ import Button from "../../ui/button";
 import Input from "../../ui/input";
 import { Label } from "../../ui/label";
 import Spinner from "../../ui/spinner";
+import PasswordInput from "../../components/PasswordInput";
 import PageContainer from "../../components/PageContainer";
 import { UserContext } from "../../contexts/user";
 
@@ -93,7 +94,7 @@ const LoginPage: FunctionalComponent = () => {
           <Label className="mt-4" for="password">
             {t("entities.user.password")}
           </Label>
-          <Input
+          <PasswordInput
             autocomplete="current-password"
             error={!!errors["password"]}
             id="password"
@@ -103,11 +104,11 @@ const LoginPage: FunctionalComponent = () => {
               required: t("forms.required"),
             })}
             name="password"
-            type="password"
           />
           <ErrorMessage>
             {!!errors["password"] ? get(errors["password"], "message") : ""}
           </ErrorMessage>
+
           <Button class="mt-6" disabled={status === "loading"} type="submit" variant="primary">
             {t("actions.login")}
           </Button>
@@ -123,6 +124,7 @@ const LoginPage: FunctionalComponent = () => {
               })()}
             </ErrorMessage>
           ) : null}
+          <div className="text-xs text-gray-800 mt-2">{t("pages.login.passwordWarning")}</div>
         </div>
       </form>
     </PageContainer>

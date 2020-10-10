@@ -2,7 +2,7 @@ import { FunctionalComponent, h, JSX, Ref } from "preact";
 import cn from "classnames";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-interface InputProps extends JSX.HTMLAttributes {
+export interface InputProps extends JSX.HTMLAttributes {
   error?: boolean;
   inputRef?: Ref<any>;
 }
