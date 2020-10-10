@@ -6,6 +6,7 @@ import { promisify } from "util";
 const keysByUser: Record<string, string | null> = {};
 let redisClient: RedisClient;
 let getAsync: (arg1: string) => Promise<string>;
+let setAsync: (arg1: string, arg2: string) => Promise<unknown>;
 
 if (process.env.NODE_ENV === "development") {
   redisClient = createClient({
@@ -24,11 +25,13 @@ if (process.env.NODE_ENV === "development") {
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   getAsync = promisify(redisClient.get).bind(redisClient);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  setAsync = promisify(redisClient.set).bind(redisClient);
 }
 
 export const saveKey = (id: string, key: string | null): void => {
   if (redisClient?.connected) {
-    redisClient.set(id, key || "");
+    void setAsync(id, key || "");
   } else {
     keysByUser[id] = key;
   }

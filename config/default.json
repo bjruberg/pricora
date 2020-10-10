@@ -10,6 +10,7 @@
     "path": "database.sqlite"
   },
   "server": {
+    "bind": "localhost",
     "pathToCertFile": "dev/localhost.crt",
     "pathToKeyFile": "dev/localhost.key",
     "hostname": "https://localhost:3000",

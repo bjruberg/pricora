@@ -10,12 +10,10 @@ api/build
 client/dist
 server/build
 shared/schema.gql
-config/Config.d.ts
 stats.html
 
 # data
-!data
-data/*
+data/*.sqlite
 database.sqlite
 test.sqlite
 

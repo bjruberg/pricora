@@ -70,3 +70,6 @@ npm start
 - tailwindcss
 - urql
 
+
+## License
+This project is licensed under the GPLv3 License

@@ -27,7 +27,7 @@
       "allowSyntheticDefaultImports": true,
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
-      "typeRoots": ["./src/@types", "./node_modules/@types"],
+      "typeRoots": ["./src/@types", "../node_modules/@types"],
    },
    "exclude": ["./src/**/*.test.ts"],
    "include": ["./src/**/*.ts", "../config/*.ts", "src/jobs/removeOldTokens.ts"],

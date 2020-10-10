@@ -122,11 +122,13 @@ export const startServer = async (configuration: Configuration): Promise<void> =
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         app.callback(),
       )
-      .listen(config.server.port);
+      .listen(config.server.port, config.server.bind);
   } else {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    http.createServer(app.callback()).listen(config.server.port);
+    http.createServer(app.callback()).listen(config.server.port, config.server.bind);
   }
 
-  console.log(`Server is listening on port ${config.server.port}`);
+  console.log(
+    `Server is listening on port ${config.server.https ? "https" : "http"}://${config.server.bind}:${config.server.port}`,
+  );
 };
