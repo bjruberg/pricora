@@ -31,6 +31,8 @@ import { UserResolver } from "./resolvers/user";
 import { getConnection } from "./db";
 import { exportMeeting } from "./rest/export";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export const startServer = async (configuration: Configuration): Promise<void> => {
   const app = new Koa();
   console.log({ NODE_ENV: process.env.NODE_ENV });
@@ -73,7 +75,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
     "/graphql",
     koaGraphql({
       schema,
-      graphiql: true,
+      graphiql: !isProduction,
     }),
   );
 
