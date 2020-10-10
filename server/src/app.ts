@@ -26,8 +26,11 @@ const initializeApp = async (): Promise<void> => {
 
   const adminUser = await connection.manager.findOne(User, { isAdmin: true });
   if (!adminUser) {
-    const createdUser = await createUser(config.initialAdminPassword, configuration.passwordSalt);
-    createdUser.email = config.adminEmail;
+    const createdUser = await createUser(
+      config.setup.initialAdminPassword,
+      configuration.passwordSalt,
+    );
+    createdUser.email = config.setup.adminEmail;
     createdUser.firstName = "Admin";
     createdUser.isAdmin = true;
     createdUser.requirePasswordChange = true;
