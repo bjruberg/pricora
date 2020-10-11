@@ -305,11 +305,6 @@ export class MeetingResolver {
     @Ctx() ctx: AuthorizedContext,
   ): Promise<string> {
     const db = await ctx.db;
-    const meeting = await db.manager.findOne(Meeting, { id });
-
-    if (!meeting || meeting.userId !== ctx.user.id) {
-      ctx.throw("This is not your meeting", 406);
-    }
 
     const token = db.manager.create(MeetingToken);
     token.meetingId = id;
