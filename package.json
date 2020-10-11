@@ -4,7 +4,7 @@
   "description": "Simple installable node.js based web application for handling attendance lists",
   "main": "index.ts",
   "scripts": {
-    "build": "concurrently \"npm:build:client\" \"npm:build:server\"",
+    "build": "npm run build:client && npm run build:server",
     "build:server": "NODE_ENV=production tsc --build server/tsconfig.json",
     "build:client": "NODE_ENV=production rollup -c",
     "cypress:open": "cypress open",
