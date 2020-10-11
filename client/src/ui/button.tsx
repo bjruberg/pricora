@@ -3,18 +3,20 @@ import cn from "classnames";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 interface ButtonProps extends JSX.HTMLAttributes {
+  active?: boolean;
   slim?: boolean;
   variant: "primary" | "secondary" | "inline" | "dangerous";
 }
 
 export const createButtonClasses = ({
+  active,
   className,
   disabled,
   slim = false,
   variant,
 }: ButtonProps): string => {
   return cn(
-    "text-white inline-block rounded focus:outline-none focus:shadow-outline",
+    " inline-block rounded focus:outline-none focus:shadow-outline",
     {
       "py-2 px-4": !slim,
       "py-1 px-2 text-sm": slim,
@@ -27,6 +29,8 @@ export const createButtonClasses = ({
       "bg-red-500 hover:bg-red-700": variant === "dangerous" && !disabled,
       "font-normal leading-none border border-white hover:border-transparent hover:text-black hover:bg-white":
         variant === "inline" && !disabled,
+      "bg-white text-black": variant === "inline" && active,
+      "text-white": !active,
       "bg-gray-500 hover:bg-gray-700": disabled,
     },
     className,

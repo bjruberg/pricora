@@ -92,7 +92,7 @@ const UserAvatar: FunctionalComponent<UserAvatarProps> = ({ logout }) => {
     <div id="usermenu">
       <div class="relative">
         <button aria-haspopup={true} aria-expanded={menuState} onClick={toggleMenu}>
-          <img class="w-8 h-8" src={avatar} alt={t("navigation.toggleUserMenu")} />
+          <img class="w-12 h-12" src={avatar} alt={t("navigation.toggleUserMenu")} />
         </button>
       </div>
       {menuState ? <UserMenu logout={logout} toggleMenu={toggleMenu} /> : null}
