@@ -53,16 +53,20 @@ const UserMenu: FunctionalComponent<UserMenuProps> = ({ logout, toggleMenu }) =>
         {t("navigation.hello")} <strong>{user.firstName}</strong>
       </div>
       <li role="none">
-        <Link class={menuLinkClass} href={routes.account} onClick={toggleMenu} role="menuitem">
+        <Link class={menuLinkClass} href={routes.account} role="menuitem">
           {t("navigation.account")}
         </Link>
       </li>
       {user.isAdmin ? (
-        <Link href={routes.register} class={menuLinkClass} onClick={toggleMenu}>
+        <Link href={routes.register} class={menuLinkClass}>
           {t("navigation.addUser")}
         </Link>
       ) : null}
-
+      {user.isAdmin ? (
+        <Link href={routes.userlist} class={menuLinkClass}>
+          {t("navigation.userlist")}
+        </Link>
+      ) : null}
       <li role="none">
         <a
           class={menuLinkClass}

@@ -9,4 +9,5 @@ export const routes = {
   meetingshare: (uuid = ":uuid"): string => `/meetingshare/${uuid}`,
   addattendant: (uuid = ":uuid"): string => `/addattendant/${uuid}`,
   register: "/register",
+  userlist: "/userlist",
 };

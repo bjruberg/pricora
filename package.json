@@ -20,7 +20,8 @@
     "start:production": "npm run build && NODE_ENV=production pm2 start --env production --name 'pricora' node -- server/build/app.js",
     "test-e2e": "NODE_ENV=\"test\" rollup -c && concurrently \"npm:test:server\" \"npm:cypress:run\"",
     "test:server": "ts-node-dev --script-mode --transpile-only server/src/app.ts",
-    "test": "jest"
+    "test": "jest",
+    "upgrade": "ts-node ./node_modules/typeorm/cli.js migration:run"
   },
   "author": "Björn Ruberg",
   "license": "GPL-3.0-or-later",

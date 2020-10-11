@@ -12,11 +12,17 @@ export type Scalars = {
 export type Query = {
   meetings: Array<Meeting>;
   meeting: Meeting;
+  users: Array<User>;
 };
 
 
 export type QueryMeetingArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryUsersArgs = {
+  deleted: Scalars['Boolean'];
 };
 
 export type Meeting = {
@@ -35,10 +41,14 @@ export type Meeting = {
 
 export type User = {
   id: Scalars['ID'];
+  email: Scalars['String'];
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
   isAdmin: Scalars['Boolean'];
+  primaryAdmin: Scalars['Boolean'];
   requirePasswordChange: Scalars['Boolean'];
+  created: Scalars['String'];
+  deletedAt?: Maybe<Scalars['String']>;
 };
 
 export type Attendants = {
@@ -67,6 +77,9 @@ export type Mutation = {
   deleteAttendant: Scalars['Boolean'];
   createAuthToken: Scalars['String'];
   changePassword: Scalars['Boolean'];
+  deleteUser: Scalars['Boolean'];
+  restoreUser: Scalars['Boolean'];
+  toggleUserAdmin: Scalars['Boolean'];
 };
 
 
@@ -100,6 +113,22 @@ export type MutationCreateAuthTokenArgs = {
 export type MutationChangePasswordArgs = {
   newPassword: Scalars['String'];
   currentPassword: Scalars['String'];
+};
+
+
+export type MutationDeleteUserArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type MutationRestoreUserArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type MutationToggleUserAdminArgs = {
+  on: Scalars['Boolean'];
+  userId: Scalars['String'];
 };
 
 export type MeetingInput = {
@@ -201,6 +230,35 @@ export type GetMeetingShareQueryVariables = Exact<{
 
 
 export type GetMeetingShareQuery = { meeting: Pick<Meeting, 'id' | 'archived' | 'date' | 'title'> };
+
+export type UsersQueryQueryVariables = Exact<{
+  deleted: Scalars['Boolean'];
+}>;
+
+
+export type UsersQueryQuery = { users: Array<Pick<User, 'deletedAt' | 'id' | 'email' | 'firstName' | 'isAdmin' | 'lastName'>> };
+
+export type ToggleUserAdminMutationVariables = Exact<{
+  on: Scalars['Boolean'];
+  userId: Scalars['String'];
+}>;
+
+
+export type ToggleUserAdminMutation = Pick<Mutation, 'toggleUserAdmin'>;
+
+export type DeleteUserMutationMutationVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type DeleteUserMutationMutation = Pick<Mutation, 'deleteUser'>;
+
+export type RestoreUserMutationVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type RestoreUserMutation = Pick<Mutation, 'restoreUser'>;
 
 export type CreateMeetingTokenMutationVariables = Exact<{
   meetingId: Scalars['String'];

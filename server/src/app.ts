@@ -33,6 +33,7 @@ const initializeApp = async (): Promise<void> => {
     createdUser.email = config.setup.adminEmail;
     createdUser.firstName = "Admin";
     createdUser.isAdmin = true;
+    createdUser.primaryAdmin = true;
     createdUser.requirePasswordChange = true;
     void connection.manager.save(createdUser);
   }

@@ -8,7 +8,8 @@
     "hello": "Hallo",
     "login": "Login",
     "logout": "Ausloggen",
-    "toggleUserMenu": "Blendet das Nutzermenü ein und aus"
+    "toggleUserMenu": "Blendet das Nutzermenü ein und aus",
+    "userlist": "Benutzerliste"
   },
   "entities": {
     "created": "Erstellt",
@@ -49,8 +50,10 @@
     "clear": "Leeren",
     "create": "Erstellen",
     "delete": "Löschen",
+    "really_delete": "Wirklich löschen",
     "login": "Anmelden",
     "register": "Registrieren",
+    "restore": "Wiederherstellen",
     "submit": "Absenden"
   },
   "components": {
@@ -117,6 +120,10 @@
       "title": "Neuen Benutzer anlagen",
       "success": "Nutzer erfolgreich angelegt",
       "addMore": "Weiteren Nutzer anlegen"
+    },
+    "userlist": {
+      "title": "Benutzerliste",
+      "adminmode": "Admin ein/aus"
     }
   },
   "forms": {

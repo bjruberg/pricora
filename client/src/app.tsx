@@ -20,6 +20,7 @@ import MeetingSharePage from "./pages/meetingshare";
 import MeetingListPage from "./pages/meetinglist";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
+import UserlistPage from "./pages/userlist";
 
 import AdminRoute from "./components/AdminRoute";
 import PrivateRoute from "./components/PrivateRoute";
@@ -164,7 +165,7 @@ const App = () => {
             <Route path={routes.login} component={LoginPage} />
             <PrivateRoute path={routes.meetinglist} Component={MeetingListPage} />
             <Route path={routes.addattendant()} component={AddAttendant} />
-
+            <PrivateRoute path={routes.userlist} Component={UserlistPage} />
             <Route path="/" component={LandingPage} />
           </Router>
         </Provider>

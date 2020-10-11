@@ -19,6 +19,7 @@ export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Field()
   @Column()
   email: string;
 
@@ -48,18 +49,24 @@ export class User {
   isAdmin: boolean;
 
   @Field()
+  @Column({ default: false })
+  primaryAdmin: boolean;
+
+  @Field()
   @Column({ default: false, nullable: true })
   requirePasswordChange: boolean;
 
   @OneToMany(() => Meeting, (meeting) => meeting.user)
   meetings: Promise<Meeting[]>;
 
+  @Field(() => String)
   @CreateDateColumn()
   created: Date;
 
   @UpdateDateColumn()
   updated: Date;
 
+  @Field(() => String, { nullable: true })
   @DeleteDateColumn()
   deletedAt?: Date;
 }

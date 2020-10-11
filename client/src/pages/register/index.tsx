@@ -155,7 +155,7 @@ const RegisterPage: FunctionalComponent = () => {
             ) : null}
           </div>
           {submitSuccessful ? (
-            <div>
+            <div className="mt-2">
               <Button onClick={onRedo} variant="primary">
                 {t("pages.register.addMore")}
               </Button>

@@ -119,7 +119,7 @@ const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
         <div class="container max-w-md mt-4">{t("pages.meeting.shareExplanation")}</div>
 
         <h2 className="mt-6">{t("pages.meeting.attendants")}</h2>
-        {meeting.user.userId === user?.id || meeting.user.isAdmin ? (
+        {meeting.user.id === user?.id || meeting.user.isAdmin ? (
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
             <Link href={routes.meetingattendants(uuid)}>
               <Button class="mt-6 w-full" variant="secondary">

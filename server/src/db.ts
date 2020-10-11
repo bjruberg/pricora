@@ -11,9 +11,12 @@ export const getConnection = (): Promise<Connection> => {
     database: config.database.path,
     entities: [__dirname + "/entity/{*.ts,*.js}"],
     logging: false,
+    migrations: [__dirname + "/migration/*.ts"],
     migrationsTableName: "migrations",
-    synchronize: true,
+    synchronize: process.env.NODE_ENV !== "production",
   });
 
-  return connection;
+  return connection.then((c) => {
+    return c.runMigrations().then(() => c);
+  });
 };
