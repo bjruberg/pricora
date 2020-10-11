@@ -10,6 +10,10 @@ export type UsersQueryQuery = (
   & { users: Array<(
     { __typename?: 'User' }
     & Pick<Types.User, 'deletedAt' | 'id' | 'email' | 'firstName' | 'isAdmin' | 'lastName'>
+    & { meetings: Array<(
+      { __typename?: 'Meeting' }
+      & Pick<Types.Meeting, 'id'>
+    )> }
   )> }
 );
 

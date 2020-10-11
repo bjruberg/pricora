@@ -33,6 +33,9 @@ const usersQuery = gql`
       firstName
       isAdmin
       lastName
+      meetings {
+        id
+      }
     }
   }
 `;
@@ -99,22 +102,27 @@ const User: FunctionalComponent<UserProps> = ({
         </div>
       }
     >
+      <div>
+        {t("pages.userlist.countOfMeetings")}: {user.meetings.length}
+      </div>
       {user.deletedAt ? (
         <Button
           className="mr-4"
           onClick={() => restoreUser({ userId: user.id }).then(refetchUsers)}
+          slim
           variant="secondary"
         >
           {t("actions.restore")}
         </Button>
       ) : (
         <Fragment>
-          <Button className="mr-4" onClick={setWantToDelete} variant="dangerous">
+          <Button className="mr-4" onClick={setWantToDelete} slim variant="dangerous">
             {t("actions.delete")}
           </Button>
           {wantToDelete ? (
             <Button
               onClick={() => deleteUser({ userId: user.id }).then(refetchUsers)}
+              slim
               variant="dangerous"
             >
               {t("actions.really_delete")}
@@ -177,7 +185,7 @@ const UserList: FunctionalComponent = () => {
               });
             }}
           >
-            Aktiv
+            {t("pages.userlist.activeUsers")}
           </a>
         </li>
         <li class={cn({ "-mb-px": showDeleted }, "mr-1")}>
@@ -193,7 +201,7 @@ const UserList: FunctionalComponent = () => {
               });
             }}
           >
-            Gelöscht
+            {t("pages.userlist.deletedUsers")}
           </a>
         </li>
       </ul>

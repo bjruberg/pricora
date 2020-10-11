@@ -56,6 +56,7 @@ export class User {
   @Column({ default: false, nullable: true })
   requirePasswordChange: boolean;
 
+  @Field(() => [Meeting])
   @OneToMany(() => Meeting, (meeting) => meeting.user)
   meetings: Promise<Meeting[]>;
 

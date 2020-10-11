@@ -47,6 +47,7 @@ export type User = {
   isAdmin: Scalars['Boolean'];
   primaryAdmin: Scalars['Boolean'];
   requirePasswordChange: Scalars['Boolean'];
+  meetings: Array<Meeting>;
   created: Scalars['String'];
   deletedAt?: Maybe<Scalars['String']>;
 };
@@ -236,7 +237,10 @@ export type UsersQueryQueryVariables = Exact<{
 }>;
 
 
-export type UsersQueryQuery = { users: Array<Pick<User, 'deletedAt' | 'id' | 'email' | 'firstName' | 'isAdmin' | 'lastName'>> };
+export type UsersQueryQuery = { users: Array<(
+    Pick<User, 'deletedAt' | 'id' | 'email' | 'firstName' | 'isAdmin' | 'lastName'>
+    & { meetings: Array<Pick<Meeting, 'id'>> }
+  )> };
 
 export type ToggleUserAdminMutationVariables = Exact<{
   on: Scalars['Boolean'];

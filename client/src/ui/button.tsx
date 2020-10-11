@@ -3,12 +3,22 @@ import cn from "classnames";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 interface ButtonProps extends JSX.HTMLAttributes {
+  slim?: boolean;
   variant: "primary" | "secondary" | "inline" | "dangerous";
 }
 
-export const createButtonClasses = ({ className, disabled, variant }: ButtonProps): string => {
+export const createButtonClasses = ({
+  className,
+  disabled,
+  slim = false,
+  variant,
+}: ButtonProps): string => {
   return cn(
-    "text-white py-2 px-4 inline-block rounded focus:outline-none focus:shadow-outline",
+    "text-white inline-block rounded focus:outline-none focus:shadow-outline",
+    {
+      "py-2 px-4": !slim,
+      "py-1 px-2 text-sm": slim,
+    },
     {
       "cursor-not-allowed": disabled,
       "font-bold": variant === "primary" || variant === "secondary",

@@ -123,7 +123,10 @@
     },
     "userlist": {
       "title": "Benutzerliste",
-      "adminmode": "Admin ein/aus"
+      "adminmode": "Admin ein/aus",
+      "activeUsers": "Aktive",
+      "countOfMeetings": "Anzahl Veranstaltungen",
+      "deletedUsers": "Gelöschte"
     }
   },
   "forms": {
