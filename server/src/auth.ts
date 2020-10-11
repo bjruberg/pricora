@@ -3,7 +3,6 @@ import { includes, pick } from "lodash";
 import jwt from "jsonwebtoken";
 import { AuthChecker } from "type-graphql";
 import { User } from "./entity/User";
-import { saveKey } from "./keys";
 import { SharedUser } from "../../shared/user";
 import { MeetingToken } from "./entity/MeetingToken";
 
@@ -27,7 +26,6 @@ export const getUser = async (ctx: AuthorizedContext): Promise<void> => {
 };
 
 export const logoutUser = async (ctx: AuthorizedContext, next: Next): Promise<void> => {
-  saveKey(ctx.user.id, null);
   ctx.cookies.set("Authorization", "");
   ctx.status = 200;
   await next();

@@ -100,7 +100,9 @@
     },
     "meetingadd": {
       "title": "Veranstaltung anlegen",
-      "error": "Anlegen der Veranstaltung fehlgeschlagen"
+      "error": "Anlegen der Veranstaltung fehlgeschlagen",
+      "none": "Keine",
+      "unlockedAdmins": "Die folgenden Administratoren sind gerade angemeldet und werden die Veranstaltungsdaten entschlüsseln können"
     },
     "meetingattendants": {
       "title": "Teilnehmer der Veranstaltung",

@@ -1,6 +1,8 @@
 import { AuthorizedContext } from "koa";
+import { compact, includes, map } from "lodash";
 import { Ctx, Resolver, Arg, Mutation, Authorized, Query } from "type-graphql";
 
+import { getKey } from "../keys";
 import { changePassword } from "./../rest/user";
 import { User } from "../entity/User";
 import { getRepository, IsNull, Not } from "typeorm";
@@ -61,5 +63,27 @@ export class UserResolver {
       where: { primaryAdmin: false, deletedAt: deleted ? Not(IsNull()) : IsNull() },
       withDeleted: deleted,
     });
+  }
+
+  @Authorized()
+  @Query(() => [User])
+  async unlockedAdmins(): Promise<User[]> {
+    const admins = await this.userRepo.find({
+      where: { isAdmin: true },
+    });
+
+    const allKeys = compact(
+      await Promise.all(
+        map(admins, (admin) => {
+          return getKey(admin.id).then((key) => (key ? admin.id : null));
+        }),
+      ),
+    );
+
+    const onlineAdmins = admins.filter((admin) => {
+      return includes(allKeys, admin.id);
+    });
+
+    return onlineAdmins;
   }
 }

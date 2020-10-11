@@ -12,3 +12,14 @@ export type AddMeetingMutation = (
     & Pick<Types.Meeting, 'id'>
   ) }
 );
+
+export type GetUnlockedAdminsQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetUnlockedAdminsQuery = (
+  { __typename?: 'Query' }
+  & { unlockedAdmins: Array<(
+    { __typename?: 'User' }
+    & Pick<Types.User, 'id' | 'firstName' | 'lastName'>
+  )> }
+);

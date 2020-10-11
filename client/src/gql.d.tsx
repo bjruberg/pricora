@@ -13,6 +13,7 @@ export type Query = {
   meetings: Array<Meeting>;
   meeting: Meeting;
   users: Array<User>;
+  unlockedAdmins: Array<User>;
 };
 
 
@@ -195,6 +196,11 @@ export type AddMeetingMutationVariables = Exact<{
 
 
 export type AddMeetingMutation = { createMeeting: Pick<Meeting, 'id'> };
+
+export type GetUnlockedAdminsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUnlockedAdminsQuery = { unlockedAdmins: Array<Pick<User, 'id' | 'firstName' | 'lastName'>> };
 
 export type GetMeetingDetailsAttendantsQueryVariables = Exact<{
   id: Scalars['String'];

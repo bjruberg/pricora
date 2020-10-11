@@ -1,4 +1,4 @@
-import { get } from "lodash";
+import { get, map } from "lodash";
 import { FunctionalComponent, h } from "preact";
 import { useContext, useMemo } from "preact/hooks";
 import { route } from "preact-router";
@@ -11,8 +11,13 @@ import Input from "../../ui/input";
 import { Label } from "../../ui/label";
 import Spinner from "../../ui/spinner";
 import PageContainer from "../../components/PageContainer";
-import { useMutation } from "urql";
-import { AddMeetingMutation, AddMeetingMutationVariables } from "./index.gql";
+import { useMutation, useQuery } from "urql";
+import {
+  AddMeetingMutation,
+  AddMeetingMutationVariables,
+  GetUnlockedAdminsQuery,
+  GetUnlockedAdminsQueryVariables,
+} from "./index.gql";
 import { ErrorMessage } from "../../ui/message";
 import { routes } from "../../routes";
 
@@ -29,6 +34,16 @@ const AddMeeting = gql`
   }
 `;
 
+const unlockedAdminsQuery = gql`
+  query getUnlockedAdmins {
+    unlockedAdmins {
+      id
+      firstName
+      lastName
+    }
+  }
+`;
+
 const MeetingAddPage: FunctionalComponent = () => {
   const { t } = useContext(TranslateContext);
   const { errors, handleSubmit, register } = useForm<FormData>();
@@ -37,6 +52,14 @@ const MeetingAddPage: FunctionalComponent = () => {
     AddMeetingMutation,
     AddMeetingMutationVariables
   >(AddMeeting);
+
+  const [{ data: unlockedAdmins }] = useQuery<
+    GetUnlockedAdminsQuery,
+    GetUnlockedAdminsQueryVariables
+  >({
+    query: unlockedAdminsQuery,
+    requestPolicy: "cache-and-network",
+  });
 
   const onSubmit = useMemo(() => {
     return handleSubmit((d) => {
@@ -86,6 +109,18 @@ const MeetingAddPage: FunctionalComponent = () => {
           {!!error ? <ErrorMessage>{t("pages.meetingadd.error")}</ErrorMessage> : ""}
         </div>
       </form>
+      <div className="text-xs">{t("pages.meetingadd.unlockedAdmins")}</div>
+      <ul>
+        {unlockedAdmins?.unlockedAdmins.length > 0
+          ? map(unlockedAdmins?.unlockedAdmins, (admin) => {
+              return (
+                <li className="text-blue-800 text-xs">
+                  {admin?.firstName} {admin?.lastName}
+                </li>
+              );
+            })
+          : t("pages.meetingadd.none")}
+      </ul>
     </PageContainer>
   );
 };
