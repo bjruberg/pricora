@@ -1,0 +1,24 @@
+{
+  "setup": {
+    "_adminEmail_desc": "Use your admin e-mail adress",
+    "adminEmail": "initial-email@address.com",
+    "_initialAdminPassword_desc": "You will be asked to change it after first start",
+    "initialAdminPassword": "pricoraAdmin"
+  },
+  "frontend": {
+    "dateFormat": "dd.MM.yyyy",
+    "defaultCountry": "Deutschland",
+    "hostname": "https://localhost:3000",
+    "language": "de",
+    "greeting": "Digital contact lists.",
+    "pageTitle": "My Restaurant"
+  },
+  "server": {
+    "bind": "localhost",
+    "pathToCertFile": "dev/localhost.crt",
+    "pathToKeyFile": "dev/localhost.key",
+    "port": 3000,
+    "https": true,
+    "http2": true
+  }
+}

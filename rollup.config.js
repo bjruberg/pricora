@@ -84,7 +84,7 @@ export default (CLIArgs) => {
 			}),
 
       // Create an index.html file in dist
-			html({ title: config.frontend.pageTitle, publicPath: config.frontend.hostname + "/", attributes: { 
+			html({ title: config.frontend.pageTitle, fileName: "nocache.html", publicPath: config.frontend.hostname + "/", attributes: { 
 					html: {
 						lang: config.frontend.language,
 					},

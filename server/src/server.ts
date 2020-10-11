@@ -110,9 +110,9 @@ export const startServer = async (configuration: Configuration): Promise<void> =
 
   app.use(
     koaServe({
-      maxage: 0, // no cache for index.html
+      maxage: 0, // no cache for html
       rootDir: `${__dirname}/../../client/dist`,
-      notFoundFile: `index.html`,
+      notFoundFile: `nocache.html`,
     }),
   );
 
@@ -156,6 +156,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
   server.listen(config.server.port, config.server.bind);
 
   console.log(
-    `Server is listening on port ${config.server.https ? "https" : "http"}://${config.server.bind}:${config.server.port}`,
+    `Server is listening on port ${config.server.https ? "https" : "http"}://${config.server.bind
+    }:${config.server.port}`,
   );
 };
