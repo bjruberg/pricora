@@ -71,17 +71,16 @@ const App = () => {
   });
 
   const LinkNode = useMemo(
-    () => (
-      <Fragment>
+    () =>
+      user ? (
         <Link
           href={routes.meetinglist}
           class={cn("block lg:inline-block text-gray-200 hover:text-white ml-4 mr-4")}
         >
           {t("navigation.meetinglist")}
         </Link>
-      </Fragment>
-    ),
-    [t],
+      ) : null,
+    [t, user],
   );
 
   return (
@@ -117,7 +116,9 @@ const App = () => {
               </button>
             </nav>
             <nav class="w-full block flex-grow lg:flex lg:items-center lg:w-auto lg:block p-2">
-              <div class="text-white text-xl xl:text-2xl">{pageTitle}</div>
+              <div class="text-white text-xl xl:text-2xl">
+                <Link href="/">{pageTitle}</Link>
+              </div>
               <div
                 class={cn("text-sm lg:flex-grow hidden sm:block", {
                   hidden: !user,
