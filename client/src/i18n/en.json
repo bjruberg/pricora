@@ -1,1 +1,143 @@
-{}
+{
+  "navigation": {
+    "banner": "encrypted, touchfree, Open Source",
+    "account": "User profile",
+    "meetinglist": "Meetings",
+    "addMeeting": "Create meeting",
+    "addUser": "Create user",
+    "hello": "Hello",
+    "login": "Login",
+    "logout": "Logout",
+    "toggleUserMenu": "Toggle the user menu",
+    "userlist": "User list"
+  },
+  "entities": {
+    "created": "Created",
+    "attendant": {
+      "email": "e-mail",
+      "firstName": "Forename",
+      "firstNamePlaceholder": "Max",
+      "lastName": "Familyname",
+      "lastNamePlaceholder": "Muster",
+      "address": "Street",
+      "addressPlaceholder": "Main Street 33",
+      "phone": "Phone number",
+      "postal": "Zip",
+      "postalPlaceholder": "13222",
+      "city": "City",
+      "cityPlaceholder": "Berlin",
+      "country": "Country",
+      "countryPlaceholder": "Germany",
+      "random": "Additional info"
+    },
+    "user": {
+      "email": "e-mail",
+      "firstName": "Forename",
+      "firstNamePlaceholder": "Max",
+      "isAdmin": "Administrator",
+      "lastName": "Familyname",
+      "lastNamePlaceholder": "Muster",
+      "password": "Password"
+    },
+    "meeting": {
+      "date": "Date of Meeting",
+      "title": "Title",
+      "titlePlaceholder": "Main room noon"
+    }
+  },
+  "actions": {
+    "add": "Add",
+    "clear": "Clear",
+    "create": "Create",
+    "delete": "Delete",
+    "really_delete": "Finally delete",
+    "login": "Login",
+    "register": "Register",
+    "restore": "Restore",
+    "submit": "Submit"
+  },
+  "components": {
+    "passwordInput": {
+      "visibilitySwitchAlt": "Toggle password visibility"
+    }
+  },
+  "pages": {
+    "account": {
+      "title": "User profile of {name}",
+      "oldPassword": "Old Password",
+      "newPassword": "New Password",
+      "passwordNotCorrect": "The given password does not match the current one",
+      "passwordChangeError": "Change of password failed",
+      "passwordChangeSuccess": "Change of password success"
+    },
+    "addattendant": {
+      "disclaimer": "All data is saved in encrypted form",
+      "error": "Addition failed",
+      "success": "Attendant added",
+      "title": "Register for {meeting} on {on}",
+      "unauthorized": "You do not have provided correct security credentials for this meeting."
+    },
+    "login": {
+      "title": "Login as user",
+      "wrongCredentials": "Name or password is wrong",
+      "networkError": "Login failed",
+      "passwordWarning": "Please care for your password! It cannot be restored."
+    },
+    "meeting": {
+      "title": "Details of meeting",
+      "addAttendant": "Add attendant",
+      "attendants": "Registered attendants",
+      "createShareLink": "Create Link",
+      "date": "Dateof Meeting",
+      "deleteMeeting": "Delete Meeting",
+      "exportAttendantList": "Save as CSV",
+      "finalDeleteMeeting": "Finally delete!",
+      "list": "Attendance list",
+      "owner": "Organizer",
+      "shareExplanation": "Your attendants can register themselves by sharing a link with them or display a QR-Code here",
+      "showAttendants": "Show attendants",
+      "showQR": "Show QR-Code"
+    },
+    "meetingadd": {
+      "title": "Create meeting",
+      "error": "Creation of meeting failed",
+      "none": "None",
+      "unlockedAdmins": "The following administrators are unlocked and will be able to decrypt the registered attendants."
+    },
+    "meetingattendants": {
+      "title": "Attendants of meeting",
+      "decryptionError": "Decryption of data failed",
+      "deleteModeToggle": "Activate deletion",
+      "explanation": "The attendant list is automatically refereshed every 30 seconds"
+    },
+    "meetinglist": {
+      "owner": "Organizer",
+      "title": "List of meetings"
+    },
+    "meetingshare": {
+      "title": "Register for",
+      "validityExp": "This QR-Code allows registering for 2 hours and will be refreshed every 30 minutes."
+    },
+    "register": {
+      "title": "Create new user",
+      "success": "User creation successful",
+      "addMore": "Add another user"
+    },
+    "userlist": {
+      "title": "Userlist",
+      "adminmode": "Admin on/off",
+      "activeUsers": "Active",
+      "countOfMeetings": "Count of meetings",
+      "deletedUsers": "Deleted"
+    }
+  },
+  "forms": {
+    "required": "Required",
+    "email": ";ust be an e-mail address",
+    "atLeast": "Min. {count} signs are required"
+  },
+  "general": {
+    "passwordChangeWarning": "Your user password needs to be changed!",
+    "adminRightRequired": "Only administratiors have access here."
+  }
+}
