@@ -1,3 +1,4 @@
+import fs from "fs";
 import { config } from "node-config-ts";
 import { Connection, createConnection } from "typeorm";
 let connection: Promise<Connection>;
@@ -6,6 +7,9 @@ export const getConnection = (): Promise<Connection> => {
   if (typeof connection !== "undefined") {
     return connection;
   }
+
+  const isDbExisting = fs.existsSync(config.database.path);
+
   connection = createConnection({
     type: "sqlite",
     database: config.database.path,
@@ -13,7 +17,7 @@ export const getConnection = (): Promise<Connection> => {
     logging: false,
     migrations: [__dirname + "/migration/*.ts"],
     migrationsTableName: "migrations",
-    synchronize: process.env.NODE_ENV !== "production",
+    synchronize: !isDbExisting || process.env.NODE_ENV !== "production",
   });
 
   return connection.then((c) => {
