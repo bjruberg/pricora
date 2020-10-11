@@ -1,6 +1,6 @@
 {
   "name": "pricora",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "Simple installable node.js based web application for handling attendance lists",
   "main": "index.ts",
   "scripts": {
@@ -21,7 +21,6 @@
     "test-e2e": "NODE_ENV=\"test\" rollup -c && concurrently \"npm:test:server\" \"npm:cypress:run\"",
     "test:server": "ts-node-dev --script-mode --transpile-only server/src/app.ts",
     "test": "jest",
-    "upgrade": "ts-node ./node_modules/typeorm/cli.js migration:run"
   },
   "author": "Björn Ruberg",
   "license": "GPL-3.0-or-later",
