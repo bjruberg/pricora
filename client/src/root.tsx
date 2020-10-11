@@ -96,7 +96,7 @@ const AppRoot: FunctionalComponent = () => {
         <Topline />
         <header class="bg-blue-800 w-full px-4">
           <div class="flex items-center py-1">
-            <nav class="block flex flex-grow lg:hidden">
+            <nav class="block flex flex-grow md:hidden">
               <button
                 class={cn(
                   "flex items-center px-3 py-2 border rounded text-gray-200 border-gray-400 hover:text-white hover:border-white mr-4",
@@ -116,12 +116,12 @@ const AppRoot: FunctionalComponent = () => {
                 </svg>
               </button>
             </nav>
-            <nav class="w-full block flex-grow lg:flex lg:items-center lg:w-auto lg:block p-2">
+            <nav class="w-full block flex-grow md:flex md:items-center nd:w-auto md:block p-2">
               <div class="text-white text-xl xl:text-2xl">
                 <Link href="/">{pageTitle}</Link>
               </div>
               <div
-                class={cn("text-sm lg:flex-grow hidden sm:block", {
+                class={cn("text-sm lg:flex-grow hidden md:block", {
                   hidden: !user,
                 })}
               >
