@@ -64,11 +64,19 @@ export const encryptDataUsingKey = (
 export const generateKeyPair = async (
   modulusLength: number,
 ): Promise<{
-  publicKey: KeyObject;
-  privateKey: KeyObject;
+  publicKey: string;
+  privateKey: string;
 }> => {
   return await generateKeyPairAsync("rsa", {
     modulusLength,
+    publicKeyEncoding: {
+      format: "pem",
+      type: "spki",
+    },
+    privateKeyEncoding: {
+      format: "pem",
+      type: "pkcs8",
+    },
   });
 };
 

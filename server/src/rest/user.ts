@@ -66,9 +66,6 @@ export const changePassword = async (
 };
 
 export const createUser = async (password: string, passwordSalt: string): Promise<User> => {
-  /* Generate a key pair. Public key will be used for encryption, private key will be saved in the database in encrypted form. */
-  // const { publicKey: encryptionKey, privateKey: decryptionKey } = await generateKeyPair(4096);
-
   const [generatedUserSalt, hashedPw] = await Promise.all([
     genSalt(15),
     hash(password, passwordSalt),

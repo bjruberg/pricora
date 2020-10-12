@@ -15,7 +15,7 @@ import { MeetingToken } from "../entity/MeetingToken";
 import { User } from "../entity/User";
 import { getKey } from "../keys";
 
-import { exportKey, generateKeyPair, generateSecret } from "../utils/encryption";
+import { generateKeyPair, generateSecret } from "../utils/encryption";
 import { privateDecrypt, publicEncrypt } from "crypto";
 import { createSecret } from "../listservice/secret";
 
@@ -149,6 +149,7 @@ export class MeetingResolver {
       newDbConnection = await sourcePlugin.addMeeting(newMeeting.id);
     } catch (e) {
       console.error(e);
+      await queryRunner.release();
       ctx.throw("Failed to save the meeting", 500);
     }
 
@@ -163,10 +164,10 @@ export class MeetingResolver {
     const metadata = newQueryRunner.manager.create(Meta);
     metadata.date = input.date;
     metadata.cipher = config.encryption.cipher;
-    metadata.encryptionKey = exportKey(meetingEncryptionKey);
+    metadata.encryptionKey = meetingEncryptionKey;
     metadata.title = input.title;
 
-    const exportedDecryptionKey = exportKey(meetingDecryptionKey);
+    const exportedDecryptionKey = meetingDecryptionKey;
 
     await createSecret(user, userSecret, exportedDecryptionKey, newQueryRunner.manager);
 

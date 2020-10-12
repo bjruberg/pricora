@@ -5,7 +5,6 @@ import {
   generateKeyPair,
   generateIV,
   generateSecret,
-  exportKey,
 } from "./encryption";
 import { privateDecrypt, publicEncrypt } from "crypto";
 
@@ -40,14 +39,10 @@ test("Asymmetrically encrypts a secret which encrypts private key and vice versa
 
   expect(encryptedSecret).toBeTruthy();
 
-  const encryptedPrivateKey = encryptDataUsingKey(
-    generatedSecret,
-    iv,
-    exportKey(privateKeyToEncrypt),
-  );
+  const encryptedPrivateKey = encryptDataUsingKey(generatedSecret, iv, privateKeyToEncrypt);
 
   const restoredPrivateKey = decryptDataUsingKey(generatedSecret, iv, encryptedPrivateKey);
-  expect(restoredPrivateKey).toEqual(exportKey(privateKeyToEncrypt));
+  expect(restoredPrivateKey).toEqual(privateKeyToEncrypt);
 
   const decryptedSecret = privateDecrypt({ key: privateKey }, encryptedSecret);
 
