@@ -1,9 +1,19 @@
 # Pricora - privacy enabled, touchless, paperfree and self-administered attendance list
 
-Pricora is an node.js based OpenSource solution for attendance lists for events and gatherings of any kind.
+Pricora is an node.js based OpenSource solution for attendance lists for events and meetings of any kind.
 
 
 ![Tech logos](https://i.ibb.co/MgFPsnT/tech-icons.jpg)
+
+## Proposed useage
+
+1. Create a meeting in Pricora
+2. During the event (or during your opening hours) have a tablet with the QR-Code of the meeting standing by.
+a) People scan the QR-code using their own device and add themselves to the list (touchfree!)
+b) Alternatively you can hand people a tablet using which they can add themselves
+3. As the owner of the event you can supervise and validate the contact information that is entered at any time without personally checking paper lists.
+4. The data is encrypted by using the owner's password and can technically only be deciphered by the owner of the meeting (and maybe the admin users of your Pricora instance)
+5. In case health authorities request the contact list of a specific event, you (only you as the owner) can export it into a CSV file
  
 ## Features
 
