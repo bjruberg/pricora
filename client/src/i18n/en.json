@@ -14,7 +14,7 @@
   "entities": {
     "created": "Created",
     "attendant": {
-      "email": "e-mail",
+      "email": "E-mail",
       "firstName": "Forename",
       "firstNamePlaceholder": "Max",
       "lastName": "Familyname",
