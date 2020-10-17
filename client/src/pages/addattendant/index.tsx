@@ -5,6 +5,7 @@ import { format, parseISO } from "date-fns";
 import gql from "graphql-tag";
 import { get } from "lodash";
 import { useForm } from "react-hook-form";
+import * as EmailValidator from "email-validator";
 
 import PageContainer from "../../components/PageContainer";
 import {
@@ -138,7 +139,12 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                 id="email"
                 placeholder="me@server.com"
                 name="email"
-                inputRef={register(requiredRegister)}
+                inputRef={register({
+                  validate: {
+                    email: (val) => (EmailValidator.validate(val) ? true : t("forms.email")),
+                  },
+                  required: t("forms.required"),
+                })}
                 type="email"
               />
             </div>
