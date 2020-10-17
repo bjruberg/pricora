@@ -204,8 +204,8 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): 
 
   ctx.cookies.set("Authorization", token, {
     domain: includes(ctx.host, "localhost") ? "" : ctx.host,
+    overwrite: true,
     sameSite: "strict",
-    secure: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 
@@ -216,7 +216,12 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): 
 };
 
 export const logoutUser = async (ctx: AuthorizedContext, next: Next): Promise<void> => {
-  ctx.cookies.set("Authorization", "removed", { expires: new Date(1), maxAge: 1 });
+  ctx.cookies.set("Authorization", "removed", {
+    expires: new Date(1),
+    maxAge: 1,
+    overwrite: true,
+    sameSite: "strict",
+  });
   ctx.status = 200;
   await next();
 };

@@ -138,6 +138,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     server = http2.createServer(app.callback());
     server.setTimeout(5000);
+    app.proxy = true;
   } else if (config.server.https) {
     server = https.createServer(
       {
@@ -150,6 +151,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
   } else {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     server = http.createServer(app.callback());
+    app.proxy = true;
   }
 
   server.listen(config.server.port, config.server.bind);
