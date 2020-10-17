@@ -217,6 +217,7 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): 
 
 export const logoutUser = async (ctx: AuthorizedContext, next: Next): Promise<void> => {
   ctx.cookies.set("Authorization", "removed", {
+    domain: includes(ctx.host, "localhost") ? "" : ctx.host,
     expires: new Date(1),
     maxAge: 1,
     overwrite: true,
