@@ -18,12 +18,11 @@ import {
   getUser,
   graphqlAuthChecker,
   provideAuthorizationInContext,
-  logoutUser,
   restrictedForAdmins,
   restrictedForUsers,
 } from "./auth";
 
-import { loginUser, registerUser } from "./rest/user";
+import { loginUser, logoutUser, registerUser } from "./rest/user";
 
 import { Configuration } from "./entity/Configuration";
 import { MeetingResolver } from "./resolvers/meeting";

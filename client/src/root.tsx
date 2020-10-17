@@ -39,8 +39,6 @@ const AppRoot: FunctionalComponent = () => {
   const [mobileNavigationShown, setMobileNavigationShown] = useState<boolean>(false);
   const { lang, setLang, t } = useContext(TranslateContext);
 
-  console.log({ lang });
-
   const { data: user, isLoading, refetch, remove } = useQuery<SharedUser>(
     "user",
     () => {

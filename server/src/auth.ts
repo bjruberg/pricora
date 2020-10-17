@@ -25,12 +25,6 @@ export const getUser = async (ctx: AuthorizedContext): Promise<void> => {
   }
 };
 
-export const logoutUser = async (ctx: AuthorizedContext, next: Next): Promise<void> => {
-  ctx.cookies.set("Authorization", "");
-  ctx.status = 200;
-  await next();
-};
-
 export const provideAuthorizationInContext = async (ctx: Context, next: Next): Promise<void> => {
   const { configuration } = ctx;
   const token = ctx.cookies.get("Authorization");
