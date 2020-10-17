@@ -113,7 +113,7 @@ const MeetingAddPage: FunctionalComponent = () => {
       </form>
       <div className="text-xs">{t("pages.meetingadd.unlockedAdmins")}</div>
       <ul>
-        {unlockedAdmins?.unlockedAdmins.length > 0
+        {get(unlockedAdmins, "unlockedAdmins.length") > 0
           ? map(unlockedAdmins?.unlockedAdmins, (admin) => {
               return (
                 <li className="text-blue-800 text-xs">

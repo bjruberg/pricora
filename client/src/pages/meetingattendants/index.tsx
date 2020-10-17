@@ -2,9 +2,12 @@ import { FunctionalComponent, h } from "preact";
 import { TranslateContext } from "@denysvuika/preact-translate";
 import { useContext } from "preact/hooks";
 import { useQuery, useMutation } from "@urql/preact";
+import { Link } from "preact-router/match";
 import { format, parseISO } from "date-fns";
 import gql from "graphql-tag";
 import { map } from "lodash";
+
+import { routes } from "../../routes";
 import Button from "../../ui/button";
 import { ErrorMessage } from "../../ui/message";
 import PageContainer from "../../components/PageContainer";
@@ -69,9 +72,15 @@ const MeetingAttendantsPage: FunctionalComponent<MeetingAttendantsProps> = ({ uu
     const { meeting } = data;
     return (
       <PageContainer>
-        <h1 className="mb-2">
-          {t("pages.meetingattendants.title")}: <strong>{meeting.title}</strong>
-        </h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 mb-2">
+          <h1 className="mb-2">
+            {t("pages.meetingattendants.title")}: <strong>{meeting.title}</strong>
+          </h1>
+          <Link class="md:justify-self-end" href={routes.addattendant(uuid)}>
+            <Button variant="secondary">{t("pages.meeting.addAttendant")}</Button>
+          </Link>
+        </div>
+
         <em>{t("pages.meetingattendants.explanation")}</em>
         <Button class="m-3" onClick={toggleShowDelete} variant="dangerous">
           {t("pages.meetingattendants.deleteModeToggle")}

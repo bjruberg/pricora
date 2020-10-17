@@ -48,7 +48,7 @@ const MeetingSharePage: FunctionalComponent<MeetingShareProps> = ({ uuid }) => {
       </h1>
       {shareLink ? (
         <div className="mt-4 flex flex-col items-center">
-          <QRCode className="m-2" size={300} value={shareLink} />
+          <QRCode className="m-2 mb-4" size={300} value={shareLink} />
           <em>{t("pages.meetingshare.validityExp")}</em>
         </div>
       ) : null}
