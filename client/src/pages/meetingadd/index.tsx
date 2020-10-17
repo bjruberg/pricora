@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { get, map } from "lodash";
 import { FunctionalComponent, h } from "preact";
 import { useContext, useMemo } from "preact/hooks";
@@ -98,6 +99,7 @@ const MeetingAddPage: FunctionalComponent = () => {
             inputRef={register({
               required: t("forms.required"),
             })}
+            min={format(new Date(), "yyyy-MM-dd")}
             required
             type="date"
           />
