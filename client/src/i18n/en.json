@@ -119,6 +119,7 @@
     },
     "meetingshare": {
       "title": "Register for",
+      "toggleFullScreen": "Toggle Fullscreen",
       "validityExp": "This QR-Code allows registering for 2 hours and will be refreshed every 30 minutes."
     },
     "register": {

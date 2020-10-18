@@ -120,6 +120,7 @@
     },
     "meetingshare": {
       "title": "Eintragen für",
+      "toggleFullScreen": "Vollbild ein/aus",
       "validityExp": "Der QR Code erlaubt das Eintragen für 2 Stunden und wird alle 30 Minuten aktualisiert."
     },
     "register": {
