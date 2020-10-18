@@ -14,7 +14,16 @@ b) Alternatively you can hand people a tablet using which they can add themselve
 3. As the owner of the event you can supervise and validate the contact information that is entered at any time without personally checking paper lists.
 4. The data is encrypted by using the owner's password and can technically only be deciphered by the owner of the meeting (and maybe the admin users of your Pricora instance)
 5. In case health authorities request the contact list of a specific event, you (only you as the owner) can export it into a CSV file
+
+## Screenshots 
+
  
+
+
+
+| ![Scan QR code](https://i.ibb.co/bvQQmLW/scan.jpg "Scan QR code")    | ![Input contact using a mobile device](https://i.ibb.co/1mLLgXp/input.jpg "Input contact using a mobile device")         |
+| ------------- | ------------- | 
+
 ## Features
 
 - [x] Easy installation on any tiny node.js capable server
@@ -22,6 +31,7 @@ b) Alternatively you can hand people a tablet using which they can add themselve
 - [x] Private information is only visible to the meeting owner and not other attendants
 - [x] Lists of attendans can be exported to csv files
 - [x] Possibility to add personal data using your own mobile device by scanning QR code
+- [x] Multiple translations available. Currently german and english.
 
 ### Planned
 - [ ] Safely store data on various external cloud storage services (Dropbox, S3)
@@ -123,6 +133,8 @@ server {
         location / {
                 proxy_set_header   X-Forwarded-For $remote_addr;
                 proxy_set_header   Host $http_host;
+                proxy_set_header   X-Forwarded-Proto https;
+
                 proxy_pass         http://127.0.0.1:3000;
         }
 
