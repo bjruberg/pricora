@@ -186,14 +186,17 @@ export const loginUser = async (ctx: CustomContext<LoginResponse>, next: Next): 
   }
 
   const token = jwt.sign(
-    pick(requestedUser, [
-      "email",
-      "firstName",
-      "id",
-      "isAdmin",
-      "lastName",
-      "requirePasswordChange",
-    ]),
+    {
+      createdAt: Date.now(),
+      ...pick(requestedUser, [
+        "email",
+        "firstName",
+        "id",
+        "isAdmin",
+        "lastName",
+        "requirePasswordChange",
+      ]),
+    },
     configuration.jwtSecretKey,
     {
       expiresIn: "7d",

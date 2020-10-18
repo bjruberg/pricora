@@ -15,6 +15,8 @@ const publicUserData = [
   "requirePasswordChange",
 ] as const;
 
+const lastServerStartup = Date.now();
+
 export const getUser = async (ctx: AuthorizedContext): Promise<void> => {
   const user = await (await ctx.db).manager.findOne(User, { id: ctx.user.id });
   if (user) {
@@ -32,7 +34,10 @@ export const provideAuthorizationInContext = async (ctx: Context, next: Next): P
   if (token) {
     try {
       const decodedUser = jwt.verify(token, configuration.jwtSecretKey) as SharedUser;
-      ctx.user = decodedUser;
+      if (process.env.NODE_ENV === "development" || decodedUser.createdAt > lastServerStartup) {
+        // force relogin when the server was restarted in the meantime - but not in development
+        ctx.user = decodedUser;
+      }
     } catch (err) {
       // pass
     }
@@ -103,6 +108,6 @@ export const graphqlAuthChecker: AuthChecker<Context, "ATTENDANT" | "ADMIN"> = a
     return Promise.resolve(false);
   }
 
-  context.user = pick(user, publicUserData);
+  context.user = { createdAt: Date.now(), ...pick(user, publicUserData) };
   return Promise.resolve(true);
 };
