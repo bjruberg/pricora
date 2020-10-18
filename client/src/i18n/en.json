@@ -33,7 +33,7 @@
       "random": "Additional info"
     },
     "user": {
-      "email": "e-mail",
+      "email": "E-mail",
       "firstName": "Forename",
       "firstNamePlaceholder": "Max",
       "isAdmin": "Administrator",

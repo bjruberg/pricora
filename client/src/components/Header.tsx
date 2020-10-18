@@ -1,6 +1,5 @@
 import { Fragment, FunctionalComponent, h } from "preact";
-import cn from "classnames";
-import { useCallback, useContext, useMemo, useState } from "preact/hooks";
+import { useCallback, useContext } from "preact/hooks";
 import { Link } from "preact-router/match";
 import { TranslateContext } from "@denysvuika/preact-translate";
 import { useMutation } from "react-query";
@@ -37,7 +36,7 @@ const Header: FunctionalComponent = () => {
       },
       method: "POST",
     }).then(() => {
-      remove();
+      void remove();
     });
   });
 
