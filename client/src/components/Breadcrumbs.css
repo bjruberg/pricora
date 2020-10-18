@@ -1,0 +1,15 @@
+.breadcrumbs a:nth-child(n + 1) {
+  text-decoration: underline;
+}
+
+.breadcrumbs a:last-child {
+  text-decoration: none;
+}
+
+.breadcrumbs a+a:before {
+  box-sizing: content-box;
+  content: "/\00a0";
+  display: inline-block;
+  padding: 0 .5rem;
+  width: .5rem;
+}

@@ -85,7 +85,7 @@ const AppRoot: FunctionalComponent = () => {
             <PrivateRoute path={routes.meetinglist} Component={MeetingListPage} />
             <Route path={routes.addattendant()} component={AddAttendant} />
             <PrivateRoute path={routes.userlist} Component={UserlistPage} />
-            <Route path="/" component={LandingPage} />
+            <Route path={routes.welcome} component={LandingPage} />
           </Router>
         </Provider>
       </UserContext.Provider>

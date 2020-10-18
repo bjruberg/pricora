@@ -1,4 +1,4 @@
-import { FunctionalComponent, h } from "preact";
+import { Fragment, FunctionalComponent, h } from "preact";
 import { TranslateContext } from "@denysvuika/preact-translate";
 import { useContext } from "preact/hooks";
 import { useQuery, useMutation } from "@urql/preact";
@@ -9,7 +9,7 @@ import { format, parseISO } from "date-fns";
 import addCircleIcon from "../../assets/add_circle.svg";
 
 import { downloadExport } from "./export";
-
+import Breadcrubms from "../../components/Breadcrumbs";
 import PageContainer from "../../components/PageContainer";
 import {
   DeleteMeetingMutation,
@@ -73,76 +73,83 @@ const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
   if (data) {
     const { meeting } = data;
     return (
-      <PageContainer>
-        <div class="grid grid-cols-1 md:grid-cols-2 mb-2 ">
-          <div>
-            <h1>
-              {t("pages.meeting.title")}: <strong>{meeting.title}</strong>
-            </h1>
-            <div className="mb-2">
-              {t("pages.meeting.date")}: {format(parseISO(meeting.date), dateFormat)}
-            </div>
-            <div>
-              {t("pages.meeting.owner")}: {meeting.user.firstName} {meeting.user.lastName}
-            </div>
-          </div>
-          <Link class="md:justify-self-end" href={routes.addattendant(uuid)}>
-            <Button class="mr-2" variant="secondary">
-              <img alt="" class="inline mb-1 mr-1" role="presentation" src={addCircleIcon} />
-              {t("pages.meeting.addAttendant")}
-            </Button>
+      <Fragment>
+        <Breadcrubms>
+          <Link aria-current="page" href={routes.meeting(uuid)}>
+            {meeting.title}
           </Link>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
-          <Button
-            disabled={fetchingToken}
-            onClick={() => createMeetingToken({ meetingId: uuid })}
-            variant="primary"
-          >
-            {t("pages.meeting.createShareLink")}{" "}
-            {fetchingToken ? <Spinner class="inline-block ml-2 text-white" customColor /> : null}
-          </Button>
-          <Link href={routes.meetingshare(uuid)}>
-            <Button class="w-full" variant="primary">
-              {t("pages.meeting.showQR")}
-            </Button>
-          </Link>
-          {generatedToken ? (
+        </Breadcrubms>
+        <PageContainer>
+          <div class="grid grid-cols-1 md:grid-cols-2 mb-2 ">
             <div>
-              <a class="text-blue-700 hover:bg-blue-200 font-bold" href={generatedToken}>
-                Link
-              </a>
+              <h1>
+                {t("pages.meeting.title")}: <strong>{meeting.title}</strong>
+              </h1>
+              <div className="mb-2">
+                {t("pages.meeting.date")}: {format(parseISO(meeting.date), dateFormat)}
+              </div>
+              <div>
+                {t("pages.meeting.owner")}: {meeting.user.firstName} {meeting.user.lastName}
+              </div>
             </div>
-          ) : null}
-        </div>
-        <div class="container max-w-md mt-4">{t("pages.meeting.shareExplanation")}</div>
-
-        <h2 className="mt-6">{t("pages.meeting.attendants")}</h2>
-        {meeting.user.id === user?.id || meeting.user.isAdmin ? (
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
-            <Link href={routes.meetingattendants(uuid)}>
-              <Button class="mt-6 w-full" variant="secondary">
-                {t("pages.meeting.showAttendants")}
+            <Link class="md:justify-self-end" href={routes.addattendant(uuid)}>
+              <Button class="mr-2" variant="secondary">
+                <img alt="" class="inline mb-1 mr-1" role="presentation" src={addCircleIcon} />
+                {t("pages.meeting.addAttendant")}
               </Button>
             </Link>
-            <Button class="mt-6 w-full" onClick={() => downloadExport(uuid)} variant="secondary">
-              {t("pages.meeting.exportAttendantList")}
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
+            <Button
+              disabled={fetchingToken}
+              onClick={() => createMeetingToken({ meetingId: uuid })}
+              variant="primary"
+            >
+              {t("pages.meeting.createShareLink")}{" "}
+              {fetchingToken ? <Spinner class="inline-block ml-2 text-white" customColor /> : null}
             </Button>
-            <Button onClick={toggleShowRealDeleteButton} variant="dangerous">
-              {t("pages.meeting.deleteMeeting")}
-            </Button>
-            {showRealDeleteButton ? (
-              <Button
-                onClick={() => deleteMeeting({ id: uuid }).then(() => route(routes.meetinglist))}
-                variant="dangerous"
-              >
-                {t("pages.meeting.finalDeleteMeeting")}
+            <Link href={routes.meetingshare(uuid)}>
+              <Button class="w-full" variant="primary">
+                {t("pages.meeting.showQR")}
               </Button>
+            </Link>
+            {generatedToken ? (
+              <div>
+                <a class="text-blue-700 hover:bg-blue-200 font-bold" href={generatedToken}>
+                  Link
+                </a>
+              </div>
             ) : null}
           </div>
-        ) : null}
-      </PageContainer>
+          <div class="container max-w-md mt-4">{t("pages.meeting.shareExplanation")}</div>
+
+          <h2 className="mt-6">{t("pages.meeting.attendants")}</h2>
+          {meeting.user.id === user?.id || meeting.user.isAdmin ? (
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
+              <Link href={routes.meetingattendants(uuid)}>
+                <Button class="mt-6 w-full" variant="secondary">
+                  {t("pages.meeting.showAttendants")}
+                </Button>
+              </Link>
+              <Button class="mt-6 w-full" onClick={() => downloadExport(uuid)} variant="secondary">
+                {t("pages.meeting.exportAttendantList")}
+              </Button>
+              <Button onClick={toggleShowRealDeleteButton} variant="dangerous">
+                {t("pages.meeting.deleteMeeting")}
+              </Button>
+              {showRealDeleteButton ? (
+                <Button
+                  onClick={() => deleteMeeting({ id: uuid }).then(() => route(routes.meetinglist))}
+                  variant="dangerous"
+                >
+                  {t("pages.meeting.finalDeleteMeeting")}
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
+        </PageContainer>
+      </Fragment>
     );
   }
   return null;

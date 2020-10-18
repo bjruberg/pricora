@@ -14,20 +14,20 @@ import { routes } from "../routes";
 const Header: FunctionalComponent = () => {
   const { lang, setLang, t } = useContext(TranslateContext);
   const { isLoading, remove, user } = useContext(UserContext);
-  const [mobileNavigationShown, setMobileNavigationShown] = useState<boolean>(false);
+  // const [mobileNavigationShown, setMobileNavigationShown] = useState<boolean>(false);
 
-  const LinkNode = useMemo(
-    () =>
-      user ? (
-        <Link
-          href={routes.meetinglist}
-          class={cn("block lg:inline-block text-gray-200 hover:text-white ml-4 mr-4")}
-        >
-          {t("navigation.meetinglist")}
-        </Link>
-      ) : null,
-    [t, user],
-  );
+  // const LinkNode = useMemo(
+  //   () =>
+  //     user ? (
+  //       <Link
+  //         href={routes.meetinglist}
+  //         class={cn("block lg:inline-block text-gray-200 hover:text-white ml-4 mr-4")}
+  //       >
+  //         {t("navigation.meetinglist")}
+  //       </Link>
+  //     ) : null,
+  //   [t, user],
+  // );
 
   const [logout] = useMutation(() => {
     return fetch("/api/logout", {
@@ -44,7 +44,7 @@ const Header: FunctionalComponent = () => {
   return (
     <header class="bg-blue-800 w-full px-4">
       <div class="flex items-center py-1">
-        <nav class="block flex flex-grow md:hidden">
+        {/* <nav class="block flex flex-grow md:hidden">
           <button
             class={cn(
               "flex items-center px-3 py-2 border rounded text-gray-200 border-gray-400 hover:text-white hover:border-white",
@@ -63,18 +63,18 @@ const Header: FunctionalComponent = () => {
               <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
             </svg>
           </button>
-        </nav>
+        </nav> */}
         <nav class="w-full block flex-grow md:flex md:items-center nd:w-auto md:block p-2">
           <div class="text-white text-md xl:text-2xl">
             <Link href="/">{pageTitle}</Link>
           </div>
-          <div
+          {/* <div
             class={cn("text-sm lg:flex-grow hidden md:block", {
               hidden: !user,
             })}
           >
             {LinkNode}
-          </div>
+          </div> */}
         </nav>
         <div className="whitespace-no-wrap text-white">
           <Button
@@ -119,7 +119,7 @@ const Header: FunctionalComponent = () => {
           })()}
         </div>
       </div>
-      <nav class={cn("py-2", { hidden: !mobileNavigationShown })}>{LinkNode}</nav>
+      {/* <nav class={cn("py-2", { hidden: !mobileNavigationShown })}>{LinkNode}</nav> */}
     </header>
   );
 };

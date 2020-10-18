@@ -1,5 +1,7 @@
 {
   "navigation": {
+    "addAttendant": "Add Attendant",
+    "attendantlist": "Attendant list",
     "banner": "encrypted, touchfree, Open Source",
     "account": "User profile",
     "meetinglist": "Meetings",
@@ -65,6 +67,7 @@
     "account": {
       "title": "User profile of {name}",
       "oldPassword": "Old Password",
+      "changePassword": "Change password",
       "newPassword": "New Password",
       "passwordNotCorrect": "The given password does not match the current one",
       "passwordChangeError": "Change of password failed",

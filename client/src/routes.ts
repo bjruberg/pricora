@@ -10,4 +10,5 @@ export const routes = {
   addattendant: (uuid = ":uuid"): string => `/addattendant/${uuid}`,
   register: "/register",
   userlist: "/userlist",
+  welcome: "/",
 };

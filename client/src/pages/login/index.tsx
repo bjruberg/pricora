@@ -1,5 +1,5 @@
 import { get } from "lodash";
-import { FunctionalComponent, h } from "preact";
+import { Fragment, FunctionalComponent, h } from "preact";
 import { useContext, useMemo } from "preact/hooks";
 import { TranslateContext } from "@denysvuika/preact-translate";
 import { route } from "preact-router";
@@ -68,66 +68,68 @@ const LoginPage: FunctionalComponent = () => {
   }, [handleSubmit, login]);
 
   return (
-    <PageContainer>
-      <h1 className="pb-6">{t("pages.login.title")}</h1>
-      <form onSubmit={onSubmit}>
-        <div className="container mt-4 max-w-md">
-          <Label for="username">{t("entities.user.email")}</Label>
-          <Input
-            autocomplete="email"
-            error={!!errors["username"]}
-            id="username"
-            placeholder="me@server.com"
-            name="username"
-            inputRef={register({
-              validate: {
-                email: (val) => (EmailValidator.validate(val) ? true : t("forms.email")),
-              },
-              required: t("forms.required"),
-            })}
-            required
-            type="email"
-          />
-          <ErrorMessage>
-            {!!errors["username"] ? get(errors["username"], "message") : ""}
-          </ErrorMessage>
-          <Label className="mt-4" for="password">
-            {t("entities.user.password")}
-          </Label>
-          <PasswordInput
-            autocomplete="current-password"
-            error={!!errors["password"]}
-            id="password"
-            placeholder="*****"
-            inputRef={register({
-              minLength: { value: 8, message: t("forms.atLeast", { count: 8 }) },
-              required: t("forms.required"),
-            })}
-            name="password"
-          />
-          <ErrorMessage>
-            {!!errors["password"] ? get(errors["password"], "message") : ""}
-          </ErrorMessage>
-
-          <Button class="mt-6" disabled={status === "loading"} type="submit" variant="primary">
-            {t("actions.login")}
-          </Button>
-          {status === "loading" ? <Spinner className="inline ml-2" /> : null}
-          {apiError ? (
-            <ErrorMessage inline className="ml-4 inline-block">
-              {(() => {
-                if (apiError === 409) {
-                  return t("pages.login.wrongCredentials");
-                } else {
-                  return t("pages.login.networkError");
-                }
-              })()}
+    <Fragment>
+      <PageContainer>
+        <h1 className="pb-6">{t("pages.login.title")}</h1>
+        <form onSubmit={onSubmit}>
+          <div className="container mt-4 max-w-md">
+            <Label for="username">{t("entities.user.email")}</Label>
+            <Input
+              autocomplete="email"
+              error={!!errors["username"]}
+              id="username"
+              placeholder="me@server.com"
+              name="username"
+              inputRef={register({
+                validate: {
+                  email: (val) => (EmailValidator.validate(val) ? true : t("forms.email")),
+                },
+                required: t("forms.required"),
+              })}
+              required
+              type="email"
+            />
+            <ErrorMessage>
+              {!!errors["username"] ? get(errors["username"], "message") : ""}
             </ErrorMessage>
-          ) : null}
-          <div className="text-xs text-gray-800 mt-2">{t("pages.login.passwordWarning")}</div>
-        </div>
-      </form>
-    </PageContainer>
+            <Label className="mt-4" for="password">
+              {t("entities.user.password")}
+            </Label>
+            <PasswordInput
+              autocomplete="current-password"
+              error={!!errors["password"]}
+              id="password"
+              placeholder="*****"
+              inputRef={register({
+                minLength: { value: 8, message: t("forms.atLeast", { count: 8 }) },
+                required: t("forms.required"),
+              })}
+              name="password"
+            />
+            <ErrorMessage>
+              {!!errors["password"] ? get(errors["password"], "message") : ""}
+            </ErrorMessage>
+
+            <Button class="mt-6" disabled={status === "loading"} type="submit" variant="primary">
+              {t("actions.login")}
+            </Button>
+            {status === "loading" ? <Spinner className="inline ml-2" /> : null}
+            {apiError ? (
+              <ErrorMessage inline className="ml-4 inline-block">
+                {(() => {
+                  if (apiError === 409) {
+                    return t("pages.login.wrongCredentials");
+                  } else {
+                    return t("pages.login.networkError");
+                  }
+                })()}
+              </ErrorMessage>
+            ) : null}
+            <div className="text-xs text-gray-800 mt-2">{t("pages.login.passwordWarning")}</div>
+          </div>
+        </form>
+      </PageContainer>
+    </Fragment>
   );
 };
 

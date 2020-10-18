@@ -18,6 +18,7 @@ import {
 } from "./index.gql";
 import Button from "../../ui/button";
 import PageContainer from "../../components/PageContainer";
+import Breadcrumbs from "../../components/Breadcrumbs";
 import { Card } from "../../components/Card";
 import Switch from "../../components/Switch";
 import { routes } from "../../routes";
@@ -69,7 +70,7 @@ interface UserProps {
   toggleAdminMode: (
     arg1: ToggleUserAdminMutationVariables,
   ) => Promise<OperationResult<ToggleUserAdminMutation>>;
-  user: Pick<Types.User, "id" | "email" | "firstName" | "isAdmin" | "lastName">;
+  user: UsersQueryQuery["users"][0]; // Pick<Types.User, "id" | "email" | "firstName" | "isAdmin" | "lastName">;
 }
 
 const User: FunctionalComponent<UserProps> = ({
@@ -163,68 +164,75 @@ const UserList: FunctionalComponent = () => {
   );
 
   return (
-    <PageContainer>
-      <div class="grid grid-cols-1 md:grid-cols-2 mb-2">
-        <h1>{t("pages.userlist.title")}</h1>
-        <Link class="md:justify-self-end" href={routes.register}>
-          <Button variant="secondary">{t("navigation.addUser")}</Button>
+    <Fragment>
+      <Breadcrumbs>
+        <Link aria-current="page" href={routes.userlist}>
+          {t("navigation.userlist")}
         </Link>
-      </div>
+      </Breadcrumbs>
+      <PageContainer>
+        <div class="grid grid-cols-1 md:grid-cols-2 mb-2">
+          <h1>{t("pages.userlist.title")}</h1>
+          <Link class="md:justify-self-end" href={routes.register}>
+            <Button variant="secondary">{t("navigation.addUser")}</Button>
+          </Link>
+        </div>
 
-      <ul class="flex border-b max-w-md ">
-        <li class={cn({ "-mb-px": showDeleted === false }, "mr-1")}>
-          <a
-            className={cn(tabClasses, {
-              [activeTabClasses]: showDeleted === false,
-            })}
-            href="#active"
-            onClick={() => {
-              setShowDeleted(false);
-              refetchUsers({
-                deleted: false,
-              });
-            }}
-          >
-            {t("pages.userlist.activeUsers")}
-          </a>
-        </li>
-        <li class={cn({ "-mb-px": showDeleted }, "mr-1")}>
-          <a
-            className={cn(tabClasses, {
-              [activeTabClasses]: showDeleted,
-            })}
-            href="#deleted"
-            onClick={() => {
-              setShowDeleted(true);
-              refetchUsers({
-                deleted: true,
-              });
-            }}
-          >
-            {t("pages.userlist.deletedUsers")}
-          </a>
-        </li>
-      </ul>
+        <ul class="flex border-b max-w-md ">
+          <li class={cn({ "-mb-px": showDeleted === false }, "mr-1")}>
+            <a
+              className={cn(tabClasses, {
+                [activeTabClasses]: showDeleted === false,
+              })}
+              href="#active"
+              onClick={() => {
+                setShowDeleted(false);
+                refetchUsers({
+                  deleted: false,
+                });
+              }}
+            >
+              {t("pages.userlist.activeUsers")}
+            </a>
+          </li>
+          <li class={cn({ "-mb-px": showDeleted }, "mr-1")}>
+            <a
+              className={cn(tabClasses, {
+                [activeTabClasses]: showDeleted,
+              })}
+              href="#deleted"
+              onClick={() => {
+                setShowDeleted(true);
+                refetchUsers({
+                  deleted: true,
+                });
+              }}
+            >
+              {t("pages.userlist.deletedUsers")}
+            </a>
+          </li>
+        </ul>
 
-      <div className="border-b border-l border-r container p-4 max-w-md">
-        {data ? (
-          <ul className="grid grid-cols-1 gap-4">
-            {map(orderBy(data.users, ["firstName", "lastName"]), (user) => {
-              return (
-                <User
-                  deleteUser={deleteUser}
-                  refetchUsers={refetchUsers}
-                  restoreUser={restoreUser}
-                  toggleAdminMode={toggleAdminMode}
-                  user={user}
-                  key={user.id}
-                />
-              );
-            })}
-          </ul>
-        ) : null}
-      </div>
-    </PageContainer>
+        <div className="border-b border-l border-r container p-4 max-w-md">
+          {data ? (
+            <ul className="grid grid-cols-1 gap-4">
+              {map(orderBy(data.users, ["firstName", "lastName"]), (user) => {
+                return (
+                  <User
+                    deleteUser={deleteUser}
+                    refetchUsers={refetchUsers}
+                    restoreUser={restoreUser}
+                    toggleAdminMode={toggleAdminMode}
+                    user={user}
+                    key={user.id}
+                  />
+                );
+              })}
+            </ul>
+          ) : null}
+        </div>
+      </PageContainer>
+    </Fragment>
   );
 };
 

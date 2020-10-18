@@ -4,6 +4,7 @@ import { useQuery } from "@urql/preact";
 import gql from "graphql-tag";
 import { groupBy, keys, map, orderBy, partition } from "lodash";
 import { format, parseISO } from "date-fns";
+import Breadcrumbs from "../../components/Breadcrumbs";
 import PageContainer from "../../components/PageContainer";
 import Button from "../../ui/button";
 import { GetMeetingsQuery, GetMeetingsQueryVariables } from "./index.gql";
@@ -73,16 +74,19 @@ const ArrangementsPage: FunctionalComponent = () => {
   };
 
   return (
-    <PageContainer>
-      <div class="grid grid-cols-1 md:grid-cols-2 mb-2">
-        <h1>{t("pages.meetinglist.title")}</h1>
-        <Link class="md:justify-self-end" href={routes.meetingadd}>
-          <Button variant="secondary">{t("navigation.addMeeting")}</Button>
-        </Link>
-      </div>
-      <ul>{map(orderBy(after), renderDay)}</ul>
-      <ul>{map(orderBy(before), renderDay)}</ul>
-    </PageContainer>
+    <Fragment>
+      <Breadcrumbs />
+      <PageContainer>
+        <div class="grid grid-cols-1 md:grid-cols-2 mb-2">
+          <h1>{t("pages.meetinglist.title")}</h1>
+          <Link class="md:justify-self-end" href={routes.meetingadd}>
+            <Button variant="secondary">{t("navigation.addMeeting")}</Button>
+          </Link>
+        </div>
+        <ul>{map(orderBy(after), renderDay)}</ul>
+        <ul>{map(orderBy(before), renderDay)}</ul>
+      </PageContainer>
+    </Fragment>
   );
 };
 

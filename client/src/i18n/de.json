@@ -1,15 +1,18 @@
 {
   "navigation": {
+    "addAttendant": "Teilnehmer hinzufügen",
+    "attendantlist": "Teilnehmerliste",
     "banner": "verschlüsselt, kontaktlos, Open Source",
     "account": "Nutzerprofil",
-    "meetinglist": "Veranstaltungen",
+    "meetinglist": "Veranstaltungsliste",
     "addMeeting": "Veranstaltung anlegen",
     "addUser": "Nutzer anlegen",
     "hello": "Hallo",
     "login": "Einloggen",
     "logout": "Ausloggen",
     "toggleUserMenu": "Blendet das Nutzermenü ein und aus",
-    "userlist": "Benutzerliste"
+    "userlist": "Benutzerliste",
+    "welcome": "Willkommen"
   },
   "entities": {
     "created": "Erstellt",
@@ -64,6 +67,7 @@
   "pages": {
     "account": {
       "title": "Nutzerdaten von {name}",
+      "changePassword": "Passwort ändern",
       "oldPassword": "Altes Passwort",
       "newPassword": "Neues Passwort",
       "passwordNotCorrect": "Das angegebene Passwort weicht vom derzeitigen ab",
