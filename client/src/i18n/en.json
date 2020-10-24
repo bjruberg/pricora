@@ -97,7 +97,7 @@
       "finalDeleteMeeting": "Finally delete!",
       "list": "Attendance list",
       "owner": "Organizer",
-      "shareExplanation": "Your attendants can register themselves by sharing a link with them or display a QR-Code here",
+      "shareExplanation": "Provide the link or the QR-Code to your attendants for allowing them to register themselves.",
       "showAttendants": "Show attendants",
       "showQR": "Show QR-Code"
     },
