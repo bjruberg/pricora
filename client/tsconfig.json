@@ -16,13 +16,13 @@
     "paths": {
       "*": ["./*"]
     },
-    "types": ["node"],
+    "types": [],
     "jsx": "react",
     "jsxFactory": "h",
     "skipLibCheck": true, // preact documentation for integration react libs in preact using ts
     "typeRoots": ["./src/@types", "../node_modules/@types"],
   },
-  "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/i18n/*", "assets/*"],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "../config/*.ts", "src/i18n/*", "assets/*"],
   "exclude": [
     "dist"
   ]

@@ -44,6 +44,8 @@ declare module "node-config-ts" {
     language: string
     greeting: string
     pageTitle: string
+    _requiredContactFields: string
+    requiredContactFields: string[]
   }
   interface Database {
     path: string

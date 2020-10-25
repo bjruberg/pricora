@@ -14,7 +14,14 @@
     "hostname": "https://localhost:3000",
     "language": "de",
     "greeting": "Digital contact lists.",
-    "pageTitle": "My Restaurant"
+    "pageTitle": "My Restaurant",
+    "_requiredContactFields": "Fields that users have to enter to submit. Possible values: ['address', 'city', 'country', 'email', 'firstName', 'lastName', 'phone', 'random', 'zip']",
+    "requiredContactFields": [
+      "firstName",
+      "lastName",
+      "phone",
+      "email"
+    ]
   },
   "server": {
     "bind": "localhost",
