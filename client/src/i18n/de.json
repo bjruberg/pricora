@@ -77,7 +77,7 @@
     "addattendant": {
       "disclaimer": "Alle Daten werden verschlüsselt gespeichert.",
       "error": "Hinzufügen fehlgeschlagen",
-      "success": "Teilnehmer hinzugefügt",
+      "success": "Kontaktdaten hinzugefügt. Sie können das Formular nun leeren oder die Eingaben ändern, um weitere Personen hinzuzufügen",
       "title": "Eintragen für {meeting} am {on}",
       "unauthorized": "Sie haben keine gültigen Zugangsdaten für diese Veranstaltung."
     },

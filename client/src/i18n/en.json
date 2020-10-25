@@ -76,7 +76,7 @@
     "addattendant": {
       "disclaimer": "All data is saved in encrypted form",
       "error": "Addition failed",
-      "success": "Attendant added",
+      "success": "Contact added. You can now either clear the form or modify the input to add another one",
       "title": "Register for {meeting} on {on}",
       "unauthorized": "You do not have provided correct security credentials for this meeting."
     },
