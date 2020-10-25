@@ -2,7 +2,6 @@ import { FunctionalComponent, h } from "preact";
 import { useContext } from "preact/hooks";
 import AsyncRoute from "preact-async-route";
 
-import LoginPage from "../pages/login";
 import { UserContext } from "../contexts/user";
 
 interface PrivateRouteProps {
@@ -16,10 +15,16 @@ interface PrivateRouteProps {
   path: string;
 }
 
+const loadLoginPage = () => import("../pages/login").then((module) => module.default);
+
 const PrivateRoute: FunctionalComponent<PrivateRouteProps> = ({ Component, ...props }) => {
   const { user, isLoading } = useContext(UserContext);
 
-  return isLoading ? null : user ? <AsyncRoute component={Component} {...props} /> : <LoginPage />;
+  return isLoading ? null : user ? (
+    <AsyncRoute component={Component} {...props} />
+  ) : (
+    <AsyncRoute {...props} getComponent={loadLoginPage} />
+  );
 };
 
 export default PrivateRoute;
