@@ -1,4 +1,6 @@
-import { difference, find, forEach, intersection, map } from "lodash";
+import { difference, find, forEach, intersection, map, reject } from "lodash";
+import { config } from "node-config-ts";
+import { basename } from "path";
 import { getRepository } from "typeorm";
 
 import { Meeting } from "../entity/Meeting";
@@ -17,9 +19,13 @@ export const init = async (): Promise<void> => {
       .select("meeting.id")
       .getMany()
       .then((meetings) => map(meetings, "id")),
-    sourcePlugin
-      .getMeetingFileList()
-      .then((files) => map(files, (filename) => filename.split(".").slice(0, -1).join("."))),
+    sourcePlugin.getMeetingFileList().then((files) => {
+      const filteredFiles = reject(
+        files,
+        (filename) => filename === basename(config.database.path),
+      );
+      return map(filteredFiles, (filename) => filename.split(".").slice(0, -1).join("."));
+    }),
   ]);
 
   // const meetingsOnlyInDatabase = difference(meetings, filenames);

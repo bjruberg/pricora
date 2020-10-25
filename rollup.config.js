@@ -24,7 +24,6 @@ const name = 'RollupTypeScriptBabel';
 const isProduction = process.env.NODE_ENV === 'production';
 
 const htmlTemplate = ({ attributes, files, meta, publicPath, title }) => {
-	
   const scripts = (files.js || [])
     .map(({ fileName }) => {
       const attrs = makeHtmlAttributes(attributes.script);
@@ -83,6 +82,12 @@ export default (CLIArgs) => {
 				include: [ 'client/src/**/*' ]
 			}),
 
+			postcss({
+				extract: true,
+				extract: path.resolve('client/dist/styles.css'),
+				plugins: [cssimport, tailwindcss].concat(isProduction ? [cssnano({ preset: "default"}), autoprefixer] : [])
+			}), 
+
       // Create an index.html file in dist
 			html({ title: config.frontend.pageTitle, fileName: "nocache.html", publicPath: config.frontend.hostname + "/", attributes: { 
 					html: {
@@ -99,10 +104,6 @@ export default (CLIArgs) => {
           { find: 'react', replacement: 'preact/compat' },
           { find: 'react-dom', replacement: 'preact/compat' }
         ]
-			}),
-			
-			postcss({
-				plugins: [cssimport, tailwindcss].concat(isProduction ? [cssnano({ preset: "default"}), autoprefixer] : [])
 			}),
 			
 			injectProcessEnv({ 
@@ -137,7 +138,8 @@ export default (CLIArgs) => {
 		},
 
 		watch: {
-			buildDelay: 2000
+			buildDelay: 500,
+			exclude: ['node_modules/**']
 		}
 	};
 

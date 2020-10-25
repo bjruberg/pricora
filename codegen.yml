@@ -16,3 +16,6 @@ generates:
       baseTypesPath: gql.d.tsx
     plugins:
       - typescript-operations
+pluckConfig:
+  globalGqlIdentifierName:
+    - gql

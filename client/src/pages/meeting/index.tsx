@@ -19,6 +19,7 @@ import {
 } from "./index.gql";
 
 import Button from "../../ui/button";
+import Input from "../../ui/input";
 import Spinner from "../../ui/spinner";
 import { routes } from "../../routes";
 import { dateFormat } from "../../constants";
@@ -114,15 +115,11 @@ const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
                 {t("pages.meeting.showQR")}
               </Button>
             </Link>
-            {generatedToken ? (
-              <div>
-                <a class="text-blue-700 hover:bg-blue-200 font-bold" href={generatedToken}>
-                  Link
-                </a>
-              </div>
-            ) : null}
           </div>
-          <div class="container max-w-md mt-4">{t("pages.meeting.shareExplanation")}</div>
+          <div class="container max-w-lg mt-4">
+            {t("pages.meeting.shareExplanation")}
+            {generatedToken ? <Input className="w-full" readOnly value={generatedToken} /> : null}
+          </div>
 
           <h2 className="mt-6">{t("pages.meeting.attendants")}</h2>
           {meeting.user.id === user?.id || meeting.user.isAdmin ? (

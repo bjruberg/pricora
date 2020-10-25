@@ -6,7 +6,7 @@
     "initialAdminPassword": "mimikama"
   },
   "database": {
-    "path": "database.sqlite"
+    "path": "data/database.sqlite"
   },
   "frontend": {
     "dateFormat": "dd.MM.yyyy",
