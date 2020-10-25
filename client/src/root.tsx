@@ -1,24 +1,13 @@
 import { Fragment, FunctionalComponent, h } from "preact";
-import { useContext, useMemo } from "preact/hooks";
+import { useContext, useCallback, useMemo } from "preact/hooks";
 import { TranslateContext } from "@denysvuika/preact-translate";
-import Router, { Route } from "preact-router";
+import Router from "preact-router";
+import AsyncRoute from "preact-async-route";
 import Match, { Link } from "preact-router/match";
 import { useQuery } from "react-query";
 import { createClient, Provider } from "@urql/preact";
 import { get } from "lodash";
 import "./base.css";
-
-import AccountPage from "./pages/account";
-import AddAttendant from "./pages/addattendant";
-import LandingPage from "./pages/landing";
-import MeetingPage from "./pages/meeting";
-import MeetingAddPage from "./pages/meetingadd";
-import MeetingAttendantsPage from "./pages/meetingattendants";
-import MeetingSharePage from "./pages/meetingshare";
-import MeetingListPage from "./pages/meetinglist";
-import LoginPage from "./pages/login";
-import RegisterPage from "./pages/register";
-import UserlistPage from "./pages/userlist";
 
 import AdminRoute from "./components/AdminRoute";
 import Header from "./components/Header";
@@ -29,6 +18,14 @@ import { SharedUser } from "../../shared/user";
 import { UserContext } from "./contexts/user";
 
 import { routes } from "./routes";
+
+const getDefault = (
+  module:
+    | typeof import("./pages/meetingadd")
+    | typeof import("./pages/meetingshare")
+    | typeof import("./pages/addattendant")
+    | typeof import("./pages/account"),
+) => module.default;
 
 const gqlClient = createClient({ url: `${get(process.env, "hostname", "")}/graphql` });
 
@@ -75,17 +72,53 @@ const AppRoot: FunctionalComponent = () => {
         ) : null}
         <Provider value={gqlClient}>
           <Router>
-            <PrivateRoute path={routes.account} Component={AccountPage} />
-            <AdminRoute path={routes.register} Component={RegisterPage} />
-            <PrivateRoute path={routes.meeting()} Component={MeetingPage} />
-            <PrivateRoute path={routes.meetingadd} Component={MeetingAddPage} />
-            <PrivateRoute path={routes.meetingattendants()} Component={MeetingAttendantsPage} />
-            <PrivateRoute path={routes.meetingshare()} Component={MeetingSharePage} />
-            <Route path={routes.login} component={LoginPage} />
-            <PrivateRoute path={routes.meetinglist} Component={MeetingListPage} />
-            <Route path={routes.addattendant()} component={AddAttendant} />
-            <PrivateRoute path={routes.userlist} Component={UserlistPage} />
-            <Route path={routes.welcome} component={LandingPage} />
+            <PrivateRoute
+              path={routes.account}
+              getComponent={useCallback(() => import("./pages/account").then(getDefault), [])}
+            />
+            <AdminRoute
+              path={routes.register}
+              getComponent={useCallback(() => import("./pages/register").then(getDefault), [])}
+            />
+            <PrivateRoute
+              path={routes.meeting()}
+              getComponent={useCallback(() => import("./pages/meeting").then(getDefault), [])}
+            />
+            <PrivateRoute
+              path={routes.meetingadd}
+              getComponent={useCallback(() => import("./pages/meetingadd").then(getDefault), [])}
+            />
+            <PrivateRoute
+              path={routes.meetingattendants()}
+              getComponent={useCallback(
+                () => import("./pages/meetingattendants").then(getDefault),
+                [],
+              )}
+            />
+            <PrivateRoute
+              path={routes.meetingshare()}
+              getComponent={useCallback(() => import("./pages/meetingshare").then(getDefault), [])}
+            />
+            <AsyncRoute
+              path={routes.login}
+              getComponent={useCallback(() => import("./pages/login").then(getDefault), [])}
+            />
+            <PrivateRoute
+              path={routes.meetinglist}
+              getComponent={useCallback(() => import("./pages/meetinglist").then(getDefault), [])}
+            />
+            <AsyncRoute
+              path={routes.addattendant()}
+              getComponent={useCallback(() => import("./pages/addattendant").then(getDefault), [])}
+            />
+            <AdminRoute
+              path={routes.userlist}
+              getComponent={useCallback(() => import("./pages/userlist").then(getDefault), [])}
+            />
+            <AsyncRoute
+              path={routes.welcome}
+              getComponent={useCallback(() => import("./pages/landing").then(getDefault), [])}
+            />
           </Router>
         </Provider>
       </UserContext.Provider>

@@ -111,6 +111,7 @@
     "lodash": "^4.17.20",
     "node-config-ts": "^3.0.4",
     "preact": "^10.4.8",
+    "preact-async-route": "^2.2.1",
     "preact-router": "^3.2.1",
     "qrcode.react": "^1.0.0",
     "react-hook-form": "^6.8.2",
