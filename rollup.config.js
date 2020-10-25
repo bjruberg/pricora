@@ -86,7 +86,7 @@ export default (CLIArgs) => {
 				extract: true,
 				extract: path.resolve('client/dist/styles.css'),
 				plugins: [cssimport, tailwindcss].concat(isProduction ? [cssnano({ preset: "default"}), autoprefixer] : [])
-			}),
+			}), 
 
       // Create an index.html file in dist
 			html({ title: config.frontend.pageTitle, fileName: "nocache.html", publicPath: config.frontend.hostname + "/", attributes: { 
@@ -138,7 +138,8 @@ export default (CLIArgs) => {
 		},
 
 		watch: {
-			buildDelay: 2000
+			buildDelay: 500,
+			exclude: ['node_modules/**']
 		}
 	};
 
