@@ -162,6 +162,9 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                   })}
                   type="email"
                 />
+                <ErrorMessage>
+                  {!!errors["email"] ? get(errors["email"], "message") : ""}
+                </ErrorMessage>
               </div>
               <div className="w-2" />
               <div className="flex-1">
@@ -180,6 +183,9 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                   })}
                   type="tel"
                 />
+                <ErrorMessage>
+                  {!!errors["phone"] ? get(errors["phone"], "message") : ""}
+                </ErrorMessage>
               </div>
             </div>
             <div className="container flex mt-4 max-w-md">
@@ -199,6 +205,9 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                   })}
                   type="text"
                 />
+                <ErrorMessage>
+                  {!!errors["firstName"] ? get(errors["firstName"], "message") : ""}
+                </ErrorMessage>
               </div>
               <div className="w-2" />
               <div className="flex-1">
@@ -217,6 +226,9 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                   })}
                   type="text"
                 />
+                <ErrorMessage>
+                  {!!errors["lastName"] ? get(errors["lastName"], "message") : ""}
+                </ErrorMessage>
               </div>
             </div>
 
@@ -237,6 +249,9 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                   })}
                   type="text"
                 />
+                <ErrorMessage>
+                  {!!errors["address"] ? get(errors["address"], "message") : ""}
+                </ErrorMessage>
               </div>
               <div className="flex-initial w-2" />
               <div className="w-1/4">
@@ -257,6 +272,7 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                   size={6}
                   type="text"
                 />
+                <ErrorMessage>{!!errors["zip"] ? get(errors["zip"], "message") : ""}</ErrorMessage>
               </div>
             </div>
 
@@ -277,6 +293,9 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                   })}
                   type="text"
                 />
+                <ErrorMessage>
+                  {!!errors["city"] ? get(errors["city"], "message") : ""}
+                </ErrorMessage>
               </div>
               <div className="flex-initial w-2" />
               <div className="flex-1">
@@ -295,6 +314,9 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                   })}
                   type="text"
                 />
+                <ErrorMessage>
+                  {!!errors["country"] ? get(errors["country"], "message") : ""}
+                </ErrorMessage>
               </div>
             </div>
 

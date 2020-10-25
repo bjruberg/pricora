@@ -50,4 +50,7 @@ module.exports = {
     purgeLayersByDefault: true,
     removeDeprecatedGapUtilities: true,
   },
+  variants: {
+    boxShadow: ['hover', 'focus'],
+  }
 }
