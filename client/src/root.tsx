@@ -1,7 +1,7 @@
 import { Fragment, FunctionalComponent, h } from "preact";
 import { useContext, useCallback, useMemo } from "preact/hooks";
 import { TranslateContext } from "@denysvuika/preact-translate";
-import Router from "preact-router";
+import Router, { Route } from "preact-router";
 import AsyncRoute from "preact-async-route";
 import Match, { Link } from "preact-router/match";
 import { useQuery } from "react-query";
@@ -18,6 +18,9 @@ import { SharedUser } from "../../shared/user";
 import { UserContext } from "./contexts/user";
 
 import { routes } from "./routes";
+
+// Place addAttendant page in main bundle to reach best loading performance for users
+import AddAttendant from "./pages/addattendant";
 
 const getDefault = (
   module:
@@ -107,10 +110,7 @@ const AppRoot: FunctionalComponent = () => {
               path={routes.meetinglist}
               getComponent={useCallback(() => import("./pages/meetinglist").then(getDefault), [])}
             />
-            <AsyncRoute
-              path={routes.addattendant()}
-              getComponent={useCallback(() => import("./pages/addattendant").then(getDefault), [])}
-            />
+            <Route path={routes.addattendant()} component={AddAttendant} />
             <AdminRoute
               path={routes.userlist}
               getComponent={useCallback(() => import("./pages/userlist").then(getDefault), [])}
