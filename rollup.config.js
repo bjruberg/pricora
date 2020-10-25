@@ -48,7 +48,6 @@ const htmlTemplate = ({ attributes, files, meta, publicPath, title }) => {
 <html${makeHtmlAttributes(attributes.html)}>
 	<head>
 		${scripts}
-		<link rel="preload" href="i18n/${config.frontend.language}.json" as="fetch" >
     ${metas}
     <title>${title}</title>
     ${links}
