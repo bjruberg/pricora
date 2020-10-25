@@ -6,7 +6,6 @@ import AsyncRoute from "preact-async-route";
 import Match, { Link } from "preact-router/match";
 import { useQuery } from "react-query";
 import { createClient, Provider } from "@urql/preact";
-import { get } from "lodash";
 import "./base.css";
 
 import AdminRoute from "./components/AdminRoute";
@@ -17,6 +16,7 @@ import Topline from "./components/Topline";
 import { SharedUser } from "../../shared/user";
 import { UserContext } from "./contexts/user";
 
+import { hostname } from "./constants";
 import { routes } from "./routes";
 
 // Place addAttendant page in main bundle to reach best loading performance for users
@@ -30,7 +30,7 @@ const getDefault = (
     | typeof import("./pages/account"),
 ) => module.default;
 
-const gqlClient = createClient({ url: `${get(process.env, "hostname", "")}/graphql` });
+const gqlClient = createClient({ url: `${hostname}/graphql` });
 
 const AppRoot: FunctionalComponent = () => {
   const { t } = useContext(TranslateContext);

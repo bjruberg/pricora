@@ -12,7 +12,13 @@
     "hostname": "https://yourdomain/pricora",
     "language": "de",
     "greeting": "Digital contact lists.",
-    "pageTitle": "My Restaurant"
+    "pageTitle": "My Restaurant",
+    "requiredContactFields": [
+      "firstName",
+      "lastName",
+      "phone",
+      "email"
+    ]
   },
   "server": {
     "bind": "localhost",

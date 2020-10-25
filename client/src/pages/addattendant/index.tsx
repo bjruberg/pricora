@@ -4,9 +4,10 @@ import { useQuery, useMutation } from "@urql/preact";
 import { Link } from "preact-router/match";
 import { format, parseISO } from "date-fns";
 import gql from "graphql-tag";
-import { get } from "lodash";
+import { get, includes } from "lodash";
 import { useForm } from "react-hook-form";
 import * as EmailValidator from "email-validator";
+import { hostname, requiredContactFields } from "../../constants";
 
 import Breadcrumbs from "../../components/Breadcrumbs";
 import PageContainer from "../../components/PageContainer";
@@ -63,9 +64,7 @@ interface AddAttendantProps {
 const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uuid }) => {
   const urqlContext = useMemo(() => {
     return {
-      url: `${get(process.env, "hostname", "")}/graphql${
-        matches.auth ? `?auth=${matches.auth}` : ""
-      }`,
+      url: `${hostname}/graphql${matches.auth ? `?auth=${matches.auth}` : ""}`,
     };
   }, [matches.auth]);
 
@@ -118,10 +117,6 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
     });
   }, [addMeeting, urqlContext, handleSubmit, reset, uuid]);
 
-  const requiredRegister = {
-    required: t("forms.required"),
-  };
-
   const crumbs = (
     <Breadcrumbs>
       <Link href={routes.meeting(uuid)}>{data?.meeting.title}</Link>
@@ -149,7 +144,10 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
           <form onSubmit={onSubmit}>
             <div className="container flex mt-3 max-w-md">
               <div className="flex-1">
-                <Label for="email">{t("entities.attendant.email")}*</Label>
+                <Label for="email">
+                  {t("entities.attendant.email")}
+                  {includes(requiredContactFields, "email") ? "*" : null}
+                </Label>
                 <Input
                   autoComplete="email"
                   error={!!errors["email"]}
@@ -160,48 +158,63 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
                     validate: {
                       email: (val) => (EmailValidator.validate(val) ? true : t("forms.email")),
                     },
-                    required: t("forms.required"),
+                    required: includes(requiredContactFields, "email") && t("forms.required"),
                   })}
                   type="email"
                 />
               </div>
               <div className="w-2" />
               <div className="flex-1">
-                <Label for="phone">{t("entities.attendant.phone")}*</Label>
+                <Label for="phone">
+                  {t("entities.attendant.phone")}
+                  {includes(requiredContactFields, "phone") ? "*" : null}
+                </Label>
                 <Input
                   autoComplete="tel"
                   id="phone"
                   error={!!errors["phone"]}
                   placeholder="555 51234567"
                   name="phone"
-                  inputRef={register(requiredRegister)}
+                  inputRef={register({
+                    required: includes(requiredContactFields, "phone") && t("forms.required"),
+                  })}
                   type="tel"
                 />
               </div>
             </div>
             <div className="container flex mt-4 max-w-md">
               <div className="flex-1">
-                <Label for="firstName">{t("entities.attendant.firstName")}</Label>
+                <Label for="firstName">
+                  {t("entities.attendant.firstName")}
+                  {includes(requiredContactFields, "firstName") ? "*" : null}
+                </Label>
                 <Input
                   autoComplete="given-name"
                   error={!!errors["firstName"]}
                   id="firstName"
                   placeholder={t("entities.attendant.firstNamePlaceholder")}
                   name="firstName"
-                  inputRef={register()}
+                  inputRef={register({
+                    required: includes(requiredContactFields, "firstName") && t("forms.required"),
+                  })}
                   type="text"
                 />
               </div>
               <div className="w-2" />
               <div className="flex-1">
-                <Label for="lastName">{t("entities.attendant.lastName")}</Label>
+                <Label for="lastName">
+                  {t("entities.attendant.lastName")}
+                  {includes(requiredContactFields, "lastName") ? "*" : null}
+                </Label>
                 <Input
                   autoComplete="family-name"
                   id="lastName"
                   error={!!errors["lastName"]}
                   placeholder={t("entities.attendant.lastNamePlaceholder")}
                   name="lastName"
-                  inputRef={register()}
+                  inputRef={register({
+                    required: includes(requiredContactFields, "lastName") && t("forms.required"),
+                  })}
                   type="text"
                 />
               </div>
@@ -209,27 +222,37 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
 
             <div className="container flex mt-4 max-w-md">
               <div className="w-3/4">
-                <Label for="title">{t("entities.attendant.address")}</Label>
+                <Label for="title">
+                  {t("entities.attendant.address")}
+                  {includes(requiredContactFields, "address") ? "*" : null}
+                </Label>
                 <Input
                   autoComplete="street-address"
                   error={!!errors["address"]}
                   id="address"
                   placeholder={t("entities.attendant.addressPlaceholder")}
                   name="address"
-                  inputRef={register()}
+                  inputRef={register({
+                    required: includes(requiredContactFields, "address") && t("forms.required"),
+                  })}
                   type="text"
                 />
               </div>
               <div className="flex-initial w-2" />
               <div className="w-1/4">
-                <Label for="zip">{t("entities.attendant.postal")}</Label>
+                <Label for="zip">
+                  {t("entities.attendant.postal")}
+                  {includes(requiredContactFields, "zip") ? "*" : null}
+                </Label>
                 <Input
                   autoComplete="postal-code"
                   error={!!errors["zip"]}
                   id="zip"
                   placeholder={t("entities.attendant.postalPlaceholder")}
                   name="zip"
-                  inputRef={register()}
+                  inputRef={register({
+                    required: includes(requiredContactFields, "zip") && t("forms.required"),
+                  })}
                   maxLength={6}
                   size={6}
                   type="text"
@@ -239,39 +262,54 @@ const AddAttendantPage: FunctionalComponent<AddAttendantProps> = ({ matches, uui
 
             <div className="container flex mt-4 max-w-md">
               <div className="flex-1">
-                <Label for="city">{t("entities.attendant.city")}</Label>
+                <Label for="city">
+                  {t("entities.attendant.city")}
+                  {includes(requiredContactFields, "city") ? "*" : null}
+                </Label>
                 <Input
                   autoComplete="address-level2"
                   error={!!errors["city"]}
                   id="city"
                   placeholder={t("entities.attendant.cityPlaceholder")}
                   name="city"
-                  inputRef={register()}
+                  inputRef={register({
+                    required: includes(requiredContactFields, "city") && t("forms.required"),
+                  })}
                   type="text"
                 />
               </div>
               <div className="flex-initial w-2" />
               <div className="flex-1">
-                <Label for="country">{t("entities.attendant.country")}</Label>
+                <Label for="country">
+                  {t("entities.attendant.country")}
+                  {includes(requiredContactFields, "country") ? "*" : null}
+                </Label>
                 <Input
                   autoComplete="country"
                   error={!!errors["country"]}
                   id="country"
                   placeholder={t("entities.attendant.countryPlaceholder")}
                   name="country"
-                  inputRef={register()}
+                  inputRef={register({
+                    required: includes(requiredContactFields, "country") && t("forms.required"),
+                  })}
                   type="text"
                 />
               </div>
             </div>
 
             <div className="container mt-4 max-w-md">
-              <Label for="random">{t("entities.attendant.random")}</Label>
+              <Label for="random">
+                {t("entities.attendant.random")}
+                {includes(requiredContactFields, "random") ? "*" : null}
+              </Label>
               <textarea
                 class="shadow border block w-full"
                 id="random"
                 name="random"
-                ref={register()}
+                ref={register({
+                  required: includes(requiredContactFields, "random") && t("forms.required"),
+                })}
               ></textarea>
             </div>
             <div className="max-w-md mt-6">

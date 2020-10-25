@@ -11,7 +11,13 @@
     "hostname": "https://localhost:3000",
     "language": "de",
     "greeting": "Digital contact lists.",
-    "pageTitle": "My Restaurant"
+    "pageTitle": "My Restaurant",
+    "requiredContactFields": [
+      "firstName",
+      "lastName",
+      "phone",
+      "email"
+    ]
   },
   "server": {
     "bind": "localhost",
