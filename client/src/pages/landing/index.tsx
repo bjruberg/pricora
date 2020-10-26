@@ -7,7 +7,6 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 import { routes } from "../../routes";
 
 import welcomePage from "../../../../config/welcome.html";
-import customWelcomePage from "../../../../config/custom_welcome.html";
 
 const LandingPage: FunctionalComponent = () => {
   const { t } = useContext(TranslateContext);
@@ -19,7 +18,6 @@ const LandingPage: FunctionalComponent = () => {
         </Link>
       </Breadcrumbs>
       <PageContainer>
-        {customWelcomePage ? <div dangerouslySetInnerHTML={{ __html: customWelcomePage }} /> : null}
         <div dangerouslySetInnerHTML={{ __html: welcomePage }} />
       </PageContainer>
     </Fragment>
