@@ -19,3 +19,4 @@ test.sqlite
 
 # user config
 config/env/test.json
+config/custom_welcome.html

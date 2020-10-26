@@ -3,6 +3,7 @@ import babel from '@rollup/plugin-babel';
 import { config } from 'node-config-ts';
 import commonjs from '@rollup/plugin-commonjs';
 import html, { makeHtmlAttributes } from '@rollup/plugin-html';
+import loadHtml from 'rollup-plugin-html';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import postcss from 'rollup-plugin-postcss';
 import url from '@rollup/plugin-url';
@@ -75,6 +76,10 @@ export default (CLIArgs) => {
 
 			// Allow bundling cjs modules. Rollup doesn't understand cjs
 			commonjs(),
+
+			loadHtml({
+				include: 'config/*.html'
+			}),
 
 			// Compile TypeScript/JavaScript files
 			babel({
