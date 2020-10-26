@@ -26,7 +26,6 @@ import { routes } from "../../routes";
 import { dateFormat } from "../../constants";
 import { useShareLink } from "../../utils/useShareLink";
 import { useToggle } from "../../utils/useToggle";
-import { UserContext } from "../../contexts/user";
 
 const meetingQuery = gql`
   query getMeetingDetails($id: String!) {
@@ -62,7 +61,6 @@ interface MeetingPageProps {
 
 const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
   const { t } = useContext(TranslateContext);
-  const { user } = useContext(UserContext);
   const [showRealDeleteButton, toggleShowRealDeleteButton] = useToggle(false);
 
   const [{ fetching: fetchingToken }, createMeetingToken, generatedToken] = useShareLink(uuid);
