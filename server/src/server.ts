@@ -100,6 +100,16 @@ export const startServer = async (configuration: Configuration): Promise<void> =
     }),
   );
 
+/* Special low cachign for css files because rollup-plugin-postcss is currently not able to hash filenames */
+
+  app.use(
+    koaServe({
+      maxage: 60000,
+      rootPath: "/styles",
+      rootDir: `${__dirname}/../../client/dist/styles`,
+    }),
+  );
+
   app.use(
     koaServe({
       last: false,

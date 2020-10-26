@@ -4,8 +4,7 @@ const { colors } = require('tailwindcss/defaultTheme')
 module.exports = {
   purge: [
     './client/src/**/*.tsx',
-    './config/welcome.html',
-    './config/custom_welcome.html'
+    './config/*.html',
   ],
   theme: {
     colors: {

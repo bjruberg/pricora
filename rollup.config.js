@@ -90,7 +90,7 @@ export default (CLIArgs) => {
 
 			postcss({
 				extract: true,
-				extract: path.resolve('client/dist/styles.css'),
+				extract: path.resolve('client/dist/styles/styles.css'),
 				plugins: [ cssimport, tailwindcss ].concat(
 					isProduction ? [ cssnano({ preset: 'default' }), autoprefixer ] : []
 				)
