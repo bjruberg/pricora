@@ -12,6 +12,7 @@ export type Scalars = {
 export type Query = {
   meetings: Array<Meeting>;
   meeting: Meeting;
+  me: User;
   users: Array<User>;
   unlockedAdmins: Array<User>;
 };
@@ -37,6 +38,7 @@ export type Meeting = {
   numberOfAttendants: Scalars['Float'];
   created: Scalars['String'];
   updated: Scalars['String'];
+  canDecrypt: Scalars['Boolean'];
   attendants: Attendants;
 };
 
@@ -51,6 +53,7 @@ export type User = {
   meetings: Array<Meeting>;
   created: Scalars['String'];
   deletedAt?: Maybe<Scalars['String']>;
+  keyIsAvailable: Scalars['Boolean'];
 };
 
 export type Attendants = {
@@ -179,9 +182,9 @@ export type GetMeetingDetailsQueryVariables = Exact<{
 
 
 export type GetMeetingDetailsQuery = { meeting: (
-    Pick<Meeting, 'id' | 'archived' | 'date' | 'title'>
+    Pick<Meeting, 'id' | 'archived' | 'canDecrypt' | 'date' | 'title'>
     & { user: Pick<User, 'id' | 'firstName' | 'lastName' | 'isAdmin'> }
-  ) };
+  ), me: Pick<User, 'keyIsAvailable'> };
 
 export type DeleteMeetingMutationVariables = Exact<{
   id: Scalars['String'];

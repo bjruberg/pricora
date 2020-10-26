@@ -20,6 +20,7 @@ import {
 
 import Button from "../../ui/button";
 import Input from "../../ui/input";
+import { NotifiyMessage } from "../../ui/message";
 import Spinner from "../../ui/spinner";
 import { routes } from "../../routes";
 import { dateFormat } from "../../constants";
@@ -32,6 +33,7 @@ const meetingQuery = gql`
     meeting(id: $id) {
       id
       archived
+      canDecrypt
       date
       title
       user {
@@ -40,6 +42,10 @@ const meetingQuery = gql`
         lastName
         isAdmin
       }
+    }
+
+    me {
+      keyIsAvailable
     }
   }
 `;
@@ -72,7 +78,7 @@ const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
   );
 
   if (data) {
-    const { meeting } = data;
+    const { meeting, me } = data;
     return (
       <Fragment>
         <Breadcrubms>
@@ -122,29 +128,46 @@ const MeetingPage: FunctionalComponent<MeetingPageProps> = ({ uuid }) => {
           </div>
 
           <h2 className="mt-6">{t("pages.meeting.attendants")}</h2>
-          {meeting.user.id === user?.id || meeting.user.isAdmin ? (
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
-              <Link href={routes.meetingattendants(uuid)}>
-                <Button class="mt-6 w-full" variant="secondary">
-                  {t("pages.meeting.showAttendants")}
-                </Button>
-              </Link>
-              <Button class="mt-6 w-full" onClick={() => downloadExport(uuid)} variant="secondary">
-                {t("pages.meeting.exportAttendantList")}
-              </Button>
-              <Button onClick={toggleShowRealDeleteButton} variant="dangerous">
-                {t("pages.meeting.deleteMeeting")}
-              </Button>
-              {showRealDeleteButton ? (
-                <Button
-                  onClick={() => deleteMeeting({ id: uuid }).then(() => route(routes.meetinglist))}
-                  variant="dangerous"
-                >
-                  {t("pages.meeting.finalDeleteMeeting")}
-                </Button>
-              ) : null}
-            </div>
-          ) : null}
+          {(() => {
+            if (!me.keyIsAvailable) {
+              return <NotifiyMessage>{t("pages.meeting.needToLogin")}</NotifiyMessage>;
+            }
+
+            if (meeting.canDecrypt) {
+              return (
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg">
+                  <Link href={routes.meetingattendants(uuid)}>
+                    <Button class="mt-6 w-full" variant="secondary">
+                      {t("pages.meeting.showAttendants")}
+                    </Button>
+                  </Link>
+                  <Button
+                    class="mt-6 w-full"
+                    onClick={() => downloadExport(uuid)}
+                    variant="secondary"
+                  >
+                    {t("pages.meeting.exportAttendantList")}
+                  </Button>
+                  <Button onClick={toggleShowRealDeleteButton} variant="dangerous">
+                    {t("pages.meeting.deleteMeeting")}
+                  </Button>
+                  {showRealDeleteButton ? (
+                    <Button
+                      onClick={() =>
+                        deleteMeeting({ id: uuid }).then(() => route(routes.meetinglist))
+                      }
+                      variant="dangerous"
+                    >
+                      {t("pages.meeting.finalDeleteMeeting")}
+                    </Button>
+                  ) : null}
+                </div>
+              );
+            }
+
+            return <NotifiyMessage>{t("pages.meeting.noCommonSecret")}</NotifiyMessage>;
+          })()}
+          {}
         </PageContainer>
       </Fragment>
     );

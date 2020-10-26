@@ -99,7 +99,9 @@
       "owner": "Organizer",
       "shareExplanation": "Provide the link or the QR-Code to your attendants for allowing them to register themselves.",
       "showAttendants": "Show attendants",
-      "showQR": "Show QR-Code"
+      "showQR": "Show QR-Code",
+      "needToLogin": "You need to relogin to access this meeting's contact data.",
+      "noCommonSecret": "You do not have key to access this meeting's contact data."
     },
     "meetingadd": {
       "title": "Create meeting",

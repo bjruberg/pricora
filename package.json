@@ -14,7 +14,7 @@
     "dev:rollup": "NODE_ENV=development rollup -c --watch",
     "dev:redis": "redis-server redis.conf",
     "dev:server": "NODE_ENV=\"development\" ts-node-dev --script-mode --transpile-only --respawn server/src/app.ts",
-    "generate:graphqltypes": "graphql-codegen generate --watch \"client/src/**/*.{ts,tsx}\"",
+    "generate:graphqltypes": "graphql-codegen generate \"client/src/**/*.{ts,tsx}\"",
     "postinstall": "node-config-ts",
     "start": "npm run build && NODE_ENV=production nodemon --exec node server/build/app.js",
     "start:production": "npm run build && NODE_ENV=production pm2 start --env production --name 'pricora' node -- server/build/app.js",

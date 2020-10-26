@@ -3,7 +3,18 @@ import { sub } from "date-fns";
 import { forEach, map, mapValues } from "lodash";
 import { AuthorizedContext } from "koa";
 import { config } from "node-config-ts";
-import { Ctx, Resolver, Query, Arg, Mutation, Authorized, FieldResolver, Root } from "type-graphql";
+import {
+  Ctx,
+  Field,
+  Resolver,
+  Query,
+  Arg,
+  Mutation,
+  Authorized,
+  FieldResolver,
+  ObjectType,
+  Root,
+} from "type-graphql";
 import { Connection, getConnection, getRepository, MoreThan, Not } from "typeorm";
 
 import { sourcePlugin } from "../listservice/plugin";
@@ -71,6 +82,12 @@ export const decryptMeeting = async (
 
   return decryptedEntries;
 };
+
+@ObjectType()
+class MeetingWithDecryptIndicator extends Meeting {
+  @Field(() => Boolean, { description: "Indicate whether data can be decrypted without relogin" })
+  canBeDecrypted: boolean;
+}
 
 @Resolver(() => Meeting)
 export class MeetingResolver {
@@ -330,5 +347,15 @@ export class MeetingResolver {
         };
       },
     );
+  }
+
+  @FieldResolver(() => Boolean)
+  async canDecrypt(@Root() meeting: Meeting, @Ctx() ctx: AuthorizedContext): Promise<boolean> {
+    const connection = await sourcePlugin.getConnection(meeting.id);
+    const secretForUser = await connection.manager.findOne(Secret, {
+      select: ["id"],
+      where: { user_id: ctx.user.id },
+    });
+    return !!secretForUser;
   }
 }

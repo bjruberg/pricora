@@ -63,6 +63,11 @@ export class Meeting extends MeetingInput {
   @Field(() => String)
   @UpdateDateColumn()
   updated: Date;
+
+  @Field(() => Boolean, {
+    description: "Indicates whether the logged in user has can decrypt the meeting's data",
+  })
+  canDecrypt: boolean;
 }
 
 @ObjectType()

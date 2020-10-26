@@ -21,6 +21,10 @@ export const ErrorMessage: FunctionalComponent<MessageProps> = ({ className, ...
   return <Message className={cn("text-red-700", className)} {...props} />;
 };
 
+export const NotifiyMessage: FunctionalComponent<MessageProps> = ({ className, ...props }) => {
+  return <Message className={cn("text-blue-700", className)} {...props} />;
+};
+
 export const SuccessMessage: FunctionalComponent<MessageProps> = ({ className, ...props }) => {
   return <Message className={cn("text-green-700", className)} {...props} />;
 };
