@@ -3,7 +3,7 @@ import { sub } from "date-fns";
 import { forEach, map, mapValues } from "lodash";
 import { AuthorizedContext } from "koa";
 import { config } from "node-config-ts";
-import { Ctx, Query, Arg, Mutation, Authorized, FieldResolver, Root } from "type-graphql";
+import { Ctx, Query, Arg, Mutation, Authorized, FieldResolver, Resolver, Root } from "type-graphql";
 import { Connection, getConnection, getRepository, MoreThan, Not } from "typeorm";
 
 import { sourcePlugin } from "../listservice/plugin";
@@ -72,6 +72,7 @@ export const decryptMeeting = async (
   return decryptedEntries;
 };
 
+@Resolver(() => Meeting)
 export class MeetingResolver {
   constructor(
     // constructor injection of a service
