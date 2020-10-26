@@ -76,7 +76,7 @@
     "addattendant": {
       "disclaimer": "All data is saved in encrypted form",
       "error": "Addition failed",
-      "success": "Attendant added",
+      "success": "Contact added. You can now either clear the form or modify the input to add another one",
       "title": "Register for {meeting} on {on}",
       "unauthorized": "You do not have provided correct security credentials for this meeting."
     },
@@ -99,7 +99,9 @@
       "owner": "Organizer",
       "shareExplanation": "Provide the link or the QR-Code to your attendants for allowing them to register themselves.",
       "showAttendants": "Show attendants",
-      "showQR": "Show QR-Code"
+      "showQR": "Show QR-Code",
+      "needToLogin": "You need to relogin to access this meeting's contact data.",
+      "noCommonSecret": "You do not have key to access this meeting's contact data."
     },
     "meetingadd": {
       "title": "Create meeting",

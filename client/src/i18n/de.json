@@ -77,7 +77,7 @@
     "addattendant": {
       "disclaimer": "Alle Daten werden verschlüsselt gespeichert.",
       "error": "Hinzufügen fehlgeschlagen",
-      "success": "Teilnehmer hinzugefügt",
+      "success": "Kontaktdaten hinzugefügt. Sie können das Formular nun leeren oder die Eingaben ändern, um weitere Personen hinzuzufügen",
       "title": "Eintragen für {meeting} am {on}",
       "unauthorized": "Sie haben keine gültigen Zugangsdaten für diese Veranstaltung."
     },
@@ -100,7 +100,9 @@
       "owner": "Veranstalter",
       "shareExplanation": "Ihre Teilnehmer können sich selbstständig eintragen indem Sie ihnen einen Link zu schicken oder hier einen QR-Code zum Scan anzeigen lassen.",
       "showAttendants": "Teilnehmer anzeigen",
-      "showQR": "Zeige QR Code"
+      "showQR": "Zeige QR Code",
+      "needToLogin": "Sie müssen sich erneut einloggen um auf die Kontakte zuzugreifen.",
+      "noCommonSecret": "Sie haben keinen Schlüssel um auf die Kontakte zuzugreifen"
     },
     "meetingadd": {
       "title": "Veranstaltung anlegen",

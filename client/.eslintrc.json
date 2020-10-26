@@ -25,6 +25,7 @@
   "ignorePatterns": ["gql.d.tsx", "*.gql.ts"],
   "plugins": [
     "@typescript-eslint",
-    "react-hooks"
+    "react-hooks",
+    "eslint-plugin-html"
   ]
 }

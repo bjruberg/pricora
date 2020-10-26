@@ -4,6 +4,7 @@ const { colors } = require('tailwindcss/defaultTheme')
 module.exports = {
   purge: [
     './client/src/**/*.tsx',
+    './config/*.html',
   ],
   theme: {
     colors: {
@@ -50,4 +51,7 @@ module.exports = {
     purgeLayersByDefault: true,
     removeDeprecatedGapUtilities: true,
   },
+  variants: {
+    boxShadow: ['hover', 'focus'],
+  }
 }

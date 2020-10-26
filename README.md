@@ -47,15 +47,15 @@ Advantages over paper lists:
 - Attendants have no access to contact data of other attendants
 - Attendants can use their own mobile phone to add their contact data (no pen or paper touched by everyone)
 - Exported data is easily readable and search able by health authorities and can be transmitted by email
-- Recorded data can easily be backuped
-- Data of attendants will be automatically deleted after three weeks
+- Recorded data can easily be backuped anywhere
+- Data of attendants can be automatically deleted
 - No waste of paper 
-- Owners can immediately check whether their guests use serious names on their own device
+- Owners can immediately check whether their guests have entered serious contact infomation
 
 Advantages over other software solutions:
 - No app needs to be installed by the attendants on their phones (pricora is web based)
 - Data remains under your control and will not be transfered to servers of other parties (check it, it is OpenSource)
-- Data can be saved on public cloud storages because it is encrypted
+- Data can be backed up on public cloud storages or mobile drives thanks to its encryption system
 - Data can not be decrypted without the passwords that you keep save
 
 ## Requirements

@@ -12,8 +12,9 @@ const Input: FunctionalComponent<InputProps> = ({ className, error, inputRef, ..
     <input
       {...props}
       className={cn(
-        "shadow appearance-none border rounded w-full py-2 px-2 md:px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline",
-        { "border-red-500 bg-red-200": error },
+        "shadow appearance-none rounded w-full py-2 px-2 md:px-3 text-gray-700 leading-tight focus:outline-none",
+        { "focus:shadow-outline border": !error },
+        { "border-red-500 bg-red-200 border-2": error },
         className,
       )}
       ref={inputRef}

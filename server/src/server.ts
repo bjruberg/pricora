@@ -26,6 +26,7 @@ import { loginUser, logoutUser, registerUser } from "./rest/user";
 
 import { Configuration } from "./entity/Configuration";
 import { MeetingResolver } from "./resolvers/meeting";
+import { MeResolver } from "./resolvers/me";
 import { UserResolver } from "./resolvers/user";
 import { getConnection } from "./db";
 import { exportMeeting } from "./rest/export";
@@ -62,7 +63,7 @@ export const startServer = async (configuration: Configuration): Promise<void> =
 
   const schema = await buildSchema({
     authChecker: graphqlAuthChecker,
-    resolvers: [MeetingResolver, UserResolver],
+    resolvers: [MeetingResolver, MeResolver, UserResolver],
     emitSchemaFile: {
       path: __dirname + "/../../shared/schema.gql",
       commentDescriptions: true,
@@ -96,6 +97,16 @@ export const startServer = async (configuration: Configuration): Promise<void> =
       maxage: 60000,
       rootPath: "/i18n",
       rootDir: `${__dirname}/../../client/src/i18n`,
+    }),
+  );
+
+/* Special low cachign for css files because rollup-plugin-postcss is currently not able to hash filenames */
+
+  app.use(
+    koaServe({
+      maxage: 60000,
+      rootPath: "/styles",
+      rootDir: `${__dirname}/../../client/dist/styles`,
     }),
   );
 
