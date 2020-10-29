@@ -17,10 +17,6 @@ b) Alternatively you can hand people a tablet using which they can add themselve
 
 ## Screenshots 
 
- 
-
-
-
 | ![Scan QR code](https://i.ibb.co/bvQQmLW/scan.jpg "Scan QR code")    | ![Input contact using a mobile device](https://i.ibb.co/1mLLgXp/input.jpg "Input contact using a mobile device")         |
 | ------------- | ------------- | 
 
@@ -36,6 +32,10 @@ b) Alternatively you can hand people a tablet using which they can add themselve
 ### Planned
 - [ ] Safely store data on various external cloud storage services (Dropbox, S3)
 - [ ] Data of attendants is deleted automatically after a configureable period
+
+## Usage
+
+Find info about the basic workflow in <a href="https://blog.bjoern-ruberg.de/2020/10/27/introducing-pricora-foss-for-privacy-enabled-digital-contact-lists/">my blog</a>:
 
 
 ## Why using Pricora?
